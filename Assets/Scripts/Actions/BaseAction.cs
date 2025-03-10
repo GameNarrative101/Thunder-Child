@@ -18,4 +18,7 @@ public abstract class BaseAction : MonoBehaviour
     {
         pCMech = GetComponent<PCMech>();
     }
+
+    //abstract because every extension of this class MUST have this function or they cannot work
+    public abstract string GetActionName();
 }

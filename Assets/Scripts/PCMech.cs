@@ -5,13 +5,16 @@ public class PCMech : MonoBehaviour
 {
     //all grid position stuff are here for the sake of forced movement handling
     GridPosition gridPosition;
+    //will be storing all actions in baseaction later
     MoveAction moveAction;
     SpinAction spinAction;
+    BaseAction[] baseActionArray;
 
     private void Awake()
     {
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
+        baseActionArray = GetComponents<BaseAction>();
     }
 
     private void Start()
@@ -53,5 +56,8 @@ public class PCMech : MonoBehaviour
         return gridPosition;
     }
 
-
+    public BaseAction[] GetBaseActionArray()
+    {
+        return baseActionArray;
+    }
 }
