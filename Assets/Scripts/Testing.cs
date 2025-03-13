@@ -5,9 +5,7 @@ using UnityEngine.InputSystem;
 public class Testing : MonoBehaviour
 {
 
-    [SerializeField] PCMech pcMech;
-    
-    
+    [SerializeField] PCMech pcMech;   
     void Start()
     {
     }
@@ -15,11 +13,7 @@ public class Testing : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            GridSystemVisuals.Instance.HideAllGridPosition();
-            GridSystemVisuals.Instance.ShowGridPositionList(pcMech.GetMoveAction().GetValidActionGridPositionList());
-        }
+
     }
 
 

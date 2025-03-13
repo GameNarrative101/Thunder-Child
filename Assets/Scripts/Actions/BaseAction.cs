@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 //The stuff shared by all actions go here
 //Monobehaviour here means all other actions get theirs' extended from Base action instead of mono, and can still be mono
@@ -21,4 +22,21 @@ public abstract class BaseAction : MonoBehaviour
 
     //abstract because every extension of this class MUST have this function or they cannot work
     public abstract string GetActionName();
+
+    //this is the generic take action function that all actions extending BaseAction will have. Each one will then override this and do its own thing in that function
+    //not all actions need the grid position parameter which is annoying but so be it!
+    public abstract void TakeAction (GridPosition gridPosition, Action onActionComplete);
+
+   
+    //used to be on the moveaction class, but it's better for all actions to check for this
+    public virtual bool IsValidActionGridPosition (GridPosition gridPosition) 
+    {
+        List <GridPosition> validGridPositionList = GetValidActionGridPositionList();
+        return validGridPositionList.Contains(gridPosition);
+    }
+
+    //a list of valid grid positions for the action. each action extending baseaction overrides this
+    public abstract List<GridPosition> GetValidActionGridPositionList();
+
+
 }

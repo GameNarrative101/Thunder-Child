@@ -1,66 +1,79 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using System;
+using UnityEngine.EventSystems;
 
 public class UnitActionSystem : MonoBehaviour
 {
+    public static UnitActionSystem Instance { get; private set;}
+    
     [SerializeField] PCMech selectedPcMech;
     [SerializeField] LayerMask unitLayerMask;
-
-    public static UnitActionSystem Instance { get; private set;}
-    public event EventHandler OnSelectedUnitChange;
+    
     bool isBusy;
+    BaseAction selectedAction;
+
+    //there's a missing event OnSelectedActionChange. just in case something doesn't work! 
+    public event EventHandler OnSelectedUnitChange;
+    public event EventHandler <bool> onBusyChanged;
 
     private void Awake()
     {
         SetInstanceAndDebug();
     }
 
+    void Start()
+    {
+        SetSelectedPcMech(selectedPcMech);
+    }
+
 
     private void Update()
     {
+        UnitActionOperation();
+    }
+
+    private void UnitActionOperation()
+    {
         if (isBusy) {return;}
-        MovingMech();
-        SpinningMech();
+        
+        //if the mouse is over a UI element, don't do anything
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;          
+        }
+        if (TryHandleUnitSelection()) {return;}
+        HandleSelectedAction();
     }
 
     void SetBusy()
     {
         isBusy = true;
+
+        onBusyChanged?.Invoke(this, isBusy);
     }
     void ClearBusy()
     {
         isBusy = false;
+
+        onBusyChanged?.Invoke(this, isBusy);
+
     }
 
-    private void SpinningMech()
-    {
-        if (Input.GetMouseButtonDown(1))
-        {
-            SetBusy();
-            //we define a ClearBusy function here, and because we gave the Spin function in SpinAction a delegate box, we get to put whatever function we want in that box.
-            //here, we wanna know when this is done, so we can declare the action done and be able to do othert things.
-            selectedPcMech.GetSpinAction().Spin(ClearBusy);
-        }
-    }
-
-    //This is temp. it will be replaced with a proper move action with grid later
-    //The 2nd if statement is not temp
-    private void MovingMech()
+    void HandleSelectedAction()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (TryHandleUnitSelection()) return;
-
             GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
 
-            if (selectedPcMech.GetMoveAction().IsValidActionGridPosition(mouseGridPosition))
+            if (selectedAction.IsValidActionGridPosition(mouseGridPosition))
             {
                 SetBusy();
-                selectedPcMech.GetMoveAction().move(mouseGridPosition, ClearBusy);
-            }
+                selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+            } 
         }
     }
+
 
     private void SetInstanceAndDebug()
     {
@@ -73,43 +86,52 @@ public class UnitActionSystem : MonoBehaviour
         Instance = this;
     }
 
+    //on mouse button being down, see if it's on top of a unit. if it is, select that unit
     bool TryHandleUnitSelection()
     {
-        //get the camera to point a Ray called ray at where the mouse is pointing.
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        //does the raycast system hit anything at the layer defined above and at any distance? if so, move on
-       if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask))
+        if (Input.GetMouseButtonDown(0))
         {
-            //is the thing raycast hit a PC mech?
-            //If things that are not named pc mech are to be selected, <PCMech> is what needs to change or be added to
-            //(pcMech here is just a PUBLIC SCRIPT COMPONENT WE ATTACH TO ANYTHING WE WANT) the "out" here is a boolian so we just get an answer
-            if (raycastHit.transform.TryGetComponent<PCMech>(out PCMech pcMech))
-            //Alternative to the line above would be:
-            //PCMech pcMech = raycastHit.transform.GetComponent<PCMech>();
-            //if (pcMech != null) then run the brackets
+            //get the camera to point a Ray called ray at where the mouse is pointing.
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            //does the raycast system hit anything at the layer defined above and at any distance? if so, move on
+            if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask))
             {
-                SetSelectedUnit (pcMech);
-                return true;
+                //is the thing raycast hit a PC mech?
+                //If things that are not named pc mech are to be selected, <PCMech> is what needs to change or be added to
+                //(pcMech here is just a PUBLIC SCRIPT COMPONENT WE ATTACH TO ANYTHING WE WANT) the "out" here is a boolian so we just get an answer
+                if (raycastHit.transform.TryGetComponent<PCMech>(out PCMech pcMech))
+                //Alternative to the line above would be:
+                //PCMech pcMech = raycastHit.transform.GetComponent<PCMech>();
+                //if (pcMech != null) then run the brackets
+                {
+                    if (pcMech == selectedPcMech)
+                    {
+                        //we have already selected this unit.
+                        return false;
+                    }
+                    SetSelectedPcMech (pcMech);
+                    return true;
+                }
             }
         }
        return false;
        
     }
 
-    void SetSelectedUnit(PCMech pcMech)
+    void SetSelectedPcMech(PCMech pcMech)
     {
         selectedPcMech = pcMech;
+        //defaults to move action on selecting a unit. all units get a move action
+        SetSelectedAction(pcMech.GetMoveAction());
         
-        //a simpler way to do what is commented out below. the idea here is just an if statement checkign to see if
-        //seleced unit has changed or not
+        //a simpler way to do what is just an if statement checkign to see if seleced unit has changed or not
         OnSelectedUnitChange?.Invoke(this, EventArgs.Empty);
-        
-        //    if (OnSelectedUnitChange != null)
-        //    {
-        //    OnSelectedUnitChange(this, EventArgs.Empty);
-        //    }
-        
+    }
+
+    public void SetSelectedAction(BaseAction baseAction)
+    {
+        selectedAction = baseAction;
     }
 
    //important to select a unit without having to assign it on every script
@@ -118,4 +140,8 @@ public class UnitActionSystem : MonoBehaviour
         return selectedPcMech;
     }
 
+    public BaseAction GetSelectedAction()
+    {
+        return selectedAction;
+    }
 }

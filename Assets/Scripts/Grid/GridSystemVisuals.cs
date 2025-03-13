@@ -87,8 +87,8 @@ public class GridSystemVisuals : MonoBehaviour
     {
         HideAllGridPosition();
 
-        PCMech selectedPcMech = UnitActionSystem.Instance.GetSelectedMech();
-        ShowGridPositionList(selectedPcMech.GetMoveAction().GetValidActionGridPositionList());
+        BaseAction selelctedAction = UnitActionSystem.Instance.GetSelectedAction();
+        ShowGridPositionList (selelctedAction.GetValidActionGridPositionList());
     }
 
 }

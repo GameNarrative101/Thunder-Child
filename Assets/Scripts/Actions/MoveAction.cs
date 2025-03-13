@@ -55,22 +55,16 @@ public class MoveAction : BaseAction
 
     }
 
-    public void move(GridPosition gridPosition, Action onActionComplete)
+    //used to be the Move action, but the base action
+    public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
     {
         this.onActionComplete = onActionComplete;
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
         isActive = true;
     }
 
-    
-    public bool IsValidActionGridPosition (GridPosition gridPosition)
-    {
-        List <GridPosition> validGridPositionList = GetValidActionGridPositionList();
-        return validGridPositionList.Contains(gridPosition);
-    }
-
-    //a list of grid positions for all the valid actions in this action
-    public List<GridPosition> GetValidActionGridPositionList()
+    //a list of valid grid positions for the action.
+    public override List<GridPosition> GetValidActionGridPositionList()
     {
         List <GridPosition> validGridPositionList = new List<GridPosition>();
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
