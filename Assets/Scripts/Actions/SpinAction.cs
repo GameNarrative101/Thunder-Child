@@ -55,4 +55,9 @@ public class SpinAction : BaseAction
             pcMechGridPosition
         };
     }
+
+    public override int GetCorePowerCost()
+    {
+        return 2;
+    }
 }

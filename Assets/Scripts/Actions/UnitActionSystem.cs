@@ -16,6 +16,7 @@ public class UnitActionSystem : MonoBehaviour
     //there's a missing event OnSelectedActionChange. just in case something doesn't work! 
     public event EventHandler OnSelectedUnitChange;
     public event EventHandler <bool> onBusyChanged;
+    public event EventHandler OnActionStarted;
 
     private void Awake()
     {
@@ -66,10 +67,17 @@ public class UnitActionSystem : MonoBehaviour
         {
             GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
 
+            //checking for valid grid position
             if (selectedAction.IsValidActionGridPosition(mouseGridPosition))
             {
-                SetBusy();
-                selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+                //checking for necessary core power
+                if (selectedPcMech.TrySpendCorePower(selectedAction))
+                {
+                    SetBusy();
+                    selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+
+                    OnActionStarted?.Invoke(this, EventArgs.Empty);
+                }
             } 
         }
     }

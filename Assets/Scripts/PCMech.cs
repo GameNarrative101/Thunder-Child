@@ -9,6 +9,7 @@ public class PCMech : MonoBehaviour
     MoveAction moveAction;
     SpinAction spinAction;
     BaseAction[] baseActionArray;
+    int corePower = 3;
 
     private void Awake()
     {
@@ -59,5 +60,43 @@ public class PCMech : MonoBehaviour
     public BaseAction[] GetBaseActionArray()
     {
         return baseActionArray;
+    }
+
+    //checks if the unit has enough core power to spend on an action
+    public bool CanSpendCorePower (BaseAction baseAction)
+    {
+        if (corePower >= baseAction.GetCorePowerCost())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //the action feeds the amount to this function. we make sure you can only spend core power if you have enough in the UnitActionSystem class
+    private void SpendCorePower (int amount)
+    {
+        corePower -= amount;
+    }
+
+    //exposes a combination of CanSpendCorePower and SpendCorePower to UnitActionSystem
+    public bool TrySpendCorePower (BaseAction baseAction)
+    {
+        if (CanSpendCorePower(baseAction))
+        {
+            SpendCorePower(baseAction.GetCorePowerCost());
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public int GetCorePower()
+    {
+        return corePower;
     }
 }

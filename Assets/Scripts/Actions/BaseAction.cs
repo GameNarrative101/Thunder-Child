@@ -14,11 +14,15 @@ public abstract class BaseAction : MonoBehaviour
     //action and func are 2 premade delegates. action is the same as void
     protected Action onActionComplete;
 
+
+
     //virtual means what accesses this can override it when using it, but bc it's protected, the base won't change
     protected virtual void Awake()
     {
         pCMech = GetComponent<PCMech>();
     }
+
+
 
     //abstract because every extension of this class MUST have this function or they cannot work
     public abstract string GetActionName();
@@ -38,5 +42,9 @@ public abstract class BaseAction : MonoBehaviour
     //a list of valid grid positions for the action. each action extending baseaction overrides this
     public abstract List<GridPosition> GetValidActionGridPositionList();
 
-
+    //all actions cost 1 core power, but this can be overridden in actions with different costs
+    public virtual int GetCorePowerCost()
+    {
+        return 1;
+    }
 }
