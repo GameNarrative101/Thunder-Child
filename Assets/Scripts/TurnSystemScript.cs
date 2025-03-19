@@ -8,7 +8,7 @@ public class TurnSystemScript : MonoBehaviour
 
     public event EventHandler OnTurnChange;
 
-    int turnCount = 0;
+    int turnCount = 1;
 
     void Awake()
     {

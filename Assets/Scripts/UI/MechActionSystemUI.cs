@@ -12,13 +12,21 @@ public class MechActionSystemUI : MonoBehaviour
     [SerializeField] Transform actionButtonContainerTransform;
     [SerializeField] TextMeshProUGUI CorePowerText;
 
+
+
     void Start()
     {
         UnitActionSystem.Instance.OnSelectedUnitChange += UnitActionSystem_OnSelectedUnitChange;
         UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
+        TurnSystemScript.Instance.OnTurnChange += TurnSystem_OnTurnChange;
+        PCMech.OnAnyCorePowerChange += PCMech_OnAnyCorePowerChange;
+
+
         CreateMechActionButtons();
         UpdateCorePower();
     }
+
+
 
     void CreateMechActionButtons ()
     {
@@ -38,6 +46,8 @@ public class MechActionSystemUI : MonoBehaviour
         
     }
 
+
+
     void UnitActionSystem_OnSelectedUnitChange(object sender, System.EventArgs e)
     {
         UpdateCorePower();
@@ -53,5 +63,15 @@ public class MechActionSystemUI : MonoBehaviour
     {
         PCMech selectedMech = UnitActionSystem.Instance.GetSelectedMech();
         CorePowerText.text = selectedMech.GetCorePower().ToString();
+    }
+
+    void TurnSystem_OnTurnChange(object sender, System.EventArgs e)
+    {
+        UpdateCorePower();
+    }
+
+    void PCMech_OnAnyCorePowerChange(object sender, System.EventArgs e)
+    {
+        UpdateCorePower();
     }
 }
