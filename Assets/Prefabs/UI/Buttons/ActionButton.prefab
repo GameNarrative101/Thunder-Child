@@ -333,10 +333,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: MOVE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 819507a38fa816a489de88dad2de2ce9, type: 2}
-  m_sharedMaterial: {fileID: -6419728470944652023, guid: 819507a38fa816a489de88dad2de2ce9, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 70c3621466fc7e64f85a8f1c02e97f8a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -360,7 +360,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 45.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -404,6 +404,11 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &1171394611213337047 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7803590667452570580, guid: fe665c9489eac1a459efd9dca9449b6b, type: 3}
+  m_PrefabInstance: {fileID: 8938041539527825923}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4602577047193350967 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4888074778808592692, guid: fe665c9489eac1a459efd9dca9449b6b, type: 3}
@@ -415,6 +420,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6826373986931753846 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2501304933231696245, guid: fe665c9489eac1a459efd9dca9449b6b, type: 3}
+  m_PrefabInstance: {fileID: 8938041539527825923}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7917563430850312068 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1291011993364950407, guid: fe665c9489eac1a459efd9dca9449b6b, type: 3}
@@ -439,3 +449,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textMeshProUGUI: {fileID: 2902170354493060107}
   button: {fileID: 4602577047193350967}
+  selectedVisual: {fileID: 6826373986931753846}
+  light_Active: {fileID: 1171394611213337047}

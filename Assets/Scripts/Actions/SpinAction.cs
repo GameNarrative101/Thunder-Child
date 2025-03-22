@@ -39,7 +39,7 @@ public class SpinAction : BaseAction
 
     public override string GetActionName()
     {
-        return "Spin";
+        return "Federation Spin 3000";
     }
 
 

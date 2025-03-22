@@ -14,6 +14,7 @@ public class PCMech : MonoBehaviour
     {
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
+        //plural getcomponents to get all components that extend baseaction (all actions)
         baseActionArray = GetComponents<BaseAction>();
     }
 

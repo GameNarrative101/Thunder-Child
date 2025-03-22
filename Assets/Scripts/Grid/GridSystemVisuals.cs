@@ -8,7 +8,10 @@ public class GridSystemVisuals : MonoBehaviour
 
     [SerializeField] Transform gridSystemVisualsPrefab;
 
-    //an 2D array of the prefab script, instantiate it, then generate it on start for the whole grid.we then decide what we wanna hide or show, and tell the other script to do that
+    /*
+        a 2D array of the prefab script, instantiate it, then generate it on start for the whole grid.
+        we then decide what we wanna hide or show, and tell the other script to do that
+    */
     GridSystemVisualSingle[,] gridSystemVisualSingleArray;
 
 
@@ -81,12 +84,15 @@ public class GridSystemVisuals : MonoBehaviour
         }
     }
 
-    //updating every frame is temp. the going through selected pcmech to get the move action will change too
-    //once we have a whole actions script
+    /*
+        updating every frame is temp. the going through selected pcmech to get the move action will change too
+        once we have a whole actions script
+    */
     void UpdateGridVisual()
     {
         HideAllGridPosition();
 
+        //access selected action from the unitactionsystem script
         BaseAction selelctedAction = UnitActionSystem.Instance.GetSelectedAction();
         ShowGridPositionList (selelctedAction.GetValidActionGridPositionList());
     }
