@@ -52,6 +52,13 @@ public abstract class BaseAction : MonoBehaviour
     public abstract List<GridPosition> GetValidActionGridPositionList();
 
 
+    //make every action declare how much core power it costs. each action overrides. defaults to 1
+    public virtual int GetCorePowerCost()
+    {
+        return 1;
+    }
+
+
 
     /*
         alternative way to handle the generic take action function with different paratmeters:

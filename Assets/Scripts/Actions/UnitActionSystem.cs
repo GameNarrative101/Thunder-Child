@@ -14,6 +14,7 @@ public class UnitActionSystem : MonoBehaviour
     bool isBusy;
 
     public event EventHandler OnSelectedUnitChange;
+    //<bool> replaces the eventargs in the eventhandler parameters
     public event EventHandler <bool> onBusyChanged;
     /*
         //for selected button visuals. Not needed with current prefabs
@@ -69,6 +70,7 @@ public class UnitActionSystem : MonoBehaviour
 
     }
 
+    //if you click on a valid grid position, and have enough core power to spend, take the action
     void HandleSelectedAction()
     {
         if (Input.GetMouseButtonDown(0))
@@ -77,8 +79,11 @@ public class UnitActionSystem : MonoBehaviour
 
             if (selectedAction.IsValidActionGridPosition(mouseGridPosition))
             {
-                SetBusy();
-                selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+                if (selectedPcMech.TrySpendCorePowerForAction(selectedAction))
+                {
+                    SetBusy();
+                    selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+                }
             } 
         }
     }
@@ -145,6 +150,12 @@ public class UnitActionSystem : MonoBehaviour
     public void SetSelectedAction(BaseAction baseAction)
     {
         selectedAction = baseAction;
+
+        /* 
+            //for selected button visuals. Not needed with current prefabs
+
+            OnSelectedUnitChange?.Invoke(this, EventArgs.Empty); 
+        */
     }
 
    //important to select a unit without having to assign it on every script

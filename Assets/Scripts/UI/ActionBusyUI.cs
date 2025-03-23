@@ -39,6 +39,7 @@ public class ActionBusyUI : MonoBehaviour
 
     }
 
+    //bool instead of eventargs because it was defined with <bool> on the UnitActionSystem
     void UnitActionSystem_onBusyChanged(object sender, bool isBusy)
     {
         if (isBusy)
