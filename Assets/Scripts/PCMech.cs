@@ -102,7 +102,12 @@ public class PCMech : MonoBehaviour
 
 
 
-    //checking if the pcmech has enough core power for the action
+    /*
+        checking if the pcmech has enough core power for the action
+
+        possible that a heat equivalent is needed if heat turns out to be a resource that can be spent this way
+        alternatively, this might be a way to handle passive heat abilities. 
+    */
     public bool CanSpendCorePowerForAction (BaseAction baseAction)
     {
         if (corePower >= baseAction.GetCorePowerCost())
@@ -115,12 +120,13 @@ public class PCMech : MonoBehaviour
         }
     }
 
-    //instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem)
+    /* 
+        instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem) 
+    */
     void SpendCorePower (int amount)
     {
         corePower -= amount;
         OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
-
     }
 
     //exposes the above 2 functions to other scripts
