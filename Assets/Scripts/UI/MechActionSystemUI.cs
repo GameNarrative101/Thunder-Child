@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using TMPro;
 
 public class MechActionSystemUI : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class MechActionSystemUI : MonoBehaviour
 
     //currently the container is dragged in from the scene, not as a prefab
     [SerializeField] Transform actionButtonContainerTransform;
+    [SerializeField] TextMeshProUGUI corePowerText;
     
     /* 
        //for selected button visuals. Not needed with current prefabs
@@ -23,7 +25,9 @@ public class MechActionSystemUI : MonoBehaviour
     void Start()
     {
         UnitActionSystem.Instance.OnSelectedUnitChange += UnitActionSystem_OnSelectedUnitChange;
+        UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
         CreateMechActionButtons();
+        UpdateCorePowerText();
         /* 
            //for selected button visuals. Not needed with current prefabs
 
@@ -51,7 +55,6 @@ public class MechActionSystemUI : MonoBehaviour
             actionButtonUIList.Clear(); 
         */
 
-
         //get the selected unit
         PCMech selectedMech = UnitActionSystem.Instance.GetSelectedMech();
 
@@ -75,15 +78,30 @@ public class MechActionSystemUI : MonoBehaviour
         
     }
 
+    //creates buttons for valid actions for the selected unit and updates the core power text
     void UnitActionSystem_OnSelectedUnitChange(object sender, System.EventArgs e)
     {
         CreateMechActionButtons();
+        UpdateCorePowerText();
         /* 
             //for selected button visuals. Not needed with current prefabs
             UpdateSelectedVisual(); 
         */
-
     }
+
+    //updates the core power text when an action is started
+    void UnitActionSystem_OnActionStarted(object sender, System.EventArgs e)
+    {
+        UpdateCorePowerText();
+    }
+
+    void UpdateCorePowerText()
+    {
+        PCMech selectedMech = UnitActionSystem.Instance.GetSelectedMech();
+        corePowerText.text = selectedMech.GetCorePower().ToString();
+    }
+
+
 
     
         /*     

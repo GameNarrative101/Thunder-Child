@@ -16,6 +16,8 @@ public class UnitActionSystem : MonoBehaviour
     public event EventHandler OnSelectedUnitChange;
     //<bool> replaces the eventargs in the eventhandler parameters
     public event EventHandler <bool> onBusyChanged;
+    //for the purposes of updating the core power text
+    public event EventHandler OnActionStarted;
     /*
         //for selected button visuals. Not needed with current prefabs
 
@@ -39,6 +41,11 @@ public class UnitActionSystem : MonoBehaviour
     private void Update()
     {
         UnitActionOperation();
+        if (Input.GetKeyDown(KeyCode.Space))  // Press Space to manually trigger the event
+        {
+            OnActionStarted?.Invoke(this, EventArgs.Empty);
+            Debug.Log("Manually triggered OnActionStarted event.");
+        }
     }
 
 
@@ -83,6 +90,7 @@ public class UnitActionSystem : MonoBehaviour
                 {
                     SetBusy();
                     selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+                    OnActionStarted?.Invoke(this, EventArgs.Empty);
                 }
             } 
         }

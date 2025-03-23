@@ -99,5 +99,9 @@ public class PCMech : MonoBehaviour
             return false;
         }
     }
-    
+
+    public int GetCorePower()
+    {
+        return corePower;
+    }
 }

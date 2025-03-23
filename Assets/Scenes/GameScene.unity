@@ -751,6 +751,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionButtonPrefab: {fileID: 2110505538251707567, guid: 26938c1328c3b8a429cfa660f7060348, type: 3}
   actionButtonContainerTransform: {fileID: 3371939799174270445}
+  corePowerText: {fileID: 1417360023}
 --- !u!1 &871551144
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,6 +1232,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSystemVisualsPrefab: {fileID: 8725199399869246816, guid: f11f75583a4aaee459a46e73b9603c51, type: 3}
+--- !u!114 &1417360023 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5732319316361647027, guid: 0d82a6efab87c8343b3b00f61a168b1b, type: 3}
+  m_PrefabInstance: {fileID: 7704909377838983351}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1534889971
 GameObject:
   m_ObjectHideFlags: 0
