@@ -1,12 +1,9 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
-using System;
 
 public class PCMech : MonoBehaviour
 {
-    //static, so it belongs to this class only. fire off the event whenever core power changes so the execution order doesn't bug out with the same event used twice
-    public static event EventHandler OnAnyCorePowerChange;
-    
     //all grid position stuff are here for the sake of forced movement handling
     GridPosition gridPosition;
     //will be storing all actions in baseaction later
@@ -14,11 +11,22 @@ public class PCMech : MonoBehaviour
     SpinAction spinAction;
     BaseAction[] baseActionArray;
     
-    int currentCorePower = 3;
-    //how much core power is generated per turn
-    const int corePowerIncrease = 3;
-    //not used right now. will be used to trigger a game over if currentCorePower exceeds maxCorePower
-    const int maxCorePower = 10;
+    /* 
+        OnTurnEnd is fired from different scripts, so execution order can cause bugs. 
+        Instead, static makes it so this fires whenever any instance of the class changes corePower, but only in this class.  
+    */
+    public static event EventHandler OnAnyCorePowerChange;
+    public static event EventHandler OnAnyHeatChange;
+
+    int corePower = 3;
+    [SerializeField] int corePowerIncrease = 3;
+    int maxCorePower = 15;
+    int heat = 0;
+    [SerializeField] int heatDecrease = 3;
+    int maxHeat = 15;
+    int shield = 0;    
+
+
 
 
 
@@ -26,6 +34,7 @@ public class PCMech : MonoBehaviour
     {
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
+        //plural getcomponents to get all components that extend baseaction (all actions)
         baseActionArray = GetComponents<BaseAction>();
     }
 
@@ -35,13 +44,15 @@ public class PCMech : MonoBehaviour
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
         LevelGrid.Instance.AddMechAtGridPosition(gridPosition, this);
 
-        TurnSystemScript.Instance.OnTurnChange += TurnSystem_OnTurnChange;
+        TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
     }
 
     private void Update()
     {
         GetNewGridPosition();
     }
+
+
 
 
 
@@ -65,6 +76,7 @@ public class PCMech : MonoBehaviour
         return spinAction;
     }
 
+
     //lets other scripts know where this pcmech is
     public GridPosition GetGridPosition()
     {
@@ -77,13 +89,30 @@ public class PCMech : MonoBehaviour
     }
 
 
-
-    //checks if the unit has enough core power to spend on an action
-    public bool CanSpendCorePower (BaseAction baseAction)
+    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
     {
-        if (currentCorePower >= baseAction.GetCorePowerCost())
+        corePower += corePowerIncrease;
+        OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
+        /* if (corePower > maxCorePower)
         {
-            return true;
+            corePower = maxCorePower;
+        }
+         */
+    }
+
+
+
+    /*
+        checking if the pcmech has enough core power for the action
+
+        possible that a heat equivalent is needed if heat turns out to be a resource that can be spent this way
+        alternatively, this might be a way to handle passive heat abilities. 
+    */
+    public bool CanSpendCorePowerForAction (BaseAction baseAction)
+    {
+        if (corePower >= baseAction.GetCorePowerCost())
+        {
+            return true; 
         }
         else
         {
@@ -91,18 +120,19 @@ public class PCMech : MonoBehaviour
         }
     }
 
-    //the action feeds the amount to this function. we make sure you can only spend core power if you have enough in the UnitActionSystem class
-    private void SpendCorePower (int amount)
+    /* 
+        instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem) 
+    */
+    void SpendCorePower (int amount)
     {
-        currentCorePower -= amount;
-
+        corePower -= amount;
         OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
     }
 
-    //exposes a combination of CanSpendCorePower and SpendCorePower to UnitActionSystem
-    public bool TrySpendCorePower (BaseAction baseAction)
+    //exposes the above 2 functions to other scripts
+    public bool TrySpendCorePowerForAction(BaseAction baseAction)
     {
-        if (CanSpendCorePower(baseAction))
+        if (CanSpendCorePowerForAction(baseAction))
         {
             SpendCorePower(baseAction.GetCorePowerCost());
             return true;
@@ -115,14 +145,8 @@ public class PCMech : MonoBehaviour
 
     public int GetCorePower()
     {
-        return currentCorePower;
+        return corePower;
     }
 
-    void TurnSystem_OnTurnChange(object sender, System.EventArgs e)
-    {
-        currentCorePower += corePowerIncrease;
 
-        OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
-
-    }
 }

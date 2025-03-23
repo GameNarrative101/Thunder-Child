@@ -27,7 +27,6 @@ public class ActionBusyUI : MonoBehaviour
     void Show()
     {
         gameObject.SetActive(true);
-        Debug.Log("Show");
 
         onBusyActivated?.Invoke(this, true);
     }
@@ -40,7 +39,7 @@ public class ActionBusyUI : MonoBehaviour
 
     }
 
-    //debug showed this function is working. 
+    //bool instead of eventargs because it was defined with <bool> on the UnitActionSystem
     void UnitActionSystem_onBusyChanged(object sender, bool isBusy)
     {
         if (isBusy)

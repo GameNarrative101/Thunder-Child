@@ -39,7 +39,7 @@ public class SpinAction : BaseAction
 
     public override string GetActionName()
     {
-        return "Spin";
+        return "Federation Spin 3000";
     }
 
 
@@ -55,6 +55,8 @@ public class SpinAction : BaseAction
             pcMechGridPosition
         };
     }
+
+
 
     public override int GetCorePowerCost()
     {

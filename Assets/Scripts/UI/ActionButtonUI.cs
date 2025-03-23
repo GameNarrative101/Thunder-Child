@@ -6,25 +6,37 @@ using UnityEngine.Events;
 
 public class ActionButtonUI : MonoBehaviour
 {
+   //UGUI for UI text
    [SerializeField] TextMeshProUGUI textMeshProUGUI;
    [SerializeField] Button button;
+        /*   
+            //for selected button visuals. Not needed with current prefabs
+
+
+            [SerializeField] GameObject selectedVisual;
+            [SerializeField] GameObject light_Active;
+
+            BaseAction baseAction; 
+        */
 
     void Start()
     {
       UnitActionSystem.Instance.onBusyChanged += UnitActionSystem_onBusyChanged;
     }
 
-   // private void UnitActionSystem_onBusyChanged(object sender, bool isBusy)
-   // {
-   //    if (button != null)  // Check if the button is still valid
-   //    {
-   //       button.interactable = !isBusy;
-   //    }
-   //    else
-   //    {
-   //       Debug.LogWarning("Button reference is missing. It may have been destroyed.");
-   //    }
-   // }
+   /* 
+        private void UnitActionSystem_onBusyChanged(object sender, bool isBusy)
+        {
+            if (button != null)  // Check if the button is still valid
+            {
+                button.interactable = !isBusy;
+            }
+            else
+            {
+                Debug.LogWarning("Button reference is missing. It may have been destroyed.");
+            }
+        } 
+   */
 
     //subscribes to action system's onBusyChanged event and makes buttons unusable when busy
     private void UnitActionSystem_onBusyChanged(object sender, bool isBusy)
@@ -49,16 +61,39 @@ public class ActionButtonUI : MonoBehaviour
 
 
 
+    /*
+        we call this from the MechActionSystemUI script, which is responsible for creating the buttons.
+        that script will call this function and pass in the base action, which we then use to set the text and behaviour of the button 
+    */
     public void SetBaseAction(BaseAction baseAction)
    {
+            /* 
+                //for selected button visuals. Not needed with current prefabs
+
+                    this.baseAction = baseAction;
+            */
+       //get the action name from the base action script
        string actionName = baseAction.GetActionName();
        textMeshProUGUI.text = actionName;
 
+       //when the button is clicked, we set the selected action in the UnitActionSystem to an action extending base action
        button.onClick.AddListener(() => 
          {
             UnitActionSystem.Instance.SetSelectedAction (baseAction);
          });
    }
+
+   /*  
+   //for selected button visuals. Not needed with current prefabs
+   
+   //updating the button visuals. interacts with MechActionSystemUI script
+    public void UpdateSelectedVisual()
+    { 
+        BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
+        selectedVisual.SetActive(selectedAction == baseAction);
+        light_Active.SetActive(selectedAction == baseAction);
+        Debug.Log("UpdateSelectedVisual");
+    } */
 
 }
 

@@ -1,35 +1,68 @@
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class TurnSystemScript : MonoBehaviour
 {
+    //core power, heat, and shield handled in the pcmech script
     public static TurnSystemScript Instance { get; private set; }
 
-    public event EventHandler OnTurnChange;
+    public event EventHandler OnTurnEnd;
 
     int turnCount = 1;
 
-    void Awake()
+
+
+
+        private void Awake()
     {
-        if (Instance != null)
-        {
-            Debug.LogError("There is more than one TurnSystemScript!" + transform + " - " + Instance);
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
+        SetInstanceAndDebug();
     }
 
 
-    public void IncreaseTurnCount()
+
+
+    private void SetInstanceAndDebug()
     {
-        turnCount++;    
-        OnTurnChange?.Invoke(this, EventArgs.Empty);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
+
+    void AdvanceTurnCount()
+    {
+        turnCount++;
+        OnTurnEnd?.Invoke(this, EventArgs.Empty);
     }
 
     public int GetTurnCount()
     {
         return turnCount;
     }
+
+    public void NextTurn()
+    {
+        AdvanceTurnCount();
+    }
+
+
+
+
+
+
+    /* 
+
+    
+    public event EventHandler OnTurnStart;
+
+
+
+    public void EndTurn()
+    {
+    }
+
+    public void StartTurn()
+    {
+        OnTurnStart?.Invoke(this, EventArgs.Empty);
+    } */
 }
