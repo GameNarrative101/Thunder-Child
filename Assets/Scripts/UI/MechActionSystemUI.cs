@@ -26,6 +26,9 @@ public class MechActionSystemUI : MonoBehaviour
     {
         UnitActionSystem.Instance.OnSelectedUnitChange += UnitActionSystem_OnSelectedUnitChange;
         UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
+        TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
+        PCMech.OnAnyCorePowerChange += PCMech_OnAnyCorePowerChange;
+        
         CreateMechActionButtons();
         UpdateCorePowerText();
         /* 
@@ -93,6 +96,16 @@ public class MechActionSystemUI : MonoBehaviour
     void UnitActionSystem_OnActionStarted(object sender, System.EventArgs e)
     {
         UpdateCorePowerText();
+    }
+
+       private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+    {
+        UpdateCorePowerText();
+    }
+
+        private void PCMech_OnAnyCorePowerChange(object sender, EventArgs e)
+    {
+        UpdateCorePowerText();    
     }
 
     void UpdateCorePowerText()

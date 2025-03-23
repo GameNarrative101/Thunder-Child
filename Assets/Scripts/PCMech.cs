@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,7 +10,25 @@ public class PCMech : MonoBehaviour
     MoveAction moveAction;
     SpinAction spinAction;
     BaseAction[] baseActionArray;
+    
+    /* 
+        OnTurnEnd is fired from different scripts, so execution order can cause bugs. 
+        Instead, static makes it so this fires whenever any instance of the class changes corePower, but only in this class.  
+    */
+    public static event EventHandler OnAnyCorePowerChange;
+    public static event EventHandler OnAnyHeatChange;
+
     int corePower = 3;
+    [SerializeField] int corePowerIncrease = 3;
+    int maxCorePower = 15;
+    int heat = 0;
+    [SerializeField] int heatDecrease = 3;
+    int maxHeat = 15;
+    int shield = 0;    
+
+
+
+
 
     private void Awake()
     {
@@ -24,12 +43,18 @@ public class PCMech : MonoBehaviour
         //so on start, this script calculates its own grid position then calls the setmechatgridposition function in levelgrid
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
         LevelGrid.Instance.AddMechAtGridPosition(gridPosition, this);
+
+        TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
     }
 
     private void Update()
     {
         GetNewGridPosition();
     }
+
+
+
+
 
     private void GetNewGridPosition()
     {
@@ -63,7 +88,17 @@ public class PCMech : MonoBehaviour
         return baseActionArray;
     }
 
-    
+
+    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+    {
+        corePower += corePowerIncrease;
+        OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
+        /* if (corePower > maxCorePower)
+        {
+            corePower = maxCorePower;
+        }
+         */
+    }
 
 
 
@@ -84,6 +119,8 @@ public class PCMech : MonoBehaviour
     void SpendCorePower (int amount)
     {
         corePower -= amount;
+        OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
+
     }
 
     //exposes the above 2 functions to other scripts
@@ -104,4 +141,6 @@ public class PCMech : MonoBehaviour
     {
         return corePower;
     }
+
+
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class TurnSystemScript : MonoBehaviour
 {
+    //core power, heat, and shield handled in the pcmech script
     public static TurnSystemScript Instance { get; private set; }
 
     public event EventHandler OnTurnEnd;
@@ -28,8 +29,6 @@ public class TurnSystemScript : MonoBehaviour
         }
     }
 
-
-
     void AdvanceTurnCount()
     {
         turnCount++;
@@ -44,7 +43,6 @@ public class TurnSystemScript : MonoBehaviour
     public void NextTurn()
     {
         AdvanceTurnCount();
-        Debug.Log("NextTurn working. Turn " + GetTurnCount());
     }
 
 
