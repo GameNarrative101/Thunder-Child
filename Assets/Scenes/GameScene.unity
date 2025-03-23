@@ -395,7 +395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turnCountText: {fileID: 1800571313}
-  endTurnButton: {fileID: 0}
+  endTurnButton: {fileID: 5500300669394223886}
 --- !u!1001 &305119362
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2309,6 +2309,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1990006241831826186, guid: abb9328fe87037a4bbd0d5a45d1afd67, type: 3}
   m_PrefabInstance: {fileID: 4157321065763541274}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5500300669394223886 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1076609460408829306, guid: abb9328fe87037a4bbd0d5a45d1afd67, type: 3}
+  m_PrefabInstance: {fileID: 4157321065763541274}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5541687471205082476
 MonoBehaviour:
   m_ObjectHideFlags: 0
