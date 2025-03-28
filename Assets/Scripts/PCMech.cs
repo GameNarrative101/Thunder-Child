@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PCMech : MonoBehaviour
 {
+    [SerializeField] bool isEnemy;
+    
     //all grid position stuff are here for the sake of forced movement handling
     GridPosition gridPosition;
     //will be storing all actions in baseaction later
@@ -16,15 +18,15 @@ public class PCMech : MonoBehaviour
         Instead, static makes it so this fires whenever any instance of the class changes corePower, but only in this class.  
     */
     public static event EventHandler OnAnyCorePowerChange;
-    public static event EventHandler OnAnyHeatChange;
+    // public static event EventHandler OnAnyHeatChange;
 
     int corePower = 3;
     [SerializeField] int corePowerIncrease = 3;
-    int maxCorePower = 15;
-    int heat = 0;
-    [SerializeField] int heatDecrease = 3;
-    int maxHeat = 15;
-    int shield = 0;    
+    // int maxCorePower = 15;
+    // int heat = 0;
+    // [SerializeField] int heatDecrease = 3;
+    // int maxHeat = 15;
+    // int shield = 0;    
 
 
 
@@ -66,34 +68,25 @@ public class PCMech : MonoBehaviour
         }
     }
 
-    public MoveAction GetMoveAction()
-    {
-        return moveAction;
-    }
-    
-    public SpinAction GetSpinAction()
-    {
-        return spinAction;
-    }
-
-
-    //lets other scripts know where this pcmech is
-    public GridPosition GetGridPosition()
-    {
-        return gridPosition;
-    }
-
-    public BaseAction[] GetBaseActionArray()
-    {
-        return baseActionArray;
-    }
+    public MoveAction GetMoveAction() {return moveAction;}
+    public SpinAction GetSpinAction() {return spinAction;}
+    public GridPosition GetGridPosition() {return gridPosition;}
+    public BaseAction[] GetBaseActionArray() {return baseActionArray;}
 
 
     private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
     {
-        corePower += corePowerIncrease;
-        OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
-        /* if (corePower > maxCorePower)
+        //increase core power at the beginning of the player's turn
+        if ((IsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) || 
+        (!IsEnemy() && TurnSystemScript.Instance.IsPlayerTurn()))
+        {
+            corePower += corePowerIncrease;
+            OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        /* //What happens when core power goes above max
+            
+            if (corePower > maxCorePower)
         {
             corePower = maxCorePower;
         }
@@ -148,5 +141,8 @@ public class PCMech : MonoBehaviour
         return corePower;
     }
 
-
+    public bool IsEnemy()
+    {
+        return isEnemy;
+    }
 }

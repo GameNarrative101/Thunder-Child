@@ -41,11 +41,6 @@ public class UnitActionSystem : MonoBehaviour
     private void Update()
     {
         UnitActionOperation();
-        if (Input.GetKeyDown(KeyCode.Space))  // Press Space to manually trigger the event
-        {
-            OnActionStarted?.Invoke(this, EventArgs.Empty);
-            Debug.Log("Manually triggered OnActionStarted event.");
-        }
     }
 
 
@@ -59,6 +54,8 @@ public class UnitActionSystem : MonoBehaviour
         if (EventSystem.current.IsPointerOverGameObject()){return;}
         //no action if we are selecting a unit
         if (TryHandleUnitSelection()) {return;}
+        //no action if it's not the player's turn
+        if (!TurnSystemScript.Instance.IsPlayerTurn()) {return;}
 
         HandleSelectedAction();
     }
@@ -134,6 +131,11 @@ public class UnitActionSystem : MonoBehaviour
                     if (pcMech == selectedPcMech)
                     {
                         //we have already selected this unit. we are clicking here to perform an action, so don't select a unit instead
+                        return false;
+                    }
+                    if (pcMech.IsEnemy())
+                    {
+                        //clicked on enemy
                         return false;
                     }
                     SetSelectedPcMech (pcMech);

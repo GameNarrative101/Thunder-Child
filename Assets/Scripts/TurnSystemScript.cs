@@ -9,6 +9,7 @@ public class TurnSystemScript : MonoBehaviour
     public event EventHandler OnTurnEnd;
 
     int turnCount = 1;
+    bool isPlayerTurn = true;
 
 
 
@@ -30,8 +31,15 @@ public class TurnSystemScript : MonoBehaviour
     }
 
     void AdvanceTurnCount()
-    {
-        turnCount++;
+    {        
+        if (!isPlayerTurn)
+        {
+            turnCount++;
+        }
+
+        //only 1 player character means we can just toggle the bool on end turn
+        isPlayerTurn = !isPlayerTurn;
+
         OnTurnEnd?.Invoke(this, EventArgs.Empty);
     }
 
@@ -43,6 +51,11 @@ public class TurnSystemScript : MonoBehaviour
     public void NextTurn()
     {
         AdvanceTurnCount();
+    }
+
+    public bool IsPlayerTurn()
+    {
+        return isPlayerTurn;
     }
 
 
