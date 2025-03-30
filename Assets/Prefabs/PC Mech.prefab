@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3670705484915049570}
   - component: {fileID: 4507073548260348634}
   - component: {fileID: 999228830194465545}
+  - component: {fileID: 8149747404443248139}
   - component: {fileID: 6644253763209447500}
   m_Layer: 7
   m_Name: PC Mech
@@ -49,6 +50,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da9bab40ae3868f4a8b452868e93d7db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEnemy: 0
+  corePowerIncrease: 3
 --- !u!114 &4507073548260348634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,6 +79,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db23b45bbd0a4dd46908fa28be8e2def, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8149747404443248139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 775f2a118f86179459ac554dd020aad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!65 &6644253763209447500

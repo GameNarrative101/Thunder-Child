@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -141,8 +142,18 @@ public class PCMech : MonoBehaviour
         return corePower;
     }
 
+    public UnityEngine.Vector3 GetWorldPosition()
+    {
+        return transform.position;
+    }
+
     public bool IsEnemy()
     {
         return isEnemy;
+    }
+
+    public void TakeDamage()
+    {
+        Debug.Log(transform + " damaged!");
     }
 }

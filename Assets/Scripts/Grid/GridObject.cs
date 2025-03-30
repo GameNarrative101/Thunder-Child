@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 //wanna use the constructor so no mono. This object will later have a bunch of use, like having a list of pcmechs on the object, etc.
 public class GridObject
@@ -49,5 +50,18 @@ public class GridObject
     public bool HasAnyPcMech()
     {
         return pCMechList.Count > 0;
+    }
+
+    //function to show what unit is on the list
+    public PCMech GetPCMech()
+    {
+        if (HasAnyPcMech())
+        {
+            return pCMechList[0];            
+        }
+        else
+        {
+            return null;
+        }
     }
 }

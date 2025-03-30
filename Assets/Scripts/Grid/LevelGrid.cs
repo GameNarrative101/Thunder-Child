@@ -9,6 +9,9 @@ public class LevelGrid : MonoBehaviour
     [SerializeField] private Transform gridDebugObjectPrefab;
     GridSystem gridSystem;
 
+
+
+
     private void Awake()
     {
         //if the 3.5 changes, remember to change the grid visual prefab scale too
@@ -17,6 +20,9 @@ public class LevelGrid : MonoBehaviour
 
         SetInstanceAndDebug();
     }
+
+
+
 
     //to track the mech and know its in a cell
     public void AddMechAtGridPosition (GridPosition gridPosition, PCMech pCMech)
@@ -68,6 +74,7 @@ public class LevelGrid : MonoBehaviour
 
     //the following 2 take the width and height from gridsystem and pass it to gridsystemvisuals. need them to cycle through the grid from outside
     public int GetWidth () => gridSystem.GetWidth();
+
     public int GetHeight() => gridSystem.GetHeight();
 
     public bool HasAnyPcMechOnGridPosition (GridPosition gridPosition)
@@ -76,4 +83,10 @@ public class LevelGrid : MonoBehaviour
         return gridObject.HasAnyPcMech();
     }
 
+    public PCMech GetPcMechAtGridPosition (GridPosition gridPosition)
+    {
+        //returns the unit that is on a grid position, used in actions
+        GridObject gridObject = gridSystem.GetGridObject (gridPosition);
+        return gridObject.GetPCMech();
+    }
 }

@@ -22,8 +22,7 @@ public class SpinAction : BaseAction
 
         if (totalSpinAmount >= 360f) 
         { 
-            isActive = false;
-            onActionComplete();
+            ActionComplete();
         }
     }
 
@@ -32,8 +31,7 @@ public class SpinAction : BaseAction
     //see UnitActionSystem for how clearing isBusy works.
     public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
     {
-        this.onActionComplete = onActionComplete;
-        isActive = true;
+        ActionStart(onActionComplete);
         totalSpinAmount = 0f;
     }
 

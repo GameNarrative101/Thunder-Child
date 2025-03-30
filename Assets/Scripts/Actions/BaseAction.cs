@@ -21,7 +21,10 @@ public abstract class BaseAction : MonoBehaviour
     */
     protected Action onActionComplete;
 
-    //virtual means what accesses this can override it when using it, but bc it's protected, the base won't change
+    /* 
+        virtual means what accesses this can override it when using it, 
+        but bc it's protected, we can call it from actions that extend this and the base won't change 
+    */
     protected virtual void Awake()
     {
         pCMech = GetComponent<PCMech>();
@@ -57,6 +60,19 @@ public abstract class BaseAction : MonoBehaviour
     {
         return 1;
     }
+
+    protected void ActionStart (Action onActionComplete)
+    {
+        isActive = true;
+        this.onActionComplete = onActionComplete;
+    }
+
+    protected void ActionComplete()
+    {
+        isActive = false;
+        onActionComplete();
+    }
+
 
 
 

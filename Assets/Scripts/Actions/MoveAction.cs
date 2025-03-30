@@ -47,20 +47,17 @@ public class MoveAction : BaseAction
         else
         {
             pcmechAnimator.SetBool("IsWalking", false);
-            isActive = false;
-            onActionComplete();
+            ActionComplete();
         }
 
         transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
 
     }
 
-    //used to be the Move action, but the base action
     public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
     {
-        this.onActionComplete = onActionComplete;
+        ActionStart(onActionComplete);
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
-        isActive = true;
     }
 
     //a list of valid grid positions for the action.
