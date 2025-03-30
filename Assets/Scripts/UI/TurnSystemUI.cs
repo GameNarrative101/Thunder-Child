@@ -16,16 +16,32 @@ public class TurnSystemUI : MonoBehaviour
     
     [SerializeField] TextMeshProUGUI turnCountText;
     [SerializeField] Button endTurnButton;
+    [SerializeField] GameObject enemyTurnPanel;
+    [SerializeField] GameObject actionBar;
+    [SerializeField] GameObject resourceBars;
+    [SerializeField] GameObject endTurnUI;
+
 
 
 
 
     void Start()
     {
-        SetEndTurnButton();
-        UpdateTurnCountText();
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
         // TurnSystemScript.Instance.OnTurnStart += TurnSystemScript_OnTurnStart;
+
+        SetEndTurnButton();
+        UpdateTurnCountText();
+        UpdateEnemyTurnPanel();
+    }
+
+    void Update()
+    {
+        //TESTING ONLY
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            TurnSystemScript.Instance.NextTurn();
+        }
     }
 
 
@@ -38,15 +54,26 @@ public class TurnSystemUI : MonoBehaviour
         {
             TurnSystemScript.Instance.NextTurn();
         });
-    }
 
+
+    }
+    
+    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+    {
+        UpdateTurnCountText();
+        UpdateEnemyTurnPanel();
+    }
+    
     void UpdateTurnCountText()
     {
         turnCountText.text = "Turn " + TurnSystemScript.Instance.GetTurnCount();
     }
 
-    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+        void UpdateEnemyTurnPanel()
     {
-        UpdateTurnCountText();
+        enemyTurnPanel.SetActive (!TurnSystemScript.Instance.IsPlayerTurn());
+        endTurnUI.SetActive (TurnSystemScript.Instance.IsPlayerTurn());
+        actionBar.SetActive (TurnSystemScript.Instance.IsPlayerTurn());
+        resourceBars.SetActive (TurnSystemScript.Instance.IsPlayerTurn());
     }
 }
