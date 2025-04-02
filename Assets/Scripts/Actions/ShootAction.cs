@@ -22,6 +22,14 @@ public class ShootAction : BaseAction
     [SerializeField] float shootingStateTime = 0.1f;
     [SerializeField] float coolOffStateTime = 0.5f;
 
+    public event EventHandler<OnShootEventArgs> OnShoot;
+    public class OnShootEventArgs : EventArgs
+    {
+        //adding more to the event, instead of <> on event handler. another option
+        public PCMech targetUnit;
+        public PCMech shootingUnit;
+    }
+
 
 
 
@@ -82,14 +90,14 @@ public class ShootAction : BaseAction
                 stateTimer = coolOffStateTime;
                 break;
             case State.Cooloff:
-                isActive = false;
-                onActionComplete();
+                ActionComplete();
                 break;
         }    
     }
 
     private void ShootBullet()
     {
+        OnShoot?.Invoke(this, new OnShootEventArgs{targetUnit=targetUnit, shootingUnit=pCMech});
         targetUnit.TakeDamage();
     }
 

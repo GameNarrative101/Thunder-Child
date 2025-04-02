@@ -11,9 +11,11 @@ public class MoveAction : BaseAction
     [SerializeField] float stoppingDistance = .1f;
     [SerializeField] float rotationSpeed = 30f;
     [SerializeField] int maxMoveDistance = 4;
-    [SerializeField] Animator pcmechAnimator;
 
     Vector3 targetPosition;
+
+    public event EventHandler OnStartMoving;
+    public event EventHandler OnStopMoving;
 
 
 
@@ -40,13 +42,10 @@ public class MoveAction : BaseAction
         if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
         {
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-
-            pcmechAnimator.SetBool("IsWalking", true);
         }
         else
         {
-            pcmechAnimator.SetBool("IsWalking", false);
+            OnStopMoving?.Invoke(this, EventArgs.Empty);
             ActionComplete();
         }
 
@@ -58,6 +57,8 @@ public class MoveAction : BaseAction
     {
         ActionStart(onActionComplete);
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+
+        OnStartMoving?.Invoke(this, EventArgs.Empty);
     }
 
     //a list of valid grid positions for the action.
