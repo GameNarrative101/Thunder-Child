@@ -35,4 +35,10 @@ public class UnitSelectedVisual : MonoBehaviour
             meshRenderer.enabled = false;
         }
     }
+
+    void ODestroy()
+    {
+        //otherwise it would stay subscribed and would keep trying to get the mesh renderer, getting a null result
+        UnitActionSystem.Instance.OnSelectedUnitChange -= UnitActionSystem_OnSelectedUnitChange;
+    }
 }

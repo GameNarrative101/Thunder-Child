@@ -6,10 +6,12 @@ using UnityEngine;
 public class PCMech : MonoBehaviour
 {
     [SerializeField] bool isEnemy;
+    bool isDead = false;
     
     //all grid position stuff are here for the sake of forced movement handling
     GridPosition gridPosition;
     //will be storing all actions in baseaction later
+    HealthSystem healthSystem;
     MoveAction moveAction;
     SpinAction spinAction;
     BaseAction[] baseActionArray;
@@ -35,6 +37,7 @@ public class PCMech : MonoBehaviour
 
     private void Awake()
     {
+        healthSystem = GetComponent<HealthSystem>();
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
         //plural getcomponents to get all components that extend baseaction (all actions)
@@ -48,6 +51,8 @@ public class PCMech : MonoBehaviour
         LevelGrid.Instance.AddMechAtGridPosition(gridPosition, this);
 
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
+
+        healthSystem.OnDead += HealthSystem_OnDead;
     }
 
     private void Update()
@@ -152,8 +157,24 @@ public class PCMech : MonoBehaviour
         return isEnemy;
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int damageAmount)
     {
-        Debug.Log(transform + " damaged!");
+        healthSystem.Damage(damageAmount);
+    }
+
+    void HealthSystem_OnDead (object sender, EventArgs e)
+    {
+        isDead=true;
+
+        LevelGrid.Instance.RemoveMechAtGridPosition(gridPosition, this);
+
+        //add death animation, then destroy
+        Destroy(gameObject);
+    }
+
+    public bool IsDead()
+    {
+        Debug.Log ("isDead = " + isDead);
+        return isDead;
     }
 }

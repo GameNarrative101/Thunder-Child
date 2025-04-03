@@ -21,6 +21,7 @@ public class ShootAction : BaseAction
     [SerializeField] float aimingStateTime = 0.5f;
     [SerializeField] float shootingStateTime = 0.1f;
     [SerializeField] float coolOffStateTime = 0.5f;
+    [SerializeField] int shootActionDamage = 10;
 
     public event EventHandler<OnShootEventArgs> OnShoot;
     public class OnShootEventArgs : EventArgs
@@ -98,7 +99,9 @@ public class ShootAction : BaseAction
     private void ShootBullet()
     {
         OnShoot?.Invoke(this, new OnShootEventArgs{targetUnit=targetUnit, shootingUnit=pCMech});
-        targetUnit.TakeDamage();
+        
+        //static damage amount for now. implement real action logic later
+        targetUnit.TakeDamage(shootActionDamage);
     }
 
 
@@ -156,6 +159,7 @@ public class ShootAction : BaseAction
         ActionStart(onActionComplete);
 
         targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);
+        HealthSystem targetHealthSystem = targetUnit.GetComponent<HealthSystem>();
 
         state = State.Aiming;
         stateTimer = aimingStateTime;

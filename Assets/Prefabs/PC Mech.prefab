@@ -45,6 +45,8 @@ GameObject:
   - component: {fileID: 999228830194465545}
   - component: {fileID: 8149747404443248139}
   - component: {fileID: 5984506201132333605}
+  - component: {fileID: 8138175617954225887}
+  - component: {fileID: 3821737785300979387}
   - component: {fileID: 6644253763209447500}
   m_Layer: 7
   m_Name: PC Mech
@@ -127,6 +129,7 @@ MonoBehaviour:
   aimingStateTime: 0.5
   shootingStateTime: 0.1
   coolOffStateTime: 0.5
+  shootActionDamage: 40
 --- !u!114 &5984506201132333605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +145,33 @@ MonoBehaviour:
   animator: {fileID: 1718457562192171965}
   bulletProjectilePrefab: {fileID: 8764697905737213464, guid: fa17b9cd5c394724db4f8c7e3aff3e54, type: 3}
   shootPointTransform: {fileID: 199363312546342701}
+--- !u!114 &8138175617954225887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4090c8347426fb148add4a40346f2d16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shield: 30
+--- !u!114 &3821737785300979387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3ea885eeb6a2cc42b7cb6b9a1e0019f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ragdollPrefab: {fileID: 6812920997967081395, guid: 18d39c7a6206a1a48aa7863335f0a610, type: 3}
+  originalRootBone: {fileID: 3274264604376189535}
 --- !u!65 &6644253763209447500
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -383,6 +413,11 @@ PrefabInstance:
 --- !u!95 &1718457562192171965 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6787376051353559000, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}
+  m_PrefabInstance: {fileID: 5325694037068368997}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3274264604376189535 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7248592862883481146, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}
   m_PrefabInstance: {fileID: 5325694037068368997}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &6395187454978879044 stripped
