@@ -27,7 +27,7 @@ public class MechActionSystemUI : MonoBehaviour
         UnitActionSystem.Instance.OnSelectedUnitChange += UnitActionSystem_OnSelectedUnitChange;
         UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
-        PCMech.OnAnyCorePowerChange += PCMech_OnAnyCorePowerChange;
+        PCMech.OnCorePowerChange += PCMech_OnAnyCorePowerChange;
         
         CreateMechActionButtons();
         UpdateCorePowerText();

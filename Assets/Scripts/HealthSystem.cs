@@ -3,11 +3,21 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
 {
+    [SerializeField] int maxShield = 70;
     [SerializeField] int shield;
     // bool isDead = false;
 
 
     public event EventHandler OnDead;
+    public event EventHandler OnShieldChanged;
+
+
+
+
+    private void Awake()
+    {
+        shield = maxShield;
+    }
 
 
 
@@ -15,6 +25,8 @@ public class HealthSystem : MonoBehaviour
     public void Damage (int damageAmount)
     {
         shield -= damageAmount;
+        OnShieldChanged?.Invoke(this, EventArgs.Empty);
+
 
         if (shield < 0)
         {
@@ -25,7 +37,6 @@ public class HealthSystem : MonoBehaviour
         {
             // isDead=true;
             Die();
-
         }
 
         Debug.Log (shield);
@@ -35,6 +46,11 @@ public class HealthSystem : MonoBehaviour
     void Die()
     {
         OnDead?.Invoke(this, EventArgs.Empty);
+    }
+
+    public float GetShieldNormalized()
+    {
+        return shield / (float)maxShield;
     }
 
     //     public bool IsDead()

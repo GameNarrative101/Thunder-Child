@@ -5,32 +5,28 @@ using UnityEngine;
 
 public class PCMech : MonoBehaviour
 {
-    [SerializeField] bool isEnemy;
-    bool isDead = false;
-    
     //all grid position stuff are here for the sake of forced movement handling
     GridPosition gridPosition;
-    //will be storing all actions in baseaction later
     HealthSystem healthSystem;
+    BaseAction[] baseActionArray;    
     MoveAction moveAction;
     SpinAction spinAction;
-    BaseAction[] baseActionArray;
+
+    bool isDead = false;
+    [SerializeField] bool isEnemy;
     
+    int corePower = 3;
+    [SerializeField] int corePowerIncrease = 3;
+    [SerializeField] int maxCorePower = 15;
+    [SerializeField] int heat = 0;
+    [SerializeField] int maxHeat = 10;
+
     /* 
         OnTurnEnd is fired from different scripts, so execution order can cause bugs. 
         Instead, static makes it so this fires whenever any instance of the class changes corePower, but only in this class.  
     */
-    public static event EventHandler OnAnyCorePowerChange;
-    // public static event EventHandler OnAnyHeatChange;
-
-    int corePower = 3;
-    [SerializeField] int corePowerIncrease = 3;
-    // int maxCorePower = 15;
-    // int heat = 0;
-    // [SerializeField] int heatDecrease = 3;
-    // int maxHeat = 15;
-    // int shield = 0;    
-
+    public static event EventHandler OnCorePowerChange;
+    public static event EventHandler OnAnyHeatChange;
 
 
 
@@ -63,41 +59,11 @@ public class PCMech : MonoBehaviour
 
 
 
-
-    private void GetNewGridPosition()
-    {
-        GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
-        if (newGridPosition != gridPosition)
-        {
-            LevelGrid.Instance.MechMovedGridPosition(this, gridPosition, newGridPosition);
-            gridPosition = newGridPosition;
-        }
-    }
-
     public MoveAction GetMoveAction() {return moveAction;}
     public SpinAction GetSpinAction() {return spinAction;}
     public GridPosition GetGridPosition() {return gridPosition;}
     public BaseAction[] GetBaseActionArray() {return baseActionArray;}
 
-
-    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
-    {
-        //increase core power at the beginning of the player's turn
-        if ((IsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) || 
-        (!IsEnemy() && TurnSystemScript.Instance.IsPlayerTurn()))
-        {
-            corePower += corePowerIncrease;
-            OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
-        }
-
-        /* //What happens when core power goes above max
-            
-            if (corePower > maxCorePower)
-        {
-            corePower = maxCorePower;
-        }
-         */
-    }
 
 
 
@@ -107,17 +73,6 @@ public class PCMech : MonoBehaviour
         possible that a heat equivalent is needed if heat turns out to be a resource that can be spent this way
         alternatively, this might be a way to handle passive heat abilities. 
     */
-    public bool CanSpendCorePowerForAction (BaseAction baseAction)
-    {
-        if (corePower >= baseAction.GetCorePowerCost())
-        {
-            return true; 
-        }
-        else
-        {
-            return false;
-        }
-    }
 
     /* 
         instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem) 
@@ -125,11 +80,42 @@ public class PCMech : MonoBehaviour
     void SpendCorePower (int amount)
     {
         corePower -= amount;
-        OnAnyCorePowerChange?.Invoke(this, EventArgs.Empty);
+        if (corePower > maxCorePower)
+        {
+            print("Overloaded!");
+        }
     }
-
-    //exposes the above 2 functions to other scripts
-    public bool TrySpendCorePowerForAction(BaseAction baseAction)
+    public void GainHeat (int amount) //effects of overheating to be implemented later
+    {
+        heat += amount;
+        if (heat > maxHeat)
+        {
+            print("Overheated!");
+        }
+        OnAnyHeatChange?.Invoke(this, EventArgs.Empty);
+    }
+    void ReduceHeat (int amount)
+    {
+        heat -= amount;
+        if (heat < 0)
+        {
+            heat = 0;
+        }
+        OnAnyHeatChange?.Invoke(this, EventArgs.Empty);
+    }
+    public void TryReduceHeat (int amount) //for other scripts' use
+    {
+        if (heat - amount >= 0)
+        {
+            ReduceHeat(amount);
+        }
+        else
+        {
+            print("Not enough heat to reduce!");
+        }
+    }
+    
+    public bool TrySpendCorePowerForAction(BaseAction baseAction) //for other scripts' use
     {
         if (CanSpendCorePowerForAction(baseAction))
         {
@@ -141,40 +127,91 @@ public class PCMech : MonoBehaviour
             return false;
         }
     }
-
-    public int GetCorePower()
+    public bool CanSpendCorePowerForAction (BaseAction baseAction)
     {
-        return corePower;
+        if (corePower >= baseAction.GetCorePowerCost())
+        {
+            return true; 
+        }
+        else
+        {
+            return false;
+        }
     }
-
-    public UnityEngine.Vector3 GetWorldPosition()
-    {
-        return transform.position;
-    }
-
-    public bool IsEnemy()
-    {
-        return isEnemy;
-    }
-
     public void TakeDamage(int damageAmount)
     {
         healthSystem.Damage(damageAmount);
     }
 
-    void HealthSystem_OnDead (object sender, EventArgs e)
+
+
+
+    public int GetCorePower()
     {
-        isDead=true;
-
-        LevelGrid.Instance.RemoveMechAtGridPosition(gridPosition, this);
-
-        //add death animation, then destroy
-        Destroy(gameObject);
+        return corePower;
     }
-
+    public int GetHeat()
+    {
+        return heat;
+    }
+    public float GetCorePowerNormalized()
+    {
+        return corePower / (float)maxCorePower;
+    }
+    public float GetHeatNormalized()
+    {
+        return heat / (float)maxHeat;
+    }
+    public UnityEngine.Vector3 GetWorldPosition()
+    {
+        return transform.position;
+    }
+    public bool IsEnemy()
+    {
+        return isEnemy;
+    }
     public bool IsDead()
     {
         Debug.Log ("isDead = " + isDead);
         return isDead;
+    }
+    private void GetNewGridPosition()
+    {
+        GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+        if (newGridPosition != gridPosition)
+        {
+            LevelGrid.Instance.MechMovedGridPosition(this, gridPosition, newGridPosition);
+            gridPosition = newGridPosition;
+        }
+    }
+
+
+
+
+    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+    {
+        //increase core power at the beginning of the player's turn
+        if ((IsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) || 
+        (!IsEnemy() && TurnSystemScript.Instance.IsPlayerTurn()))
+        {
+            corePower += corePowerIncrease;
+            OnCorePowerChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        /* //What happens when core power goes above max
+            
+            if (corePower > maxCorePower)
+        {
+            corePower = maxCorePower;
+        }
+         */
+    }
+    void HealthSystem_OnDead (object sender, EventArgs e)
+    {
+        isDead=true;
+        LevelGrid.Instance.RemoveMechAtGridPosition(gridPosition, this);
+
+        //add death animation, then destroy
+        Destroy(gameObject);
     }
 }
