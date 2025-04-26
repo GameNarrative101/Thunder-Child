@@ -65,12 +65,22 @@ public abstract class BaseAction : MonoBehaviour
     {
         isActive = true;
         this.onActionComplete = onActionComplete;
+
+        pCMech.GainHeat(GetHeatGenerated());
     }
 
     protected void ActionComplete()
     {
         isActive = false;
         onActionComplete();
+    }
+
+
+    //HEAT PLAN: override GetHeatGenerated in each action.
+    //then in the ActionStart function, go into the GainHeat function of the PCMech, and pass in the heat cost from GetHeatGenerated
+    public virtual int GetHeatGenerated()
+    {
+        return 1;
     }
 
 

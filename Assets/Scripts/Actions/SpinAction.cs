@@ -60,4 +60,8 @@ public class SpinAction : BaseAction
     {
         return 2;
     }
+    public override int GetHeatGenerated()
+    {
+        return 6;
+    }
 }

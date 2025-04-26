@@ -1,8 +1,5 @@
-using Unity.VisualScripting;
-using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.EventSystems;
 using System;
 
 public class MoveAction : BaseAction

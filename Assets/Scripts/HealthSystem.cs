@@ -52,6 +52,10 @@ public class HealthSystem : MonoBehaviour
     {
         return shield / (float)maxShield;
     }
+    public int GetShield()
+    {
+        return shield;
+    }
 
     //     public bool IsDead()
     // {

@@ -1,6 +1,4 @@
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 
 public class BulletProjectile : MonoBehaviour
 {

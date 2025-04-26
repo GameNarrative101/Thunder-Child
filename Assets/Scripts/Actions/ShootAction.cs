@@ -69,10 +69,7 @@ public class ShootAction : BaseAction
                 break;
         }
 
-        if (stateTimer <= 0f)
-        {
-            NextState();
-        }
+        if (stateTimer <= 0f) {NextState();}
 
         return true;
     }
@@ -110,6 +107,11 @@ public class ShootAction : BaseAction
     public override string GetActionName()
     {
         return "Shoot";
+    }
+
+    public override int GetHeatGenerated()
+    {
+        return 4;
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()

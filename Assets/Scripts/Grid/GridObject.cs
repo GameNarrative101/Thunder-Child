@@ -1,7 +1,4 @@
-using NUnit.Framework;
-using UnityEngine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 //wanna use the constructor so no mono. This object will later have a bunch of use, like having a list of pcmechs on the object, etc.
 public class GridObject

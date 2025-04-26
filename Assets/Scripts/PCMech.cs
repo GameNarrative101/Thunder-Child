@@ -1,6 +1,4 @@
 using System;
-using System.Numerics;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PCMech : MonoBehaviour
@@ -21,12 +19,12 @@ public class PCMech : MonoBehaviour
     [SerializeField] int heat = 0;
     [SerializeField] int maxHeat = 10;
 
-    /* 
-        OnTurnEnd is fired from different scripts, so execution order can cause bugs. 
-        Instead, static makes it so this fires whenever any instance of the class changes corePower, but only in this class.  
-    */
     public static event EventHandler OnCorePowerChange;
-    public static event EventHandler OnAnyHeatChange;
+    public static event EventHandler OnHeatChange;
+    //static makes it so any instance of this class in other classes can change things, and all instances will be updated
+   
+
+
 
 
 
@@ -36,146 +34,36 @@ public class PCMech : MonoBehaviour
         healthSystem = GetComponent<HealthSystem>();
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
-        //plural getcomponents to get all components that extend baseaction (all actions)
         baseActionArray = GetComponents<BaseAction>();
     }
 
     private void Start()
     {
-        //so on start, this script calculates its own grid position then calls the setmechatgridposition function in levelgrid
-        gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
-        LevelGrid.Instance.AddMechAtGridPosition(gridPosition, this);
+        SetGridPosition();
 
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
-
         healthSystem.OnDead += HealthSystem_OnDead;
     }
 
     private void Update()
     {
-        GetNewGridPosition();
+        GetNewGridPositionAndUpdate();
     }
 
 
 
 
-    public MoveAction GetMoveAction() {return moveAction;}
-    public SpinAction GetSpinAction() {return spinAction;}
-    public GridPosition GetGridPosition() {return gridPosition;}
-    public BaseAction[] GetBaseActionArray() {return baseActionArray;}
 
-
-
-
-    /*
-        checking if the pcmech has enough core power for the action
-
-        possible that a heat equivalent is needed if heat turns out to be a resource that can be spent this way
-        alternatively, this might be a way to handle passive heat abilities. 
-    */
-
-    /* 
-        instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem) 
-    */
-    void SpendCorePower (int amount)
+/* 
+                                                    GRID FUNCTIONS
+==================================================================================================================================== 
+*/
+    void SetGridPosition()
     {
-        corePower -= amount;
-        if (corePower > maxCorePower)
-        {
-            print("Overloaded!");
-        }
+        gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+        LevelGrid.Instance.AddMechAtGridPosition(gridPosition, this);
     }
-    public void GainHeat (int amount) //effects of overheating to be implemented later
-    {
-        heat += amount;
-        if (heat > maxHeat)
-        {
-            print("Overheated!");
-        }
-        OnAnyHeatChange?.Invoke(this, EventArgs.Empty);
-    }
-    void ReduceHeat (int amount)
-    {
-        heat -= amount;
-        if (heat < 0)
-        {
-            heat = 0;
-        }
-        OnAnyHeatChange?.Invoke(this, EventArgs.Empty);
-    }
-    public void TryReduceHeat (int amount) //for other scripts' use
-    {
-        if (heat - amount >= 0)
-        {
-            ReduceHeat(amount);
-        }
-        else
-        {
-            print("Not enough heat to reduce!");
-        }
-    }
-    
-    public bool TrySpendCorePowerForAction(BaseAction baseAction) //for other scripts' use
-    {
-        if (CanSpendCorePowerForAction(baseAction))
-        {
-            SpendCorePower(baseAction.GetCorePowerCost());
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    public bool CanSpendCorePowerForAction (BaseAction baseAction)
-    {
-        if (corePower >= baseAction.GetCorePowerCost())
-        {
-            return true; 
-        }
-        else
-        {
-            return false;
-        }
-    }
-    public void TakeDamage(int damageAmount)
-    {
-        healthSystem.Damage(damageAmount);
-    }
-
-
-
-
-    public int GetCorePower()
-    {
-        return corePower;
-    }
-    public int GetHeat()
-    {
-        return heat;
-    }
-    public float GetCorePowerNormalized()
-    {
-        return corePower / (float)maxCorePower;
-    }
-    public float GetHeatNormalized()
-    {
-        return heat / (float)maxHeat;
-    }
-    public UnityEngine.Vector3 GetWorldPosition()
-    {
-        return transform.position;
-    }
-    public bool IsEnemy()
-    {
-        return isEnemy;
-    }
-    public bool IsDead()
-    {
-        Debug.Log ("isDead = " + isDead);
-        return isDead;
-    }
-    private void GetNewGridPosition()
+    void GetNewGridPositionAndUpdate()
     {
         GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
         if (newGridPosition != gridPosition)
@@ -188,7 +76,35 @@ public class PCMech : MonoBehaviour
 
 
 
-    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+
+
+/* 
+                                                    RESOURCE FUNCTIONS
+==================================================================================================================================== 
+*/
+    void SpendCorePower (int amount) // instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem)
+    {
+        corePower -= amount;
+        OnCorePowerChange?.Invoke(this, EventArgs.Empty);
+        if (corePower > maxCorePower) {print("Overloaded!");}
+    }
+    void ReduceHeat (int amount)
+    {
+        heat -= amount;
+        OnHeatChange?.Invoke(this, EventArgs.Empty);
+        if (heat < 0) {heat = 0;}
+    }
+    
+
+
+
+
+
+/* 
+                                                    SUBSCRIPTION FUNCTIONS
+==================================================================================================================================== 
+*/
+    void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
     {
         //increase core power at the beginning of the player's turn
         if ((IsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) || 
@@ -196,15 +112,10 @@ public class PCMech : MonoBehaviour
         {
             corePower += corePowerIncrease;
             OnCorePowerChange?.Invoke(this, EventArgs.Empty);
-        }
 
-        /* //What happens when core power goes above max
-            
-            if (corePower > maxCorePower)
-        {
-            corePower = maxCorePower;
+            TryReduceHeat(2);
+            OnHeatChange?.Invoke(this, EventArgs.Empty);
         }
-         */
     }
     void HealthSystem_OnDead (object sender, EventArgs e)
     {
@@ -214,4 +125,64 @@ public class PCMech : MonoBehaviour
         //add death animation, then destroy
         Destroy(gameObject);
     }
+
+
+
+
+
+
+/* 
+                                                    PUBLIC FUNCTIONS
+===================================================================================================================================== 
+*/
+    public bool IsEnemy() {return isEnemy;}
+    public bool IsDead() {return isDead;}
+
+
+    public void TakeDamage(int damageAmount) {healthSystem.Damage(damageAmount);}
+
+
+    public bool CanSpendCorePowerForAction (BaseAction baseAction) {return corePower >= baseAction.GetCorePowerCost();}
+    public bool TrySpendCorePowerForAction(BaseAction baseAction) //for other scripts' use
+    {
+        if (CanSpendCorePowerForAction(baseAction))
+        {
+            SpendCorePower(baseAction.GetCorePowerCost());
+            return true;
+        }
+        return false;
+    }
+    public void GainHeat (int amount) //effects of overheating to be implemented later
+    {
+        heat += amount;
+        OnHeatChange?.Invoke(this, EventArgs.Empty);
+        if (heat > maxHeat) {print("Overheated!");}
+    }
+    public void TryReduceHeat (int amount) //for other scripts' use
+    {
+        if (heat - amount >= 0) {ReduceHeat(amount);}
+        print("Not enough heat to reduce!");
+    }
+    
+
+
+
+
+
+/* 
+                                                    GETTING THINGS
+===================================================================================================================================== 
+*/
+    public BaseAction[] GetBaseActionArray() {return baseActionArray;}
+    public MoveAction GetMoveAction() {return moveAction;}
+    public SpinAction GetSpinAction() {return spinAction;}
+    
+    public GridPosition GetGridPosition() {return gridPosition;}
+    public UnityEngine.Vector3 GetWorldPosition() {return transform.position;}
+    
+    public int GetCorePower() {return corePower;}
+    public float GetCorePowerNormalized() {return corePower / (float)maxCorePower;}
+    
+    public int GetHeat() {return heat;}
+    public float GetHeatNormalized() {return heat / (float)maxHeat;}
 }
