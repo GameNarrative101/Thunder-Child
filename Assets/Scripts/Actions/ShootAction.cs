@@ -4,18 +4,13 @@ using UnityEngine;
 
 public class ShootAction : BaseAction
 {
-    enum State
-    {
-        Aiming,
-        Shooting,
-        Cooloff,
-    }
+    enum State {Aiming, Shooting, Cooloff,}
 
     State state;
-    int maxShootDistance =5;
-    float stateTimer;
     PCMech targetUnit;
     bool canShootBullet;
+    int maxShootDistance =5;
+    float stateTimer;
 
     //once tested and confirmed, store each state's timer locally
     [SerializeField] float aimingStateTime = 0.5f;
@@ -34,6 +29,8 @@ public class ShootAction : BaseAction
 
 
 
+
+
      private void Update()
     {
         bool flowControl = HandleShooting();
@@ -43,10 +40,15 @@ public class ShootAction : BaseAction
 
 
 
+
+
+/* 
+                                                    SHOOTIN THANGS
+==================================================================================================================================== 
+*/
     private bool HandleShooting()
     {
         if (!isActive) { return false; }
-
         stateTimer -= Time.deltaTime;
 
         switch (state)
@@ -56,7 +58,6 @@ public class ShootAction : BaseAction
                 Vector3 aimDir = (targetUnit.GetWorldPosition() - pCMech.GetWorldPosition()).normalized;
                 float rotationSpeed = 30f;
                 transform.forward = Vector3.Lerp(transform.forward, aimDir, rotationSpeed * Time.deltaTime);
-
                 break;
             case State.Shooting:
                 if (canShootBullet)
@@ -73,7 +74,6 @@ public class ShootAction : BaseAction
 
         return true;
     }
-
     private void NextState()
     {
         switch (state)
@@ -92,7 +92,6 @@ public class ShootAction : BaseAction
                 break;
         }    
     }
-
     private void ShootBullet()
     {
         OnShoot?.Invoke(this, new OnShootEventArgs{targetUnit=targetUnit, shootingUnit=pCMech});
@@ -104,16 +103,26 @@ public class ShootAction : BaseAction
 
 
 
-    public override string GetActionName()
-    {
-        return "Shoot";
-    }
 
-    public override int GetHeatGenerated()
-    {
-        return 4;
-    }
 
+/* 
+                                                        OVERRIDES
+==================================================================================================================================== 
+*/
+    public override string GetActionName() {return "Shoot";}
+    public override int GetHeatGenerated() {return 4;}
+    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+    {
+        targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);
+        HealthSystem targetHealthSystem = targetUnit.GetComponent<HealthSystem>();
+
+        state = State.Aiming;
+        stateTimer = aimingStateTime;
+
+        canShootBullet = true;
+
+        ActionStart(onActionComplete);
+    }
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List <GridPosition> validGridPositionList = new List<GridPosition>();
@@ -128,44 +137,21 @@ public class ShootAction : BaseAction
                 GridPosition offsetGridPosition = new GridPosition(x, z);
                 GridPosition testGridPosition = pcMechGridPosition + offsetGridPosition;
 
-                if (!LevelGrid.Instance.IsValidPosition(testGridPosition))
-                {
-                    //if the grid position the loop gives us is not valid, get another one from the loop, otherwise execute
-                    continue;
-                }
+                // Skip invalid grid positions
+                if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;
 
-                if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition))
-                {
-                    //skip all grid positions that are empty
-                    continue;
-                }
+                // Skip grid positions without any units
+                if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;
 
+                // Skip grid positions with allied units
                 PCMech targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(testGridPosition);
+                if (targetUnit.IsEnemy() == pCMech.IsEnemy()) continue;
 
-                if (targetUnit.IsEnemy() == pCMech.IsEnemy())
-                {
-                    //check for target being an ally
-                    continue;
-                }
-                //at this point, we know we have a valid grid with a unit on it, 
-                //but we need to know which unit from the list is on there (from LevelGrid)
+                // Add valid grid position to the list
                 validGridPositionList.Add(testGridPosition);
-
             }
         }
         return validGridPositionList;   
     }
 
-    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
-    {
-        ActionStart(onActionComplete);
-
-        targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);
-        HealthSystem targetHealthSystem = targetUnit.GetComponent<HealthSystem>();
-
-        state = State.Aiming;
-        stateTimer = aimingStateTime;
-
-        canShootBullet = true;
-    }
 }

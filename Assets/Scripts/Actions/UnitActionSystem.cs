@@ -13,15 +13,11 @@ public class UnitActionSystem : MonoBehaviour
     bool isBusy;
 
     public event EventHandler OnSelectedUnitChange;
-    //<bool> replaces the eventargs in the eventhandler parameters
-    public event EventHandler <bool> onBusyChanged;
-    //for the purposes of updating the core power text
+    public event EventHandler <bool> onBusyChanged; //<bool> replaces the eventargs in the eventhandler parameters
     public event EventHandler OnActionStarted;
-    /*
-        //for selected button visuals. Not needed with current prefabs
+    public event EventHandler OnSelectedActionChanged;
 
-        public event EventHandler OnSelectedActionChange;    
-    */
+
 
 
 
@@ -30,13 +26,10 @@ public class UnitActionSystem : MonoBehaviour
     {
         SetInstanceAndDebug();
     }
-
     void Start()
     {
         SetSelectedPcMech(selectedPcMech);
     }
-
-
     private void Update()
     {
         UnitActionOperation();
@@ -45,16 +38,15 @@ public class UnitActionSystem : MonoBehaviour
 
 
 
+
+
     private void UnitActionOperation()
     {
-        //no action if an action is busy
         if (isBusy) {return;}
-        //no action if the mouse is over a UI element
-        if (EventSystem.current.IsPointerOverGameObject()){return;}
-        //no action if we are selecting a unit
-        if (TryHandleUnitSelection()) {return;}
-        //no action if it's not the player's turn
-        if (!TurnSystemScript.Instance.IsPlayerTurn()) {return;}
+        OnSelectedActionChanged?.Invoke(this, EventArgs.Empty); //called here so visuals update when mouse is still on UI
+        if (EventSystem.current.IsPointerOverGameObject()){return;} //no action if the mouse is over a UI element
+        if (TryHandleUnitSelection()) {return;} //no action if selecting a unit
+        if (!TurnSystemScript.Instance.IsPlayerTurn()) {return;} //no action if it's not the player's turn
 
         HandleSelectedAction();
     }
@@ -76,20 +68,14 @@ public class UnitActionSystem : MonoBehaviour
     //if you click on a valid grid position, and have enough core power to spend, take the action
     void HandleSelectedAction()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
+        GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
+        if (!Input.GetMouseButtonDown(0)) return;
+        if (!selectedAction.IsValidActionGridPosition(mouseGridPosition)) return;
+        if (!selectedPcMech.TrySpendCorePowerForAction(selectedAction)) return;
 
-            if (selectedAction.IsValidActionGridPosition(mouseGridPosition))
-            {
-                if (selectedPcMech.TrySpendCorePowerForAction(selectedAction))
-                {
-                    SetBusy();
-                    selectedAction.TakeAction(mouseGridPosition, ClearBusy);
-                    OnActionStarted?.Invoke(this, EventArgs.Empty);
-                }
-            } 
-        }
+        SetBusy();
+        selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+        OnActionStarted?.Invoke(this, EventArgs.Empty);
     }
 
 
@@ -104,46 +90,22 @@ public class UnitActionSystem : MonoBehaviour
         Instance = this;
     }
 
-    //on mouse button being down, see if it's on top of a unit. if it is, select that unit
+    //clean this up!
     bool TryHandleUnitSelection()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            //get the camera to point a Ray called ray at where the mouse is pointing.
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (!Input.GetMouseButtonDown(0)) return false;
+        if (!Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask)) return false; //does the raycast system hit anything at the layer defined above?
 
-            //does the raycast system hit anything at the layer defined above and at any distance? if so, move on
-            if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask))
-            {
-                /*
-                    is the thing raycast hit a PC mech?
-                    If things that are not named pc mech are to be selected, <PCMech> is what needs to change or be added to
-                    (pcMech here is just a PUBLIC SCRIPT COMPONENT WE ATTACH TO ANYTHING WE WANT) the "out" here is a boolian so we just get an answer
-                */
-                if (raycastHit.transform.TryGetComponent<PCMech>(out PCMech pcMech))
-                /*
-                    Alternative to the line above would be:
-                    PCMech pcMech = raycastHit.transform.GetComponent<PCMech>();
-                    if (pcMech != null) then run the brackets
-                */
-                {
-                    if (pcMech == selectedPcMech)
-                    {
-                        //we have already selected this unit. we are clicking here to perform an action, so don't select a unit instead
-                        return false;
-                    }
-                    if (pcMech.IsEnemy())
-                    {
-                        //clicked on enemy
-                        return false;
-                    }
-                    SetSelectedPcMech (pcMech);
-                    return true;
-                }
-            }
+        if (raycastHit.transform.TryGetComponent<PCMech>(out PCMech pcMech))
+        {
+            if (pcMech == selectedPcMech) return false;
+            if (pcMech.IsEnemy())return false;
+            
+            SetSelectedPcMech (pcMech);
+            return true;
         }
        return false;
-       
     }
 
     void SetSelectedPcMech(PCMech pcMech)

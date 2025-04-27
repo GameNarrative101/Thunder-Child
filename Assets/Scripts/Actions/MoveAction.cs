@@ -16,6 +16,9 @@ public class MoveAction : BaseAction
 
 
 
+
+
+
     //using the baseaction awake but changing one thing in it but only in this script's use of it
     protected override void Awake()
     {
@@ -32,6 +35,14 @@ public class MoveAction : BaseAction
     }
 
 
+
+
+
+
+/* 
+                                                    MOOVIN THANGS
+==================================================================================================================================== 
+*/
     private void clickToMove()
     {
         Vector3 moveDirection = (targetPosition - transform.position).normalized;
@@ -47,15 +58,25 @@ public class MoveAction : BaseAction
         }
 
         transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
-
     }
 
+
+
+
+
+
+/* 
+                                                     OVERRIDES
+==================================================================================================================================== 
+*/
+    public override string GetActionName() {return "Move";}
     public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
     {
-        ActionStart(onActionComplete);
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
 
         OnStartMoving?.Invoke(this, EventArgs.Empty);
+        
+        ActionStart(onActionComplete);
     }
 
     //a list of valid grid positions for the action.
@@ -78,29 +99,20 @@ public class MoveAction : BaseAction
                     //basically if the grid position the loop gives us is not valid, we go back and get another one from the loop, otherwise execute the debug
                     continue;
                 }
-
                 if (pcMechGridPosition == testGridPosition) 
                 {
                     //a valid position can't be where the unit already is
                     continue; 
                 }
-
                 if (LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition))
                 {
                     //skip all grid positions that have another unit on them. right now this says mech but change if needed
                     continue;
                 }
-
                 validGridPositionList.Add(testGridPosition);
-
             }
         }
 
         return validGridPositionList;
-    }
-
-    public override string GetActionName()
-    {
-        return "Move";
     }
 }

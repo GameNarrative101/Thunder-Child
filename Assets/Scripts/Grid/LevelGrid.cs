@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class LevelGrid : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class LevelGrid : MonoBehaviour
     //the type is transform because in the gridsystem class we call it as transfrom. does the same thing as an object, we just care about where the numbers show up
     [SerializeField] private Transform gridDebugObjectPrefab;
     GridSystem gridSystem;
+    public event EventHandler OnPCMechMovedGridPosition;
 
 
 
@@ -52,6 +54,8 @@ public class LevelGrid : MonoBehaviour
     {
         RemoveMechAtGridPosition(fromGridPosition, pcMech);
         AddMechAtGridPosition(toGridPosition, pcMech);
+
+        OnPCMechMovedGridPosition?.Invoke(this, EventArgs.Empty);
     }
 
     private void SetInstanceAndDebug()

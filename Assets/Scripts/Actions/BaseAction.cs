@@ -2,17 +2,10 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-/*
-    The stuff shared by all actions go here
-    also we don't want this to have an instance ever, so abstract. 
-    stuff that need to be instanciated are extended FROM this. just like we never want mono itself to have an instance on an object!
-*/
-public abstract class BaseAction : MonoBehaviour
+
+public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract. 
+
 {
-    //can be accessed but not changed
-    protected PCMech pCMech;
-    protected bool isActive;
-    
     /*
         define a delegate 
         just a container, nothing in it necessarily, could ask for return or argument, etc. 
@@ -20,6 +13,16 @@ public abstract class BaseAction : MonoBehaviour
         action and func are 2 premade delegates. action is the same as void
     */
     protected Action onActionComplete;
+    protected PCMech pCMech; //Protoected: can be accessed but not changed
+    protected bool isActive;
+
+    public static event EventHandler OnAnyActionStarted; //NOT USED YET
+    public static event EventHandler OnAnyActionCompleted; //NOT USED YET
+    
+
+
+
+
 
     /* 
         virtual means what accesses this can override it when using it, 
@@ -30,58 +33,66 @@ public abstract class BaseAction : MonoBehaviour
         pCMech = GetComponent<PCMech>();
     }
 
-    /*
-        abstract because every extension of this class MUST have this function or they cannot work
-        this is used to get the name of the action for the UI button
-    */
-    public abstract string GetActionName();
-
-    /*
-        this is the generic take action function that all actions extending BaseAction will have. 
-        Each one will then override this and do its own thing in that function
-        not all actions need the grid position parameter which is annoying but most do so be it!
-    */
-    public abstract void TakeAction (GridPosition gridPosition, Action onActionComplete);
-
-   
-    //used to be on the moveaction class, but it's better for all actions to check for this since most use grid positions
-    public virtual bool IsValidActionGridPosition (GridPosition gridPosition) 
-    {
-        List <GridPosition> validGridPositionList = GetValidActionGridPositionList();
-        return validGridPositionList.Contains(gridPosition);
-    }
-
-    //a list of valid grid positions for the action. each action extending baseaction overrides this
-    public abstract List<GridPosition> GetValidActionGridPositionList();
 
 
-    //make every action declare how much core power it costs. each action overrides. defaults to 1
-    public virtual int GetCorePowerCost()
-    {
-        return 1;
-    }
 
+
+
+/* 
+                                                    THE PROTECTED
+==================================================================================================================================== 
+*/
     protected void ActionStart (Action onActionComplete)
     {
         isActive = true;
         this.onActionComplete = onActionComplete;
-
         pCMech.GainHeat(GetHeatGenerated());
+
+        OnAnyActionStarted?.Invoke(this, EventArgs.Empty);
     }
 
     protected void ActionComplete()
     {
         isActive = false;
         onActionComplete();
+
+        OnAnyActionCompleted?.Invoke(this, EventArgs.Empty);
     }
 
 
-    //HEAT PLAN: override GetHeatGenerated in each action.
-    //then in the ActionStart function, go into the GainHeat function of the PCMech, and pass in the heat cost from GetHeatGenerated
-    public virtual int GetHeatGenerated()
+
+
+
+
+/* 
+                                            THE VIRTUAL (defaults if not overridden)
+==================================================================================================================================== 
+*/   
+    public virtual bool IsValidActionGridPosition (GridPosition gridPosition) 
     {
-        return 1;
+        List <GridPosition> validGridPositionList = GetValidActionGridPositionList();
+        return validGridPositionList.Contains(gridPosition);
     }
+    public virtual int GetCorePowerCost() {return 1;}
+    public virtual int GetHeatGenerated() {return 1;}
+
+
+
+
+
+
+/* 
+                                        THE ABSTRACT (every extension MUST have these)
+==================================================================================================================================== 
+*/ 
+    public abstract string GetActionName();
+    public abstract void TakeAction (GridPosition gridPosition, Action onActionComplete); //useless for some, but oh well.
+    public abstract List<GridPosition> GetValidActionGridPositionList();
+
+
+
+
+
 
 
 
