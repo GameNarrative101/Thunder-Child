@@ -73,8 +73,8 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
         List <GridPosition> validGridPositionList = GetValidActionGridPositionList();
         return validGridPositionList.Contains(gridPosition);
     }
-    public virtual int GetCorePowerCost() {return 1;}
-    public virtual int GetHeatGenerated() {return 1;}
+    public virtual int GetCorePowerCost() => 1;
+    public virtual int GetHeatGenerated() => 1;
 
 
 

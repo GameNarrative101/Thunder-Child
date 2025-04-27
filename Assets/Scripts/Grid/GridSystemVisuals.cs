@@ -12,7 +12,7 @@ public class GridSystemVisuals : MonoBehaviour
         public GridVisualType gridVisualType;
         public Material material;
     }
-    public enum GridVisualType {White, Blue, Red, Yellow,}
+    public enum GridVisualType {White, Blue, Red, Yellow, SoftBlue, SoftRed, SoftYellow}
 
     [SerializeField] Transform gridSystemVisualsPrefab;
     [SerializeField] List<GridVisualTypeMaterial> gridVisualTypeMaterialList;
@@ -94,8 +94,8 @@ public class GridSystemVisuals : MonoBehaviour
     {
         HideAllGridPosition();
 
-        //access selected action from the unitactionsystem script
-        BaseAction selelctedAction = UnitActionSystem.Instance.GetSelectedAction();
+        PCMech selectedMech = UnitActionSystem.Instance.GetSelectedMech();
+        BaseAction selelctedAction = UnitActionSystem.Instance.GetSelectedAction(); //access selected action from the unitactionsystem script
 
         GridVisualType gridVisualType;
         switch (selelctedAction)
@@ -109,6 +109,8 @@ public class GridSystemVisuals : MonoBehaviour
                 break; 
             case ShootAction shootAction:
                 gridVisualType = GridVisualType.Red;
+
+                ShowGridPositionRange(selectedMech.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.SoftRed);
                 break; 
         }
         
@@ -122,6 +124,23 @@ public class GridSystemVisuals : MonoBehaviour
         }
         Debug.LogError("Grid visual type not found: " + gridVisualType);
         return null;
+    }
+    void ShowGridPositionRange(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+    {
+        List<GridPosition> gridPositionList = new List<GridPosition>();
+        
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+                GridPosition testGridPosition = gridPosition + new GridPosition(x, z);
+                if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;
+                // if (x == 0 && z == 0) continue;
+
+                gridPositionList.Add(testGridPosition);
+            }
+        }
+        ShowGridPositionList(gridPositionList, gridVisualType);
     }
 
 

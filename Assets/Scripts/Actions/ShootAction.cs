@@ -9,7 +9,6 @@ public class ShootAction : BaseAction
     State state;
     PCMech targetUnit;
     bool canShootBullet;
-    int maxShootDistance =5;
     float stateTimer;
 
     //once tested and confirmed, store each state's timer locally
@@ -17,6 +16,7 @@ public class ShootAction : BaseAction
     [SerializeField] float shootingStateTime = 0.1f;
     [SerializeField] float coolOffStateTime = 0.5f;
     [SerializeField] int shootActionDamage = 10;
+    [SerializeField] int maxShootDistance =2;
 
     public event EventHandler<OnShootEventArgs> OnShoot;
     public class OnShootEventArgs : EventArgs
@@ -109,8 +109,8 @@ public class ShootAction : BaseAction
                                                         OVERRIDES
 ==================================================================================================================================== 
 */
-    public override string GetActionName() {return "Shoot";}
-    public override int GetHeatGenerated() {return 4;}
+    public override string GetActionName() => "Shoot";
+    public override int GetHeatGenerated() => 4;
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);
@@ -154,4 +154,18 @@ public class ShootAction : BaseAction
         return validGridPositionList;   
     }
 
+
+
+
+
+
+/* 
+                                                    EXPOSING THANGS
+==================================================================================================================================== 
+*/
+    public int GetMaxShootDistance() => maxShootDistance;
+    public PCMech GetTargetUnit() => targetUnit;
+    // public int GetCorePowerCost() => 2;
+    // public bool IsValidActionGridPosition(GridPosition gridPosition) => GetValidActionGridPositionList().Contains(gridPosition);
+    // public bool IsTargetInRange(PCMech targetUnit) => GetValidActionGridPositionList().Contains(targetUnit.GetGridPosition());
 }

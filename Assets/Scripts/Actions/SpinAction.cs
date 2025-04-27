@@ -44,9 +44,9 @@ public class SpinAction : BaseAction
                                                     OVERRIDES
 ==================================================================================================================================== 
 */
-    public override int GetCorePowerCost() {return 2;}
-    public override int GetHeatGenerated() {return 6;}
-    public override string GetActionName() {return "Federation Spin 3000";}
+    public override int GetCorePowerCost() => 2;
+    public override int GetHeatGenerated() => 6;
+    public override string GetActionName() => "Federation Spin 3000";
 
     //only do this action exactly where the unit is standing. it's just spinning
     public override List<GridPosition> GetValidActionGridPositionList()

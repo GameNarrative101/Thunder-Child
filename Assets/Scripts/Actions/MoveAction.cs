@@ -29,7 +29,7 @@ public class MoveAction : BaseAction
 
     void Update()
     {
-        if (!isActive){return;}
+        if (!isActive) return;
         
         clickToMove();
     }
@@ -69,7 +69,7 @@ public class MoveAction : BaseAction
                                                      OVERRIDES
 ==================================================================================================================================== 
 */
-    public override string GetActionName() {return "Move";}
+    public override string GetActionName() => "Move";
     public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
     {
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);

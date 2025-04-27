@@ -3,12 +3,20 @@ using System.Collections.Generic;
 //wanna use the constructor so no mono. This object will later have a bunch of use, like having a list of pcmechs on the object, etc.
 public class GridObject
 {
-
     private GridPosition gridPosition;
     private GridSystem gridSystem;
     //make it a LIST of mechs to allow for multiple pc units to be on the same cell. Not in a game rule sense, just in a system understands it sense. cells keep updating nice
     private List <PCMech> pCMechList;
 
+
+
+
+
+
+/* 
+                                                        ALL STUFF
+==================================================================================================================================== 
+*/
     public GridObject (GridSystem gridSystem, GridPosition gridPosition)
     {
         this.gridSystem = gridSystem;
@@ -28,37 +36,15 @@ public class GridObject
         return gridPosition.ToString() + "\n" + pcMechString;
     }
 
-    public void AddPcMech (PCMech pcMech)
-    {
-        pCMechList.Add (pcMech);
-    }
-
-    public void RemovePcMech (PCMech pCMech)
-    {
-        pCMechList.Remove (pCMech);
-    }
-
-    public List <PCMech> GetPcMechList()
-    {
-
-        return pCMechList;
-    }
-
-    public bool HasAnyPcMech()
-    {
-        return pCMechList.Count > 0;
-    }
+    public void AddPcMech (PCMech pcMech) {pCMechList.Add (pcMech);}
+    public void RemovePcMech (PCMech pCMech) {pCMechList.Remove (pCMech);}
+    public List <PCMech> GetPcMechList() {return pCMechList;}
+    public bool HasAnyPcMech() {return pCMechList.Count > 0;}
 
     //function to show what unit is on the list
     public PCMech GetPCMech()
     {
-        if (HasAnyPcMech())
-        {
-            return pCMechList[0];            
-        }
-        else
-        {
-            return null;
-        }
+        if (HasAnyPcMech()) {return pCMechList[0];}
+        else {return null;}
     }
 }

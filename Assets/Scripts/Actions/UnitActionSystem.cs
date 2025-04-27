@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class UnitActionSystem : MonoBehaviour
 {
-    public static UnitActionSystem Instance { get; private set;}
+    public static UnitActionSystem Instance {get; private set;}
     
     [SerializeField] PCMech selectedPcMech;
     [SerializeField] LayerMask unitLayerMask;
@@ -40,6 +40,27 @@ public class UnitActionSystem : MonoBehaviour
 
 
 
+/* 
+                                                       SETUP AND UPDATE
+==================================================================================================================================== 
+*/
+    private void SetInstanceAndDebug()
+    {
+        if (Instance != null)
+        {
+            Debug.LogError("there's more than one UnitActionSystem" + transform + "-" + Instance);
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+    void SetSelectedPcMech(PCMech pcMech)
+    {
+        selectedPcMech = pcMech;
+        SetSelectedAction(pcMech.GetMoveAction()); //defaults to move action
+        
+        OnSelectedUnitChange?.Invoke(this, EventArgs.Empty);
+    }
     private void UnitActionOperation()
     {
         if (isBusy) {return;}
@@ -51,6 +72,47 @@ public class UnitActionSystem : MonoBehaviour
         HandleSelectedAction();
     }
 
+
+
+
+
+
+/* 
+                                                        UNIT SELECTION
+==================================================================================================================================== 
+*/
+    bool TryHandleUnitSelection()
+    {
+        if (!Input.GetMouseButtonDown(0)) return false;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask)) return false;
+
+        if (!TrySelectPcMech(raycastHit)) return false;
+
+        return true;
+    }
+
+    bool TrySelectPcMech(RaycastHit raycastHit)
+    {
+        if (!raycastHit.transform.TryGetComponent<PCMech>(out PCMech pcMech)) return false;
+
+        if (pcMech == selectedPcMech) return false;
+        if (pcMech.IsEnemy()) return false;
+
+        SetSelectedPcMech(pcMech);
+        return true;
+    }
+
+
+
+
+
+
+/* 
+                                                         ACTION HANDLING
+==================================================================================================================================== 
+*/    
     void SetBusy()
     {
         isBusy = true;
@@ -62,10 +124,7 @@ public class UnitActionSystem : MonoBehaviour
         isBusy = false;
 
         onBusyChanged?.Invoke(this, isBusy);
-
     }
-
-    //if you click on a valid grid position, and have enough core power to spend, take the action
     void HandleSelectedAction()
     {
         GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
@@ -79,69 +138,24 @@ public class UnitActionSystem : MonoBehaviour
     }
 
 
-    private void SetInstanceAndDebug()
-    {
-        if (Instance != null)
-        {
-            Debug.LogError("there's more than one UnitActionSystem" + transform + "-" + Instance);
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-    }
 
-    //clean this up!
-    bool TryHandleUnitSelection()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (!Input.GetMouseButtonDown(0)) return false;
-        if (!Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitLayerMask)) return false; //does the raycast system hit anything at the layer defined above?
 
-        if (raycastHit.transform.TryGetComponent<PCMech>(out PCMech pcMech))
-        {
-            if (pcMech == selectedPcMech) return false;
-            if (pcMech.IsEnemy())return false;
-            
-            SetSelectedPcMech (pcMech);
-            return true;
-        }
-       return false;
-    }
 
-    void SetSelectedPcMech(PCMech pcMech)
-    {
-        selectedPcMech = pcMech;
-        //defaults to move action on selecting a unit when we select the mech
-        SetSelectedAction(pcMech.GetMoveAction());
-        
-        //a simpler way to do what is just an if statement checkign to see if seleced unit has changed or not
-        OnSelectedUnitChange?.Invoke(this, EventArgs.Empty);
-    }
 
+/* 
+                                                     GETTING AND SETTING
+==================================================================================================================================== 
+*/  
     public void SetSelectedAction(BaseAction baseAction)
     {
         selectedAction = baseAction;
-
-        /* 
-            //for selected button visuals. Not needed with current prefabs
-
-            OnSelectedUnitChange?.Invoke(this, EventArgs.Empty); 
-        */
     }
-
-   //important to select a unit without having to assign it on every script
     public PCMech GetSelectedMech()
     {
         return selectedPcMech;
     }
-
-    //for use in the grid system visuals script
-    public BaseAction GetSelectedAction()
+    public BaseAction GetSelectedAction() //for use in the grid system visuals script
     {
         return selectedAction;
     }
-
-
-
-            
 }

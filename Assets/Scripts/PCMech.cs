@@ -135,8 +135,8 @@ public class PCMech : MonoBehaviour
                                                     PUBLIC FUNCTIONS
 ===================================================================================================================================== 
 */
-    public bool IsEnemy() {return isEnemy;}
-    public bool IsDead() {return isDead;}
+    public bool IsEnemy() => isEnemy;
+    public bool IsDead() => isDead;
 
 
     public void TakeDamage(int damageAmount) {healthSystem.Damage(damageAmount);}
@@ -173,16 +173,16 @@ public class PCMech : MonoBehaviour
                                                     GETTING THINGS
 ===================================================================================================================================== 
 */
-    public BaseAction[] GetBaseActionArray() {return baseActionArray;}
-    public MoveAction GetMoveAction() {return moveAction;}
-    public SpinAction GetSpinAction() {return spinAction;}
+    public BaseAction[] GetBaseActionArray() => baseActionArray;
+    public MoveAction GetMoveAction() => moveAction;
+    public SpinAction GetSpinAction() => spinAction;
     
-    public GridPosition GetGridPosition() {return gridPosition;}
-    public UnityEngine.Vector3 GetWorldPosition() {return transform.position;}
+    public GridPosition GetGridPosition() => gridPosition;
+    public UnityEngine.Vector3 GetWorldPosition() => transform.position;
     
-    public int GetCorePower() {return corePower;}
-    public float GetCorePowerNormalized() {return corePower / (float)maxCorePower;}
+    public int GetCorePower() => corePower;
+    public float GetCorePowerNormalized() => corePower / (float)maxCorePower;
     
-    public int GetHeat() {return heat;}
-    public float GetHeatNormalized() {return heat / (float)maxHeat;}
+    public int GetHeat() => heat;
+    public float GetHeatNormalized() => heat / (float)maxHeat;
 }
