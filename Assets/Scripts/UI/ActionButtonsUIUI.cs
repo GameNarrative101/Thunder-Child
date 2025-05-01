@@ -38,7 +38,8 @@ public class ActionButtonsUI : MonoBehaviour
 
         //for each action, instantiate a button under the parent object then set the text by setting the action for each button
         PCMech selectedMech = UnitActionSystem.Instance.GetSelectedMech();
-        foreach (BaseAction baseAction in selectedMech.GetBaseActionArray())
+        
+        foreach (BaseAction baseAction in UnitActionSystem.Instance.GetAvailableActionsForSelectedUnit())
         {
             Transform actionButtonTransform = Instantiate (actionButtonPrefab, actionButtonContainerTransform);
             ActionButtonUI actionButtonUI = actionButtonTransform.GetComponentInChildren<ActionButtonUI>();

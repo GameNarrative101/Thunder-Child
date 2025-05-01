@@ -15,6 +15,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     protected Action onActionComplete;
     protected PCMech pCMech; //Protoected: can be accessed but not changed
     protected bool isActive;
+    protected bool isEnemyAction = false;
 
     public static event EventHandler OnAnyActionStarted; //NOT USED YET
     public static event EventHandler OnAnyActionCompleted; //NOT USED YET
@@ -31,6 +32,10 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     protected virtual void Awake()
     {
         pCMech = GetComponent<PCMech>();
+        if (pCMech == null)
+        {
+            Debug.LogError($"PCMech component not found on {gameObject.name}");
+        }
     }
 
 
@@ -75,6 +80,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     }
     public virtual int GetCorePowerCost() => 1;
     public virtual int GetHeatGenerated() => 1;
+    public virtual bool GetIsEnemyAction => isEnemyAction;
 
 
 

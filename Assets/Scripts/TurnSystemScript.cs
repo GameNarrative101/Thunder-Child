@@ -26,6 +26,10 @@ public class TurnSystemScript : MonoBehaviour
 
 
 
+/* 
+                                                        THE STATES
+==================================================================================================================================== 
+*/
     private void SetInstanceAndDebug()
     {
         if (Instance == null)

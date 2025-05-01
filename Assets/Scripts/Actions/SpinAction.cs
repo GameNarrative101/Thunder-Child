@@ -1,12 +1,18 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class SpinAction : BaseAction
 {
     
     float totalSpinAmount;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        isEnemyAction = true; // Mark this action as enemy-only
+    }
     private void Update()
     {
         if (!isActive) { return; }

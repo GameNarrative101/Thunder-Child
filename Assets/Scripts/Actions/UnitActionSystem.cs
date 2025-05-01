@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class UnitActionSystem : MonoBehaviour
 {
@@ -113,6 +114,21 @@ public class UnitActionSystem : MonoBehaviour
                                                          ACTION HANDLING
 ==================================================================================================================================== 
 */    
+    public List<BaseAction> GetAvailableActionsForSelectedUnit()
+    {
+        List<BaseAction> availableActions = new List<BaseAction>();
+
+        if (selectedPcMech.IsEnemy())
+        {
+            availableActions.AddRange(selectedPcMech.GetEnemyActionArray());
+        }
+        else
+        {
+            availableActions.AddRange(selectedPcMech.GetPlayerActionArray());
+        }
+
+        return availableActions;
+    }
     void SetBusy()
     {
         isBusy = true;

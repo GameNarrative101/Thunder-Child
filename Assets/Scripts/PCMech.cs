@@ -6,7 +6,9 @@ public class PCMech : MonoBehaviour
     //all grid position stuff are here for the sake of forced movement handling
     GridPosition gridPosition;
     HealthSystem healthSystem;
-    BaseAction[] baseActionArray;    
+    BaseAction[] baseActionArray;  
+    BaseAction[] playerActionArray;
+    BaseAction[] enemyActionArray;  
     MoveAction moveAction;
     SpinAction spinAction;
 
@@ -37,17 +39,18 @@ public class PCMech : MonoBehaviour
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction>();
-    }
 
+        SetValidActionArray();
+    }
     private void Start()
     {
         SetGridPosition();
 
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
         healthSystem.OnDead += HealthSystem_OnDead;
+        
         OnAnyMechSpawned?.Invoke(this, EventArgs.Empty);
     }
-
     private void Update()
     {
         GetNewGridPositionAndUpdate();
@@ -96,6 +99,17 @@ public class PCMech : MonoBehaviour
         heat -= amount;
         OnHeatChange?.Invoke(this, EventArgs.Empty);
         if (heat < 0) {heat = 0;}
+    }
+    private void SetValidActionArray()
+    {
+        if (isEnemy)
+        {
+            enemyActionArray = Array.FindAll(baseActionArray, action => action.GetIsEnemyAction);
+        }
+        else
+        {
+            playerActionArray = Array.FindAll(baseActionArray, action => !action.GetIsEnemyAction);
+        }
     }
     
 
@@ -179,12 +193,17 @@ public class PCMech : MonoBehaviour
 ===================================================================================================================================== 
 */
     public BaseAction[] GetBaseActionArray() => baseActionArray;
+    public BaseAction[] GetPlayerActionArray() => playerActionArray;
+    public BaseAction[] GetEnemyActionArray() => enemyActionArray;
     public MoveAction GetMoveAction() => moveAction;
     public SpinAction GetSpinAction() => spinAction;
     
     public GridPosition GetGridPosition() => gridPosition;
-    public UnityEngine.Vector3 GetWorldPosition() => transform.position;
-    
+    public UnityEngine.Vector3 GetWorldPosition()
+    {
+        return transform.position;
+    }
+
     public int GetCorePower() => corePower;
     public float GetCorePowerNormalized() => corePower / (float)maxCorePower;
     

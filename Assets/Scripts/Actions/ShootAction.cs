@@ -31,7 +31,7 @@ public class ShootAction : BaseAction
 
 
 
-     private void Update()
+    private void Update()
     {
         bool flowControl = HandleShooting();
         if (!flowControl) {return;}
