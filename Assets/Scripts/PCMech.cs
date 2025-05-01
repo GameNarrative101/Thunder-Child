@@ -21,6 +21,8 @@ public class PCMech : MonoBehaviour
 
     public static event EventHandler OnCorePowerChange;
     public static event EventHandler OnHeatChange;
+    public static event EventHandler OnAnyMechSpawned;
+    public static event EventHandler OnAnyMechDead;
     //static makes it so any instance of this class in other classes can change things, and all instances will be updated
    
 
@@ -43,6 +45,7 @@ public class PCMech : MonoBehaviour
 
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
         healthSystem.OnDead += HealthSystem_OnDead;
+        OnAnyMechSpawned?.Invoke(this, EventArgs.Empty);
     }
 
     private void Update()
@@ -124,6 +127,8 @@ public class PCMech : MonoBehaviour
 
         //add death animation, then destroy
         Destroy(gameObject);
+
+        OnAnyMechDead?.Invoke(this, EventArgs.Empty);
     }
 
 

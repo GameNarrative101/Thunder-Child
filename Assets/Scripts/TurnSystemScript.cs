@@ -14,10 +14,14 @@ public class TurnSystemScript : MonoBehaviour
 
 
 
+
+
         private void Awake()
     {
         SetInstanceAndDebug();
     }
+
+
 
 
 
@@ -43,20 +47,9 @@ public class TurnSystemScript : MonoBehaviour
         OnTurnEnd?.Invoke(this, EventArgs.Empty);
     }
 
-    public int GetTurnCount()
-    {
-        return turnCount;
-    }
-
-    public void NextTurn()
-    {
-        AdvanceTurnCount();
-    }
-
-    public bool IsPlayerTurn()
-    {
-        return isPlayerTurn;
-    }
+    public int GetTurnCount() {return turnCount;}
+    public void NextTurn() {AdvanceTurnCount();}
+    public bool IsPlayerTurn() {return isPlayerTurn;}
 
 
 
