@@ -80,7 +80,6 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     }
     public virtual int GetCorePowerCost() => 1;
     public virtual int GetHeatGenerated() => 1;
-    public virtual bool GetIsEnemyAction => isEnemyAction;
 
 
 
@@ -94,23 +93,27 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     public abstract string GetActionName();
     public abstract void TakeAction (GridPosition gridPosition, Action onActionComplete); //useless for some, but oh well.
     public abstract List<GridPosition> GetValidActionGridPositionList();
+    public abstract EnemyAIAction GetEnemyAIAction(GridPosition gridPosition);
 
 
 
 
 
 
+/* 
+                                                        THE ENEMIES
+==================================================================================================================================== 
+*/ 
+    public virtual bool GetIsEnemyAction => isEnemyAction;
+    public EnemyAIAction GetBestEnemyAIAction()
+    {
+        List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
+        List<GridPosition> validActionGridPositionList = GetValidActionGridPositionList();
 
-
-
-    /*
-        alternative way to handle the generic take action function with different paratmeters:
-
-        define a BaseParameters CLASS here, pass that into the take action function as its only parameter
-        then have each action extend that class with one of their own
-        e.g. MoveBaseParameters, SpinBaseParameters, etc. 
-        then the take action function would take in a BaseParameters object, and each action would pass in their own takeaction override like so:
-        SpinBaseParameters spinBaseParameters = (SpinBaseParameters)baseParameters; inside the take action function
-    */
-
+        foreach (GridPosition gridPosition in validActionGridPositionList)
+        {
+            EnemyAIAction enemyAIAction = GetEnemyAIAction (gridPosition);
+            enemyAIActionList.Add(enemyAIAction);
+        }
+    }
 }

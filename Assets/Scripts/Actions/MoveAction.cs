@@ -115,4 +115,12 @@ public class MoveAction : BaseAction
 
         return validGridPositionList;
     }
+    public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+    {
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = 50
+        };
+    }
 }

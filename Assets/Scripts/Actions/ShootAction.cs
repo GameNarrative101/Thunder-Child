@@ -153,6 +153,14 @@ public class ShootAction : BaseAction
         }
         return validGridPositionList;   
     }
+    public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+    {
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = 100
+        };
+    }
 
 
 
@@ -165,6 +173,21 @@ public class ShootAction : BaseAction
 */
     public int GetMaxShootDistance() => maxShootDistance;
     public PCMech GetTargetUnit() => targetUnit;
+    public int GetTargetCountAtPosition(GridPosition gridPosition)
+    {
+        List<PCMech> targetUnits = LevelGrid.Instance.GetMechListAtGridPosition(gridPosition);
+        int targetCount = 0;
+
+        foreach (PCMech unit in targetUnits)
+        {
+            if (unit.IsEnemy() != pCMech.IsEnemy())
+            {
+                targetCount++;
+            }
+        }
+
+        return targetCount;
+    }
     // public int GetCorePowerCost() => 2;
     // public bool IsValidActionGridPosition(GridPosition gridPosition) => GetValidActionGridPositionList().Contains(gridPosition);
     // public bool IsTargetInRange(PCMech targetUnit) => GetValidActionGridPositionList().Contains(targetUnit.GetGridPosition());

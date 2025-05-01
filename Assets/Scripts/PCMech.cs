@@ -199,7 +199,7 @@ public class PCMech : MonoBehaviour
     public SpinAction GetSpinAction() => spinAction;
     
     public GridPosition GetGridPosition() => gridPosition;
-    public UnityEngine.Vector3 GetWorldPosition()
+    public Vector3 GetWorldPosition()
     {
         return transform.position;
     }
