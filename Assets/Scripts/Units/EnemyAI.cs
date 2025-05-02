@@ -76,14 +76,14 @@ public class EnemyAI : MonoBehaviour
     }
     bool TryInitiateEnemyAIAction(Action onEnemyAIActionComplete)
     {
-        foreach (PCMech enemyMech in MechManager.Instance.GetEnemyMechList())
+        foreach (Mech enemyMech in MechManager.Instance.GetEnemyMechList())
         {
             if (TryTakeEnemyAIAction (enemyMech, onEnemyAIActionComplete)) {return true;}
         }
 
         return false;
     }
-    bool TryTakeEnemyAIAction(PCMech enemyMech, Action onEnemyAIActionComplete)
+    bool TryTakeEnemyAIAction(Mech enemyMech, Action onEnemyAIActionComplete)
     {
         SpinAction spinAction = enemyMech.GetSpinAction();
         GridPosition actionGridPosition = enemyMech.GetGridPosition();

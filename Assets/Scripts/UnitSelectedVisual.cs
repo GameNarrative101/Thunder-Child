@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UnitSelectedVisual : MonoBehaviour
 {
-    [SerializeField] PCMech pcMech;
+    [SerializeField] Mech pcMech;
 
     MeshRenderer meshRenderer;
 
