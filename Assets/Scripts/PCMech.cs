@@ -19,6 +19,8 @@ public class PCMech : MonoBehaviour
     [SerializeField] int heat = 0;
     [SerializeField] int maxHeat = 10;
 
+    public static event EventHandler OnAnyUnitSpawned;
+    public static event EventHandler OnAnyUnitDead;
     public static event EventHandler OnCorePowerChange;
     public static event EventHandler OnHeatChange;
     //static makes it so any instance of this class in other classes can change things, and all instances will be updated
@@ -40,6 +42,8 @@ public class PCMech : MonoBehaviour
     private void Start()
     {
         SetGridPosition();
+
+        OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
 
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
         healthSystem.OnDead += HealthSystem_OnDead;
@@ -124,6 +128,8 @@ public class PCMech : MonoBehaviour
 
         //add death animation, then destroy
         Destroy(gameObject);
+
+        OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
     }
 
 
