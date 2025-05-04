@@ -31,7 +31,7 @@ public class ShootAction : BaseAction
 
 
 
-     private void Update()
+    private void Update()
     {
         bool flowControl = HandleShooting();
         if (!flowControl) {return;}
@@ -123,7 +123,10 @@ public class ShootAction : BaseAction
 
         ActionStart(onActionComplete);
     }
-    public override List<GridPosition> GetValidActionGridPositionList()
+
+                                    /* RESTOROE THIS AND DELETE ALL OTHERS */
+
+/*     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List <GridPosition> validGridPositionList = new List<GridPosition>();
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
@@ -152,7 +155,7 @@ public class ShootAction : BaseAction
             }
         }
         return validGridPositionList;   
-    }
+    } */
 
 
 
@@ -168,4 +171,61 @@ public class ShootAction : BaseAction
     // public int GetCorePowerCost() => 2;
     // public bool IsValidActionGridPosition(GridPosition gridPosition) => GetValidActionGridPositionList().Contains(gridPosition);
     // public bool IsTargetInRange(PCMech targetUnit) => GetValidActionGridPositionList().Contains(targetUnit.GetGridPosition());
+
+
+
+
+
+
+/* 
+                                                    ENEMY SHOOTING ACTION
+==================================================================================================================================== 
+*/
+    public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
+    {
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = 100,
+        };
+    }
+     public override List<GridPosition> GetValidActionGridPositionList()
+     {
+        GridPosition pcMechGridPosition = pCMech.GetGridPosition();
+        return GetValidActionGridPositionList(pcMechGridPosition);
+
+     }
+    public List<GridPosition> GetValidActionGridPositionList(GridPosition pcMechGridPosition)
+    {
+        List <GridPosition> validGridPositionList = new List<GridPosition>();
+
+        //we weanna cycle through all valid grid positions. so, for every x from left to right within range and same with every z,
+        //gimme a new grid position (offset) so we can add it to current grid position
+        for (int x = -maxShootDistance; x <= maxShootDistance; x++)
+        {
+            for (int z = -maxShootDistance; z <= maxShootDistance; z++)
+            {
+                GridPosition offsetGridPosition = new GridPosition(x, z);
+                GridPosition testGridPosition = pcMechGridPosition + offsetGridPosition;
+
+                // Skip invalid grid positions
+                if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;
+
+                // Skip grid positions without any units
+                if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;
+
+                // Skip grid positions with allied units
+                PCMech targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(testGridPosition);
+                if (targetUnit.IsEnemy() == pCMech.IsEnemy()) continue;
+
+                // Add valid grid position to the list
+                validGridPositionList.Add(testGridPosition);
+            }
+        }
+        return validGridPositionList;   
+    }
+    public int GetTargetCountAtPosition(GridPosition gridPosition)
+    {
+        return GetValidActionGridPositionList(gridPosition).Count;
+    } 
 }

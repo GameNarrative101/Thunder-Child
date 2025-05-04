@@ -39,7 +39,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
 
 /* 
-                                                    THE PROTECTED
+                                                       THE PROTECTED
 ==================================================================================================================================== 
 */
     protected void ActionStart (Action onActionComplete)
@@ -94,17 +94,27 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
 
 
+/* 
+                                                    ENEMY AI ACTIONS
+==================================================================================================================================== 
+*/ 
+    public virtual EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition){return null;}
+    public EnemyAIAction GetBestEnemyAIAction()
+    {
+        List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
+        List<GridPosition> validActionGridPositionList = GetValidActionGridPositionList();
 
+        foreach (GridPosition gridPosition in validActionGridPositionList)
+        {
+            EnemyAIAction enemyAIAction = GetBestEnemyAIAction(gridPosition);
+            enemyAIActionList.Add(enemyAIAction);
+        }
 
+        if (enemyAIActionList.Count == 0) {return null;}
 
-    /*
-        alternative way to handle the generic take action function with different paratmeters:
+        enemyAIActionList.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionValue - a.actionValue);  
+        return enemyAIActionList[0];
+    }
 
-        define a BaseParameters CLASS here, pass that into the take action function as its only parameter
-        then have each action extend that class with one of their own
-        e.g. MoveBaseParameters, SpinBaseParameters, etc. 
-        then the take action function would take in a BaseParameters object, and each action would pass in their own takeaction override like so:
-        SpinBaseParameters spinBaseParameters = (SpinBaseParameters)baseParameters; inside the take action function
-    */
 
 }

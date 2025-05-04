@@ -9,6 +9,7 @@ public class PCMech : MonoBehaviour
     BaseAction[] baseActionArray;    
     MoveAction moveAction;
     SpinAction spinAction;
+    ShootAction shootAction;
 
     bool isDead = false;
     [SerializeField] bool isEnemy;
@@ -182,9 +183,19 @@ public class PCMech : MonoBehaviour
     public BaseAction[] GetBaseActionArray() => baseActionArray;
     public MoveAction GetMoveAction() => moveAction;
     public SpinAction GetSpinAction() => spinAction;
-    
+    // public ShootAction GetShootAction() => shootAction;
+    public ShootAction GetShootAction()
+    {
+        ShootAction shootAction = GetComponent<ShootAction>();
+        if (shootAction == null)
+        {
+            Debug.LogError($"ShootAction is null on {gameObject.name}. Ensure the ShootAction component is attached.");
+        }
+        return shootAction;
+    }
+
     public GridPosition GetGridPosition() => gridPosition;
-    public UnityEngine.Vector3 GetWorldPosition() => transform.position;
+    public Vector3 GetWorldPosition() => transform.position;
     
     public int GetCorePower() => corePower;
     public float GetCorePowerNormalized() => corePower / (float)maxCorePower;

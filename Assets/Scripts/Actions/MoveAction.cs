@@ -115,4 +115,37 @@ public class MoveAction : BaseAction
 
         return validGridPositionList;
     }
+
+
+
+
+
+
+/* 
+                                                      ENEMY MOVE
+==================================================================================================================================== 
+*/
+    public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
+    {
+        if (pCMech == null)
+        {
+            Debug.LogError("pCMech is null in MoveAction.GetBestEnemyAIAction.");
+            return null;
+        }
+
+        ShootAction shootAction = pCMech.GetShootAction();
+        if (shootAction == null)
+        {
+            Debug.LogWarning($"ShootAction is missing on {pCMech.gameObject.name}. Skipping AI action.");
+            return null;
+        }
+    
+    
+        int TargetCountAtPosition = pCMech.GetShootAction().GetTargetCountAtPosition(gridPosition);
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = TargetCountAtPosition * 10,
+        };
+    }
 }
