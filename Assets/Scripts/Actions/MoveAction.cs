@@ -133,7 +133,7 @@ public class MoveAction : BaseAction
             return null;
         }
 
-        ShootAction shootAction = pCMech.GetShootAction();
+        ShootAction shootAction = pCMech.GetAction<ShootAction>();
         if (shootAction == null)
         {
             Debug.LogWarning($"ShootAction is missing on {pCMech.gameObject.name}. Skipping AI action.");
@@ -141,7 +141,7 @@ public class MoveAction : BaseAction
         }
     
     
-        int TargetCountAtPosition = pCMech.GetShootAction().GetTargetCountAtPosition(gridPosition);
+        int TargetCountAtPosition = pCMech.GetAction<ShootAction>().GetTargetCountAtPosition(gridPosition);
         return new EnemyAIAction
         {
             gridPosition = gridPosition,

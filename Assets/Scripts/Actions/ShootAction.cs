@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ShootAction : BaseAction
 {
-    enum State {Aiming, Shooting, Cooloff,}
+    enum State {Aiming, Shooting, Cooloff}
 
     State state;
     PCMech targetUnit;
@@ -110,7 +110,11 @@ public class ShootAction : BaseAction
 ==================================================================================================================================== 
 */
     public override string GetActionName() => "Shoot";
-    public override int GetHeatGenerated() => 4;
+    public override int GetHeatGenerated() 
+    {
+        if (!pCMech.IsEnemy()) { return 4;}
+        else {return 0;}
+    }
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);

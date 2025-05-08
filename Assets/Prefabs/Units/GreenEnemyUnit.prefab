@@ -188,6 +188,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3670705484915049570, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
+      propertyPath: corePower
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3670705484915049570, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
       propertyPath: maxCorePower
       value: 5
       objectReference: {fileID: 0}

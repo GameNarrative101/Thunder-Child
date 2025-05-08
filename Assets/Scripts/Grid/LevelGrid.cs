@@ -8,7 +8,7 @@ public class LevelGrid : MonoBehaviour
 
     //the type is transform because in the gridsystem class we call it as transfrom. does the same thing as an object, we just care about where the numbers show up
     [SerializeField] private Transform gridDebugObjectPrefab;
-    GridSystem gridSystem;
+    GridSystem<GridObject> gridSystem;
     public event EventHandler OnPCMechMovedGridPosition;
 
 
@@ -17,7 +17,8 @@ public class LevelGrid : MonoBehaviour
     private void Awake()
     {
         //if the 3.5 changes, remember to change the grid visual prefab scale too
-        gridSystem = new GridSystem(10, 10, 4f);
+        gridSystem = new GridSystem<GridObject>
+                (10, 10, 4f, (GridSystem<GridObject> g, GridPosition gridPosition) => new GridObject(g, gridPosition));
         gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
 
         SetInstanceAndDebug();

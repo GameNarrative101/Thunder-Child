@@ -1,27 +1,28 @@
+using System;
 using UnityEngine;
 
 //not mono because we are using the constructor and can't do that on mono. Mono makes it so unity makes the object for you, this way we do it.
 //Constructor builds an object or an instance of a class.
 //Syntax is accessor (private, etc.) but no return bc/ the return is the object. name of the constructor is the class name. can have parameters or not (). Then with a keyword we USE the constructor and tell it to run this code.
-public class GridSystem
+public class GridSystem <TGridObject>
 {
     private int width;
     private int height;
     //introduce cellsize, add it as a parameter in the constructor after width and height, then multiply by it in the grid to world conversion so our normal grid takes up more space.
     private float cellSize;
     //normal array but in 2D. you store 2 items in the array. this is just to store the grid objects we create
-    private GridObject[,] gridObjectArray;
+    private TGridObject[,] gridObjectArray;
 
 
 
     
-    public GridSystem(int width, int height, float cellSize)
+    public GridSystem(int width, int height, float cellSize, Func<GridSystem<TGridObject>, GridPosition, TGridObject> createGridObject)
     {
         this.width = width;
         this.height = height;
         this.cellSize = cellSize;
 
-        gridObjectArray = new GridObject [width, height];
+        gridObjectArray = new TGridObject [width, height];
         
         for(int x = 0; x < width; x++)
         {
@@ -31,7 +32,7 @@ public class GridSystem
                 GridPosition gridPosition = new GridPosition(x, z);
                 //bc the gridobject class calls for a gridsystem and position as parameters, we make it here with them included.
                 //We also need a new gridposition that we define right above this
-                gridObjectArray[x, z] = new GridObject (this, gridPosition);
+                gridObjectArray[x, z] = createGridObject (this, gridPosition);
             }
         }
     }
@@ -69,7 +70,7 @@ public class GridSystem
                 //Quaternion.identity just means no rotation
                 Transform debugTransform = GameObject.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity); 
                 GridDebugObject gridDebugObject = debugTransform.GetComponent <GridDebugObject>();
-                gridDebugObject.SetGridObject(GetGridObject(gridPosition));
+                gridDebugObject.SetGridObject(GetGridObject(gridPosition) as GridObject);
             }
         }
     }
@@ -80,19 +81,19 @@ public class GridSystem
     //    return gridObjectArray[gridPosition.x, gridPosition.z];
     //}
 
-    public GridObject GetGridObject(GridPosition gridPosition)
+    public TGridObject GetGridObject(GridPosition gridPosition)
     {
         
-        if (gridPosition.x >= 0 && gridPosition.x < gridObjectArray.GetLength(0) &&
-            gridPosition.z >= 0 && gridPosition.z < gridObjectArray.GetLength(1))
-        {
+        // if (gridPosition.x >= 0 && gridPosition.x < gridObjectArray.GetLength(0) &&
+        //     gridPosition.z >= 0 && gridPosition.z < gridObjectArray.GetLength(1))
+        // {
             return gridObjectArray[gridPosition.x, gridPosition.z];
-        }
-        else
-        {
-            Debug.LogError("Grid position out of bounds: " + gridPosition);
-            return null;
-        }
+        // }
+        // else
+        // {
+        //     Debug.LogError("Grid position out of bounds: " + gridPosition);
+        //     return null;
+        // }
     }
 
     public bool IsValidPosition(GridPosition gridPosition)

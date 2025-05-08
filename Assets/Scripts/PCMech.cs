@@ -7,14 +7,11 @@ public class PCMech : MonoBehaviour
     GridPosition gridPosition;
     HealthSystem healthSystem;
     BaseAction[] baseActionArray;    
-    MoveAction moveAction;
-    SpinAction spinAction;
-    ShootAction shootAction;
 
     bool isDead = false;
     [SerializeField] bool isEnemy;
     
-    int corePower = 3;
+    [SerializeField] int corePower = 3;
     [SerializeField] int corePowerIncrease = 3;
     [SerializeField] int maxCorePower = 15;
     [SerializeField] int heat = 0;
@@ -35,8 +32,6 @@ public class PCMech : MonoBehaviour
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
-        moveAction = GetComponent<MoveAction>();
-        spinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction>();
     }
 
@@ -172,6 +167,8 @@ public class PCMech : MonoBehaviour
     }
     
 
+    
+
 
 
 
@@ -180,18 +177,29 @@ public class PCMech : MonoBehaviour
                                                     GETTING THINGS
 ===================================================================================================================================== 
 */
+    // public MoveAction GetMoveAction() => moveAction;
+    // public SpinAction GetSpinAction() => spinAction;
+    // // public ShootAction GetShootAction() => shootAction;
+    // public ShootAction GetShootAction()
+    // {
+    //     ShootAction shootAction = GetComponent<ShootAction>();
+    //     if (shootAction == null)
+    //     {
+    //         Debug.LogError($"ShootAction is null on {gameObject.name}. Ensure the ShootAction component is attached.");
+    //     }
+    //     return shootAction;
+    // }
     public BaseAction[] GetBaseActionArray() => baseActionArray;
-    public MoveAction GetMoveAction() => moveAction;
-    public SpinAction GetSpinAction() => spinAction;
-    // public ShootAction GetShootAction() => shootAction;
-    public ShootAction GetShootAction()
+    public T GetAction<T>() where T : BaseAction
     {
-        ShootAction shootAction = GetComponent<ShootAction>();
-        if (shootAction == null)
+        foreach (BaseAction baseAction in baseActionArray)
         {
-            Debug.LogError($"ShootAction is null on {gameObject.name}. Ensure the ShootAction component is attached.");
+            if (baseAction is T)
+            {
+                return (T)baseAction;
+            }
         }
-        return shootAction;
+        return null;
     }
 
     public GridPosition GetGridPosition() => gridPosition;

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class SpinAction : BaseAction
 {
     
+    [SerializeField] int spinningPowerCost = 2;
     float totalSpinAmount;
 
     private void Update()
@@ -44,9 +45,13 @@ public class SpinAction : BaseAction
                                                     OVERRIDES
 ==================================================================================================================================== 
 */
-    public override int GetCorePowerCost() => 2;
-    public override int GetHeatGenerated() => 6;
+    public override int GetCorePowerCost() => spinningPowerCost;
     public override string GetActionName() => "Federation Spin 3000";
+    public override int GetHeatGenerated() 
+    {
+        if (!pCMech.IsEnemy()) { return 6;}
+        else {return 0;}
+    }
 
     //only do this action exactly where the unit is standing. it's just spinning
     public override List<GridPosition> GetValidActionGridPositionList()

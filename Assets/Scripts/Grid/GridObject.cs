@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class GridObject
 {
     private GridPosition gridPosition;
-    private GridSystem gridSystem;
+    private GridSystem<GridObject> gridSystem;
     //make it a LIST of mechs to allow for multiple pc units to be on the same cell. Not in a game rule sense, just in a system understands it sense. cells keep updating nice
     private List <PCMech> pCMechList;
 
@@ -17,7 +17,7 @@ public class GridObject
                                                         ALL STUFF
 ==================================================================================================================================== 
 */
-    public GridObject (GridSystem gridSystem, GridPosition gridPosition)
+    public GridObject (GridSystem<GridObject> gridSystem, GridPosition gridPosition)
     {
         this.gridSystem = gridSystem;
         this.gridPosition = gridPosition;

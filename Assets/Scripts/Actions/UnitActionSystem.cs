@@ -57,7 +57,7 @@ public class UnitActionSystem : MonoBehaviour
     void SetSelectedPcMech(PCMech pcMech)
     {
         selectedPcMech = pcMech;
-        SetSelectedAction(pcMech.GetMoveAction()); //defaults to move action
+        SetSelectedAction(pcMech.GetAction<MoveAction>()); //defaults to move action
         
         OnSelectedUnitChange?.Invoke(this, EventArgs.Empty);
     }
