@@ -177,18 +177,6 @@ public class PCMech : MonoBehaviour
                                                     GETTING THINGS
 ===================================================================================================================================== 
 */
-    // public MoveAction GetMoveAction() => moveAction;
-    // public SpinAction GetSpinAction() => spinAction;
-    // // public ShootAction GetShootAction() => shootAction;
-    // public ShootAction GetShootAction()
-    // {
-    //     ShootAction shootAction = GetComponent<ShootAction>();
-    //     if (shootAction == null)
-    //     {
-    //         Debug.LogError($"ShootAction is null on {gameObject.name}. Ensure the ShootAction component is attached.");
-    //     }
-    //     return shootAction;
-    // }
     public BaseAction[] GetBaseActionArray() => baseActionArray;
     public T GetAction<T>() where T : BaseAction
     {
