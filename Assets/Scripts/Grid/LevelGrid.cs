@@ -8,6 +8,9 @@ public class LevelGrid : MonoBehaviour
 
     //the type is transform because in the gridsystem class we call it as transfrom. does the same thing as an object, we just care about where the numbers show up
     [SerializeField] private Transform gridDebugObjectPrefab;
+    [SerializeField] int width;
+    [SerializeField] int height;
+    [SerializeField] float cellSize;
     GridSystem<GridObject> gridSystem;
     public event EventHandler OnPCMechMovedGridPosition;
 
@@ -18,10 +21,14 @@ public class LevelGrid : MonoBehaviour
     {
         //if the 3.5 changes, remember to change the grid visual prefab scale too
         gridSystem = new GridSystem<GridObject>
-                (10, 10, 4f, (GridSystem<GridObject> g, GridPosition gridPosition) => new GridObject(g, gridPosition));
+                (width, height, cellSize, (GridSystem<GridObject> g, GridPosition gridPosition) => new GridObject(g, gridPosition));
         // gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
 
         SetInstanceAndDebug();
+    }
+    private void Start()
+    {
+        Pathfinding.Instance.Setup(width, height, cellSize);
     }
 
 
@@ -63,7 +70,7 @@ public class LevelGrid : MonoBehaviour
     {
         if (Instance != null)
         {
-            Debug.LogError("there's more than one UnitActionSystem" + transform + "-" + Instance);
+            Debug.LogError("there's more than one LevelGrid" + transform + "-" + Instance);
             Destroy(gameObject);
             return;
         }

@@ -25,8 +25,6 @@ public class Pathfinding : MonoBehaviour
     void Awake()
     {
         SetInstanceAndDebug();
-        gridSystem = new GridSystem <PathNode>(10, 10, 4f, (GridSystem<PathNode> g, GridPosition gridPosition) => new PathNode(gridPosition));
-        gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
     }
 
 
@@ -38,11 +36,21 @@ public class Pathfinding : MonoBehaviour
     {
         if (Instance != null)
         {
-            Debug.LogError("there's more than one UnitActionSystem" + transform + "-" + Instance);
+            Debug.LogError("there's more than one Pathfinding" + transform + "-" + Instance);
             Destroy(gameObject);
             return;
         }
         Instance = this;
+    }
+    public void Setup (int width, int height, float cellSize)
+    {
+        this.width = width;
+        this.height = height;
+        this.cellSize = cellSize;
+
+        gridSystem = new GridSystem <PathNode>(width, height, cellSize, 
+            (GridSystem<PathNode> g, GridPosition gridPosition) => new PathNode(gridPosition));
+        gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
     }
     public List<GridPosition> FindPath(GridPosition startGridPosition, GridPosition endGridPosition)
     {
@@ -88,11 +96,11 @@ public class Pathfinding : MonoBehaviour
             {
                 if (closedList.Contains(neighbourNode)) continue;
 
-                // if (!neighbour.IsWalkable())
-                // {
-                //     closedList.Add(neighbour);
-                //     continue;
-                // }
+                if (!neighbourNode.GetIsWalkable())
+                {
+                    closedList.Add(neighbourNode);
+                    continue;
+                }
 
                 int tentativeGCost = currentNode.GetGCost() + CalculateDistance(currentNode.GetGridPosition(), neighbourNode.GetGridPosition());
 
@@ -147,7 +155,7 @@ public class Pathfinding : MonoBehaviour
         {
             for (int z = -1; z <= 1; z++)
             {
-                if (x == 0 && z == 0) continue; // Skip the current node
+                if (x == 0 && z == 0) continue; //Skip the current node
 
                 GridPosition neighbourGridPosition = new GridPosition(
                     currentNode.gridPosition.x + x,

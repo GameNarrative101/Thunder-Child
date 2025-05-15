@@ -7,6 +7,7 @@ public class PathNode
     int hCost;
     int fCost;
     PathNode cameFromPathNode;
+    public bool isWalkable = true;
 
 
 
@@ -23,4 +24,6 @@ public class PathNode
     public void ResetCameFromPathNode() => cameFromPathNode = null;
     public void SetCameFromPathNode(PathNode pathNode) => cameFromPathNode = pathNode;
     public PathNode GetCameFromPathNode() => cameFromPathNode;
+    public bool GetIsWalkable() => isWalkable;
+    public void SetIsWalkable(bool isWalkable) => this.isWalkable = isWalkable;
 }
