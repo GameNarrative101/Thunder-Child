@@ -1,97 +1,133 @@
 using System;
-using System.Threading;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-    enum State { WaitingForTurn, TakingTurn, Busy}
+    //CURRENTLY ALL ENEMIES GO BETWEEN PLAYER TURNS.
 
+
+
+    enum State {WaitingForEnemyTurn, TakingTurn, Busy}
     State state;
     float timer;
 
 
 
-
-
-
-    private void Awake()
+    void Awake()
     {
-        state = State.WaitingForTurn;
+        state = State.WaitingForEnemyTurn;
     }
-    private void Start()
+    void Start()
     {
-        TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
+        TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnChanged;
     }
-    private void Update()
+    void Update()
     {
-        bool flowControl = TryHandleEnemyTurn();
-        if (!flowControl) {return;}
-    }
-
-
-
-
-
-
-
-    /* 
-                                                            ENEMY TURN
-    ==================================================================================================================================== 
-    */
-    bool TryHandleEnemyTurn()
-    {
-        if (TurnSystemScript.Instance.IsPlayerTurn()) { state = State.WaitingForTurn; return false; }
-
+        if (TurnSystemScript.Instance.IsPlayerTurn())
+        {
+            return;
+        }
         switch (state)
         {
-            case State.WaitingForTurn:
-                // Wait for the player's turn to end
+            case State.WaitingForEnemyTurn:
                 break;
             case State.TakingTurn:
                 timer -= Time.deltaTime;
                 if (timer <= 0f)
                 {
-                    state = State.Busy;
-                    if (TryInitiateEnemyAIAction(SetStateTakingTurn)) {state = State.Busy;}
+                    if (TryActivateEnemyAI(SetStateTakingTurn)) {state = State.Busy;}
                     else {TurnSystemScript.Instance.NextTurn();}
                 }
                 break;
             case State.Busy:
-                // Handle busy state (e.g., animation or cooldown)
                 break;
         }
-        return true;
+    }
+
+
+
+    private void TurnSystemScript_OnTurnChanged(object sender, EventArgs e)
+    {
+        if (!TurnSystemScript.Instance.IsPlayerTurn())
+        {
+            state = State.TakingTurn;
+            timer = 2f;
+        }
     }
     void SetStateTakingTurn()
     {
         timer = 0.5f;
         state = State.TakingTurn;
     }
-    void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+    bool TryActivateEnemyAI(Action onEnemyAIActionComplete)
     {
-        if (TurnSystemScript.Instance.IsPlayerTurn()) {return;}
-        
-        state = State.TakingTurn;
-        timer = 1f;
-    }
-    bool TryInitiateEnemyAIAction(Action onEnemyAIActionComplete)
-    {
-        foreach (PCMech enemyMech in MechManager.Instance.GetEnemyMechList())
+        foreach (PCMech enemyUnit in UnitManager.Instance.GetEnemyMechList())
         {
-            if (TryTakeEnemyAIAction (enemyMech, onEnemyAIActionComplete)) {return true;}
+            if (TryTakeEnemyAIAction(enemyUnit, onEnemyAIActionComplete)) {return true;}
+        }
+        return false;
+    }
+/*     bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
+    {
+        EnemyAIAction bestEnemyAIAction = null;
+        BaseAction bestBaseAction = null;
+
+        foreach (BaseAction baseAction in enemyUnit.GetBaseActionArray())
+        {
+            if (!enemyUnit.CanSpendCorePowerForAction(baseAction)) continue;
+
+            EnemyAIAction newEnemyAIAction = baseAction.GetBestEnemyAIAction();
+            if (newEnemyAIAction == null) continue;
+
+            // Update the best action if it's better than the current best
+            if (bestEnemyAIAction == null || newEnemyAIAction.actionValue > bestEnemyAIAction.actionValue)
+            {
+                bestEnemyAIAction = newEnemyAIAction;
+                bestBaseAction = baseAction;
+            }
+        }
+
+        if (bestEnemyAIAction != null && enemyUnit.TrySpendCorePowerForAction(bestBaseAction))
+        {
+            bestBaseAction.TakeAction(bestEnemyAIAction.gridPosition, onEnemyAIActionComplete);
+            return true;
         }
 
         return false;
-    }
-    bool TryTakeEnemyAIAction(PCMech enemyMech, Action onEnemyAIActionComplete)
+    } */
+    //INEFFITIENT CODE, SEE SIMPLIFIED VERSION ABOVE
+    bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
     {
-        SpinAction spinAction = enemyMech.GetSpinAction();
-        GridPosition actionGridPosition = enemyMech.GetGridPosition();
-        
-        if (!spinAction.IsValidActionGridPosition(actionGridPosition)) return false;
-        if (!enemyMech.TrySpendCorePowerForAction(spinAction)) return false;
+        EnemyAIAction bestEnemyAIAction = null;
+        BaseAction bestBaseAction = null;
 
-        spinAction.TakeAction(actionGridPosition, onEnemyAIActionComplete);
-        return true;
+        foreach (BaseAction baseAction in enemyUnit.GetBaseActionArray())
+        {
+            if (!enemyUnit.CanSpendCorePowerForAction(baseAction)) continue;
+
+            if (bestEnemyAIAction == null)
+            {
+                bestEnemyAIAction = baseAction.GetBestEnemyAIAction();
+                bestBaseAction = baseAction;
+            }
+            else
+            {
+                EnemyAIAction newEnemyAIAction = baseAction.GetBestEnemyAIAction();
+                
+                if (newEnemyAIAction == null) continue;
+                if (newEnemyAIAction.actionValue > bestEnemyAIAction.actionValue)
+                {
+                    bestEnemyAIAction = newEnemyAIAction;
+                    bestBaseAction = baseAction;
+                }
+            }
+        }
+        
+        if (bestEnemyAIAction != null && enemyUnit.TrySpendCorePowerForAction(bestBaseAction))
+        {
+            bestBaseAction.TakeAction(bestEnemyAIAction.gridPosition, onEnemyAIActionComplete);
+            return true;
+        }
+        else return false;
     }
 }

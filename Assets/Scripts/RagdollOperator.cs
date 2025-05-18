@@ -12,8 +12,7 @@ public class RagdollOperator : MonoBehaviour
 
         //variations on this impact could be introduced based on different damaging abilities used
         ApplyExplosionToRagdoll (ragdollRootBone, 500f, transform.position, 10f);
-    }
-    
+    }    
     void MatchAllChildTransforms (Transform root, Transform clone)
     {
         /*     
@@ -33,7 +32,6 @@ public class RagdollOperator : MonoBehaviour
             }
         }
     }
-
     public void ApplyExplosionToRagdoll (Transform root, float explosionForce, 
     UnityEngine.Vector3 explosionPosition, float explosionRadius)
     {

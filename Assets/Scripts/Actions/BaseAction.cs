@@ -18,9 +18,6 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
     public static event EventHandler OnAnyActionStarted; //NOT USED YET
     public static event EventHandler OnAnyActionCompleted; //NOT USED YET
-    
-
-
 
 
 
@@ -35,14 +32,9 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
 
 
-
-
-
-/* 
-                                                    THE PROTECTED
-==================================================================================================================================== 
-*/
-    protected void ActionStart (Action onActionComplete)
+    //==================================================================================================================================== 
+    #region PROTECTED
+    protected void ActionStart(Action onActionComplete)
     {
         isActive = true;
         this.onActionComplete = onActionComplete;
@@ -50,7 +42,6 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         OnAnyActionStarted?.Invoke(this, EventArgs.Empty);
     }
-
     protected void ActionComplete()
     {
         isActive = false;
@@ -58,53 +49,50 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         OnAnyActionCompleted?.Invoke(this, EventArgs.Empty);
     }
+    #endregion
 
 
 
-
-
-
-/* 
-                                            THE VIRTUAL (defaults if not overridden)
-==================================================================================================================================== 
-*/   
-    public virtual bool IsValidActionGridPosition (GridPosition gridPosition) 
+    //==================================================================================================================================== 
+    #region VIRTUAL
+    public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
     {
-        List <GridPosition> validGridPositionList = GetValidActionGridPositionList();
+        List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
         return validGridPositionList.Contains(gridPosition);
     }
     public virtual int GetCorePowerCost() => 1;
     public virtual int GetHeatGenerated() => 1;
+    #endregion
 
 
 
-
-
-
-/* 
-                                        THE ABSTRACT (every extension MUST have these)
-==================================================================================================================================== 
-*/ 
+    //==================================================================================================================================== 
+    #region ABSTRACT
     public abstract string GetActionName();
-    public abstract void TakeAction (GridPosition gridPosition, Action onActionComplete); //useless for some, but oh well.
+    public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete); //useless for some, but oh well.
     public abstract List<GridPosition> GetValidActionGridPositionList();
+    #endregion
 
 
 
+    //==================================================================================================================================== 
+    #region ENEMY AI
+    public virtual EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition) { return null; }
+    public EnemyAIAction GetBestEnemyAIAction()
+    {
+        List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
+        List<GridPosition> validActionGridPositionList = GetValidActionGridPositionList();
 
+        foreach (GridPosition gridPosition in validActionGridPositionList)
+        {
+            EnemyAIAction enemyAIAction = GetBestEnemyAIAction(gridPosition);
+            enemyAIActionList.Add(enemyAIAction);
+        }
 
+        if (enemyAIActionList.Count == 0) { return null; }
 
-
-
-
-    /*
-        alternative way to handle the generic take action function with different paratmeters:
-
-        define a BaseParameters CLASS here, pass that into the take action function as its only parameter
-        then have each action extend that class with one of their own
-        e.g. MoveBaseParameters, SpinBaseParameters, etc. 
-        then the take action function would take in a BaseParameters object, and each action would pass in their own takeaction override like so:
-        SpinBaseParameters spinBaseParameters = (SpinBaseParameters)baseParameters; inside the take action function
-    */
-
+        enemyAIActionList.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionValue - a.actionValue);
+        return enemyAIActionList[0];
+    }
+    #endregion
 }

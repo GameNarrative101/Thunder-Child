@@ -12,11 +12,8 @@ public class UnitOverheadUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI corePowerText;
     [SerializeField] TextMeshProUGUI heatText;
     [SerializeField] TextMeshProUGUI shieldText;
-    
+
     HealthSystem healthSystem;
-
-
-
 
 
 
@@ -27,13 +24,8 @@ public class UnitOverheadUI : MonoBehaviour
 
 
 
-
-
-
-    /* 
-                                                                SET UP
-    ===================================================================================================================================== 
-    */
+    //==================================================================================================================================== 
+    #region SETUP
     void SetUIAndSubscriptions()
     {
         healthSystem = unit.GetComponent<HealthSystem>();
@@ -42,55 +34,46 @@ public class UnitOverheadUI : MonoBehaviour
         healthSystem.OnDead += HealthSystem_OnDead;
         PCMech.OnCorePowerChange += Unit_OnCorePowerChange;
         PCMech.OnHeatChange += Unit_OnHeatChange;
-        UnitActionSystem.Instance.OnSelectedUnitChange += UnitActionSystem_OnSelectedUnitChange; 
-        UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted; 
+        UnitActionSystem.Instance.OnSelectedUnitChange += UnitActionSystem_OnSelectedUnitChange;
+        UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
 
         UpdateShieldBar();
         UpdatePowerBar();
         UpdateHeatBar();
-        UpdateCorePowerText(); 
+        UpdateCorePowerText();
         UpdateHeatText();
         UpdateShieldText();
     }
+    #endregion
 
 
 
-
-
-
-/* 
-                                                        SUBSCRIPTIONS
-===================================================================================================================================== 
-*/
-    void UnitActionSystem_OnSelectedUnitChange(object sender, EventArgs e) 
-        {
-            UpdateCorePowerText(); 
-            UpdatePowerBar(); 
-            UpdateHeatText(); 
-            UpdateHeatBar(); 
-            UpdateShieldText(); 
-            UpdateShieldBar();
-        }
-    void UnitActionSystem_OnActionStarted(object sender, EventArgs e) 
-        {
-            UpdateCorePowerText(); 
-            UpdatePowerBar(); 
-            UpdateHeatText(); 
-            UpdateHeatBar();
-        }
-    void TurnSystemScript_OnTurnEnd(object sender, EventArgs e) 
-        {
-            UpdateCorePowerText(); 
-            UpdatePowerBar(); 
-            UpdateHeatText(); 
-            UpdateHeatBar();
-        }
-
-    void Unit_OnCorePowerChange(object sender, EventArgs e) {UpdatePowerBar(); UpdateCorePowerText();}
-    void Unit_OnHeatChange(object sender, EventArgs e) {UpdateHeatBar(); UpdateHeatText();}
-    void HealthSystem_OnShieldChanged(object sender, EventArgs e) {UpdateShieldBar(); UpdateShieldText();}
-
+    //==================================================================================================================================== 
+    #region SUBSCRIPTIONS
+    void UnitActionSystem_OnSelectedUnitChange(object sender, EventArgs e)
+    {
+        UpdateCorePowerText();
+        UpdatePowerBar();
+        UpdateHeatText();
+        UpdateHeatBar();
+        UpdateShieldText();
+        UpdateShieldBar();
+    }
+    void UnitActionSystem_OnActionStarted(object sender, EventArgs e)
+    {
+        UpdateCorePowerText();
+        UpdatePowerBar();
+        UpdateHeatText();
+        UpdateHeatBar();
+    }
+    void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+    {
+        UpdateCorePowerText();
+        UpdatePowerBar();
+        UpdateHeatText();
+        UpdateHeatBar();
+    }
     void HealthSystem_OnDead(object sender, EventArgs e)
     {
         healthSystem.OnShieldChanged -= HealthSystem_OnShieldChanged;
@@ -100,32 +83,31 @@ public class UnitOverheadUI : MonoBehaviour
         UnitActionSystem.Instance.OnActionStarted -= UnitActionSystem_OnActionStarted;
         TurnSystemScript.Instance.OnTurnEnd -= TurnSystemScript_OnTurnEnd;
         healthSystem.OnDead -= HealthSystem_OnDead;
-        
+
         Destroy(gameObject);
     }
+    void Unit_OnCorePowerChange(object sender, EventArgs e) { UpdatePowerBar(); UpdateCorePowerText(); }
+    void Unit_OnHeatChange(object sender, EventArgs e) { UpdateHeatBar(); UpdateHeatText(); }
+    void HealthSystem_OnShieldChanged(object sender, EventArgs e) { UpdateShieldBar(); UpdateShieldText(); }
+    #endregion
 
 
 
-
-
-
-    /* 
-                                                            BAR/TEXT UPDATES
-    ===================================================================================================================================== 
-    */
+    //==================================================================================================================================== 
+    #region RESOURCE BAR UPDATES
     void UpdateShieldBar()
     {
-        if (unit != null && healthSystem != null) {shieldBar.value = healthSystem.GetShieldNormalized();}
-    }    
+        if (unit != null && healthSystem != null) { shieldBar.value = healthSystem.GetShieldNormalized(); }
+    }
     void UpdatePowerBar()
     {
-        if (unit != null) {powerBar.value = unit.GetCorePowerNormalized();}    
+        if (unit != null) { powerBar.value = unit.GetCorePowerNormalized(); }
     }
     void UpdateHeatBar()
     {
-        if (unit != null) {heatBar.value = unit.GetHeatNormalized();}     
+        if (unit != null) { heatBar.value = unit.GetHeatNormalized(); }
     }
-    void UpdateCorePowerText() 
+    void UpdateCorePowerText()
     {
         // PCMech selectedMech = UnitActionSystem.Instance.GetSelectedMech();
         corePowerText.text = unit.GetCorePower().ToString();
@@ -134,8 +116,9 @@ public class UnitOverheadUI : MonoBehaviour
     {
         heatText.text = unit.GetHeat().ToString();
     }
-        void UpdateShieldText()
+    void UpdateShieldText()
     {
         shieldText.text = healthSystem.GetShield().ToString();
     }
+    #endregion
 }

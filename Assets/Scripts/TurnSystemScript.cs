@@ -13,27 +13,23 @@ public class TurnSystemScript : MonoBehaviour
 
 
 
-
-
-
-        private void Awake()
+    private void Awake()
     {
         SetInstanceAndDebug();
     }
 
 
 
-
-
-
     private void SetInstanceAndDebug()
     {
-        if (Instance == null)
+        if (Instance != null)
         {
-            Instance = this;
+            Debug.LogError("there's more than one TurnSystem" + transform + "-" + Instance);
+            Destroy(gameObject);
+            return;
         }
+        Instance = this;
     }
-
     void AdvanceTurnCount()
     {        
         if (!isPlayerTurn)
@@ -46,10 +42,9 @@ public class TurnSystemScript : MonoBehaviour
 
         OnTurnEnd?.Invoke(this, EventArgs.Empty);
     }
-
-    public int GetTurnCount() {return turnCount;}
-    public void NextTurn() {AdvanceTurnCount();}
-    public bool IsPlayerTurn() {return isPlayerTurn;}
+    public int GetTurnCount() => turnCount;
+    public void NextTurn() => AdvanceTurnCount();
+    public bool IsPlayerTurn() => isPlayerTurn;
 
 
 
