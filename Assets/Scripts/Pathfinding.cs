@@ -5,20 +5,17 @@ using UnityEngine;
 
 public class Pathfinding : MonoBehaviour
 {
-    public static Pathfinding Instance {get; private set;}
-
+    public static Pathfinding Instance { get; private set; }
 
     [SerializeField] Transform gridDebugObjectPrefab;
-    
+    [SerializeField] LayerMask obstacleLayerMask;
+
     int width;
     int height;
     float cellSize;
     const int MOVE_STRAIGHT_COST = 10;
     const int MOVE_DIAGONAL_COST = 14;
     GridSystem<PathNode> gridSystem;
-
-
-
 
 
 
@@ -29,9 +26,8 @@ public class Pathfinding : MonoBehaviour
 
 
 
-
-
-
+    //==================================================================================================================================== 
+    #region SETUP
     private void SetInstanceAndDebug()
     {
         if (Instance != null)
@@ -42,16 +38,41 @@ public class Pathfinding : MonoBehaviour
         }
         Instance = this;
     }
-    public void Setup (int width, int height, float cellSize)
+    public void Setup(int width, int height, float cellSize)
     {
         this.width = width;
         this.height = height;
         this.cellSize = cellSize;
 
-        gridSystem = new GridSystem <PathNode>(width, height, cellSize, 
+        gridSystem = new GridSystem<PathNode>(width, height, cellSize,
             (GridSystem<PathNode> g, GridPosition gridPosition) => new PathNode(gridPosition));
         gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                GridPosition gridPosition = new GridPosition(x, z);
+                Vector3 worldPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+                float raycastOffsetDistance = 5f;
+
+                if (Physics.Raycast(
+                    worldPosition + Vector3.down * raycastOffsetDistance,
+                    Vector3.up,
+                    raycastOffsetDistance * 2f,
+                    obstacleLayerMask))
+                {
+                    GetNode(x, z).SetIsWalkable(false);
+                }
+            }
+        }
     }
+    #endregion
+
+
+
+    //==================================================================================================================================== 
+    #region FIND THAT PATH    
     public List<GridPosition> FindPath(GridPosition startGridPosition, GridPosition endGridPosition)
     {
         List<PathNode> openList = new List<PathNode>();
@@ -87,7 +108,7 @@ public class Pathfinding : MonoBehaviour
             {
                 return CalculatePath(endNode);
             }
-            
+
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
@@ -121,12 +142,11 @@ public class Pathfinding : MonoBehaviour
 
         return null;
     }
-
     public int CalculateDistance(GridPosition a, GridPosition b)
     {
         int xDistance = Mathf.Abs(a.x - b.x);
         int zDistance = Mathf.Abs(a.z - b.z);
-        int remaining = Mathf.Abs (xDistance - zDistance);
+        int remaining = Mathf.Abs(xDistance - zDistance);
         return MOVE_DIAGONAL_COST * Mathf.Min(xDistance, zDistance) + MOVE_STRAIGHT_COST * remaining;
     }
     PathNode GetLowestFCostPathNode(List<PathNode> pathNodeList)
@@ -168,9 +188,7 @@ public class Pathfinding : MonoBehaviour
                 neighbourList.Add(neighbourNode);
             }
         }
-
         return neighbourList;
-
         /*                           MANUALLY CHECKING NEIGHBOURS        
         if (gridPosition.x -1 >= 0 ) //check for valid grid neighbours to the left
         {
@@ -210,7 +228,7 @@ public class Pathfinding : MonoBehaviour
     }
     List<GridPosition> CalculatePath(PathNode endNode)
     {
-        List<PathNode> pathNodeList = new List<PathNode>{endNode};
+        List<PathNode> pathNodeList = new List<PathNode> { endNode };
         PathNode currentNode = endNode;
 
         while (currentNode.GetCameFromPathNode() != null)
@@ -228,4 +246,5 @@ public class Pathfinding : MonoBehaviour
 
         return gridPositionList;
     }
+    #endregion
 }

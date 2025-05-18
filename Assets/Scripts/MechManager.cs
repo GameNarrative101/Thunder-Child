@@ -25,8 +25,8 @@ public class MechManager : MonoBehaviour
     }
     void Start()
     {
-        PCMech.OnAnyMechSpawned += PCMech_anyMechSpawned;
-        PCMech.OnAnyMechDead += PCMech_anyMechDied;
+        PCMech.OnAnyUnitSpawned += PCMech_anyUnitSpawned;
+        PCMech.OnAnyUnitDead += PCMech_anyUnitDied;
     }
 
 
@@ -48,7 +48,7 @@ public class MechManager : MonoBehaviour
         }
         Instance = this;
     }
-    private void PCMech_anyMechSpawned(object sender, EventArgs e)
+    private void PCMech_anyUnitSpawned(object sender, EventArgs e)
     {
         PCMech pcMech = sender as PCMech;
         mechList.Add(pcMech);
@@ -56,7 +56,7 @@ public class MechManager : MonoBehaviour
         if (pcMech.IsEnemy()) {enemyMechList.Add(pcMech);}
         else {friendlyMechList.Add(pcMech);}
     }
-    private void PCMech_anyMechDied(object sender, EventArgs e)
+    private void PCMech_anyUnitDied(object sender, EventArgs e)
     {
         PCMech pcMech = sender as PCMech;
         mechList.Remove(pcMech);
