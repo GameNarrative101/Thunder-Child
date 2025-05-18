@@ -6,11 +6,11 @@ public class PCMech : MonoBehaviour
     //all grid position stuff are here for the sake of forced movement handling
     GridPosition gridPosition;
     HealthSystem healthSystem;
-    BaseAction[] baseActionArray;
+    BaseAction[] baseActionArray;    
 
     bool isDead = false;
     [SerializeField] bool isEnemy;
-
+    
     [SerializeField] int corePower = 3;
     [SerializeField] int corePowerIncrease = 3;
     [SerializeField] int maxCorePower = 15;
@@ -22,6 +22,10 @@ public class PCMech : MonoBehaviour
     public static event EventHandler OnCorePowerChange;
     public static event EventHandler OnHeatChange;
     //static makes it so any instance of this class in other classes can change things, and all instances will be updated
+   
+
+
+
 
 
 
@@ -48,8 +52,12 @@ public class PCMech : MonoBehaviour
 
 
 
-    //==================================================================================================================================== 
-    #region GRID FUNCTIONS
+
+
+/* 
+                                                    GRID FUNCTIONS
+==================================================================================================================================== 
+*/
     void SetGridPosition()
     {
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
@@ -64,34 +72,42 @@ public class PCMech : MonoBehaviour
             gridPosition = newGridPosition;
         }
     }
-    #endregion
 
 
 
-    //====================================================================================================================================
-    #region RESOURCE FUNCTIONS
-    void SpendCorePower(int amount) //instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem)
+
+
+
+/* 
+                                                    RESOURCE FUNCTIONS
+==================================================================================================================================== 
+*/
+    void SpendCorePower (int amount) // instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem)
     {
         corePower -= amount;
         OnCorePowerChange?.Invoke(this, EventArgs.Empty);
-        if (corePower > maxCorePower) { print("Overloaded!"); }
+        if (corePower > maxCorePower) {print("Overloaded!");}
     }
-    void ReduceHeat(int amount)
+    void ReduceHeat (int amount)
     {
         heat -= amount;
         OnHeatChange?.Invoke(this, EventArgs.Empty);
-        if (heat < 0) { heat = 0; }
+        if (heat < 0) {heat = 0;}
     }
-    #endregion
+    
 
 
 
-    //====================================================================================================================================
-    #region SUBSCRIPTIONS
+
+
+/* 
+                                                    SUBSCRIPTION FUNCTIONS
+==================================================================================================================================== 
+*/
     void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
     {
         //increase core power at the beginning of the player's turn
-        if ((IsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) ||
+        if ((IsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) || 
         (!IsEnemy() && TurnSystemScript.Instance.IsPlayerTurn()))
         {
             corePower += corePowerIncrease;
@@ -101,9 +117,9 @@ public class PCMech : MonoBehaviour
             OnHeatChange?.Invoke(this, EventArgs.Empty);
         }
     }
-    void HealthSystem_OnDead(object sender, EventArgs e)
+    void HealthSystem_OnDead (object sender, EventArgs e)
     {
-        isDead = true;
+        isDead=true;
         LevelGrid.Instance.RemoveMechAtGridPosition(gridPosition, this);
 
         //add death animation, then destroy
@@ -111,18 +127,24 @@ public class PCMech : MonoBehaviour
 
         OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
     }
-    #endregion
 
 
 
-    //====================================================================================================================================
-    #region PUBLIC FUNCTIONS
+
+
+
+/* 
+                                                    PUBLIC FUNCTIONS
+===================================================================================================================================== 
+*/
     public bool IsEnemy() => isEnemy;
     public bool IsDead() => isDead;
 
-    public void TakeDamage(int damageAmount) { healthSystem.Damage(damageAmount); }
 
-    public bool CanSpendCorePowerForAction(BaseAction baseAction) { return corePower >= baseAction.GetCorePowerCost(); }
+    public void TakeDamage(int damageAmount) {healthSystem.Damage(damageAmount);}
+
+
+    public bool CanSpendCorePowerForAction (BaseAction baseAction) {return corePower >= baseAction.GetCorePowerCost();}
     public bool TrySpendCorePowerForAction(BaseAction baseAction) //for other scripts' use
     {
         if (CanSpendCorePowerForAction(baseAction))
@@ -132,23 +154,27 @@ public class PCMech : MonoBehaviour
         }
         return false;
     }
-    public void GainHeat(int amount) //effects of overheating to be implemented later
+    public void GainHeat (int amount) //effects of overheating to be implemented later
     {
         heat += amount;
         OnHeatChange?.Invoke(this, EventArgs.Empty);
-        if (heat > maxHeat) { print("Overheated!"); }
+        if (heat > maxHeat) {print("Overheated!");}
     }
-    public void TryReduceHeat(int amount) //for other scripts' use
+    public void TryReduceHeat (int amount) //for other scripts' use
     {
-        if (heat - amount >= 0) { ReduceHeat(amount); }
+        if (heat - amount >= 0) {ReduceHeat(amount);}
         print("Not enough heat to reduce!");
     }
-    #endregion
+    
+
+    
 
 
 
-    //====================================================================================================================================
-    #region GETTERS
+/* 
+                                                    GETTING THINGS
+===================================================================================================================================== 
+*/
     public BaseAction[] GetBaseActionArray() => baseActionArray;
     public T GetAction<T>() where T : BaseAction
     {
@@ -164,11 +190,10 @@ public class PCMech : MonoBehaviour
 
     public GridPosition GetGridPosition() => gridPosition;
     public Vector3 GetWorldPosition() => transform.position;
-
+    
     public int GetCorePower() => corePower;
     public float GetCorePowerNormalized() => corePower / (float)maxCorePower;
-
+    
     public int GetHeat() => heat;
     public float GetHeatNormalized() => heat / (float)maxHeat;
-    #endregion
 }

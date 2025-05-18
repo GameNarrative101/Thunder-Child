@@ -12,6 +12,9 @@ public class UnitManager : MonoBehaviour
 
 
 
+
+
+
     void Awake()
     {
         SetInstanceAndDebug();
@@ -28,11 +31,14 @@ public class UnitManager : MonoBehaviour
 
 
 
+
+
+
     private void SetInstanceAndDebug()
     {
         if (Instance != null)
         {
-            Debug.LogError("there's more than one UnitManager" + transform + "-" + Instance);
+            Debug.LogError("there's more than one UnitActionSystem" + transform + "-" + Instance);
             Destroy(gameObject);
             return;
         }

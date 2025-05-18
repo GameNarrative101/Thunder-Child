@@ -10,6 +10,8 @@ public class MechAnimator : MonoBehaviour
 
 
 
+
+
     void Awake()
     {
          if (TryGetComponent<MoveAction>(out MoveAction moveAction))
@@ -23,7 +25,6 @@ public class MechAnimator : MonoBehaviour
             shootAction.OnShoot += ShootAction_OnShoot;            
          }
     }
-
 
 
     void MoveAction_OnStartMoving(object sender, EventArgs e)

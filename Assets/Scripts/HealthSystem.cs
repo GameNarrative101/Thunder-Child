@@ -7,8 +7,10 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] int shield;
     // bool isDead = false;
 
+
     public event EventHandler OnDead;
     public event EventHandler OnShieldChanged;
+
 
 
 
@@ -19,10 +21,12 @@ public class HealthSystem : MonoBehaviour
 
 
 
+
     public void Damage (int damageAmount)
     {
         shield -= damageAmount;
         OnShieldChanged?.Invoke(this, EventArgs.Empty);
+
 
         if (shield < 0)
         {
@@ -37,11 +41,13 @@ public class HealthSystem : MonoBehaviour
 
         Debug.Log (shield);
     }
+
     //what actually happens upon unit death is not defined here so this script can be flexible.
     void Die()
     {
         OnDead?.Invoke(this, EventArgs.Empty);
     }
+
     public float GetShieldNormalized()
     {
         return shield / (float)maxShield;
@@ -50,6 +56,7 @@ public class HealthSystem : MonoBehaviour
     {
         return shield;
     }
+
     //     public bool IsDead()
     // {
     //     return isDead;

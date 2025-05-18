@@ -11,13 +11,16 @@ public class TurnSystemUI : MonoBehaviour
     core power going up is good, but maybe turn count on turn start instead of end?
     in that case, introduce an OnTurnStart event in TurnSystemScript and attach it to the turn count increment.
     
-    */  
+    */ 
+    
     [SerializeField] TextMeshProUGUI turnCountText;
     [SerializeField] Button endTurnButton;
     [SerializeField] GameObject enemyTurnPanel;
     [SerializeField] GameObject actionBar;
     [SerializeField] GameObject resourceBars;
     [SerializeField] GameObject endTurnUI;
+
+
 
 
 
@@ -30,6 +33,7 @@ public class TurnSystemUI : MonoBehaviour
         UpdateTurnCountText();
         UpdateEnemyTurnPanel();
     }
+
     void Update()
     {
         //TESTING ONLY
@@ -41,23 +45,30 @@ public class TurnSystemUI : MonoBehaviour
 
 
 
+
+
     void SetEndTurnButton()
     {
         endTurnButton.onClick.AddListener(() =>
         {
             TurnSystemScript.Instance.NextTurn();
         });
+
+
     }
+    
     private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
     {
         UpdateTurnCountText();
         UpdateEnemyTurnPanel();
     }
+    
     void UpdateTurnCountText()
     {
         turnCountText.text = "Turn " + TurnSystemScript.Instance.GetTurnCount();
     }
-    void UpdateEnemyTurnPanel()
+
+        void UpdateEnemyTurnPanel()
     {
         enemyTurnPanel.SetActive (!TurnSystemScript.Instance.IsPlayerTurn());
         endTurnUI.SetActive (TurnSystemScript.Instance.IsPlayerTurn());

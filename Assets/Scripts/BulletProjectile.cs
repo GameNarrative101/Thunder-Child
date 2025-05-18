@@ -6,12 +6,13 @@ public class BulletProjectile : MonoBehaviour
     [SerializeField] Transform bulletHitVFXPrefab;
     Vector3 targetPosition;
 
-
-
-    public void Setup(Vector3 targetPosition)
+    public void Setup (Vector3 targetPosition)
     {
         this.targetPosition = targetPosition;
     }
+
+
+
     void Update()
     {
         Vector3 moveDir = (targetPosition-transform.position).normalized;

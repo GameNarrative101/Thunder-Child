@@ -16,6 +16,9 @@ public class MoveAction : BaseAction
 
 
 
+
+
+
     //using the baseaction awake but changing one thing in it but only in this script's use of it
     protected override void Awake()
     {
@@ -23,17 +26,23 @@ public class MoveAction : BaseAction
         base.Awake();
         targetPosition = transform.position;
     }
+
     void Update()
     {
         if (!isActive) return;
-
+        
         clickToMove();
     }
 
 
 
-    //==================================================================================================================================== 
-    #region MOVING
+
+
+
+/* 
+                                                    MOOVIN THANGS
+==================================================================================================================================== 
+*/
     private void clickToMove()
     {
         Vector3 moveDirection = (targetPosition - transform.position).normalized;
@@ -50,25 +59,30 @@ public class MoveAction : BaseAction
 
         transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
     }
-    #endregion 
 
 
 
-    //==================================================================================================================================== 
-    #region OVERRIDES
+
+
+
+/* 
+                                                     OVERRIDES
+==================================================================================================================================== 
+*/
     public override string GetActionName() => "Move";
-    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
     {
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
 
         OnStartMoving?.Invoke(this, EventArgs.Empty);
-
+        
         ActionStart(onActionComplete);
     }
+
     //a list of valid grid positions for the action.
     public override List<GridPosition> GetValidActionGridPositionList()
     {
-        List<GridPosition> validGridPositionList = new List<GridPosition>();
+        List <GridPosition> validGridPositionList = new List<GridPosition>();
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
 
         //we weanna cycle through all valid grid positions. so, for every x from left to right within range and same with every z,
@@ -85,10 +99,10 @@ public class MoveAction : BaseAction
                     //basically if the grid position the loop gives us is not valid, we go back and get another one from the loop, otherwise execute the debug
                     continue;
                 }
-                if (pcMechGridPosition == testGridPosition)
+                if (pcMechGridPosition == testGridPosition) 
                 {
                     //a valid position can't be where the unit already is
-                    continue;
+                    continue; 
                 }
                 if (LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition))
                 {
@@ -98,14 +112,19 @@ public class MoveAction : BaseAction
                 validGridPositionList.Add(testGridPosition);
             }
         }
+
         return validGridPositionList;
     }
-    #endregion
 
 
 
-    //==================================================================================================================================== 
-    #region ENEMY AI MOVE ACTION
+
+
+
+/* 
+                                                      ENEMY MOVE
+==================================================================================================================================== 
+*/
     public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
     {
         if (pCMech == null)
@@ -120,8 +139,8 @@ public class MoveAction : BaseAction
             Debug.LogWarning($"ShootAction is missing on {pCMech.gameObject.name}. Skipping AI action.");
             return null;
         }
-
-
+    
+    
         int TargetCountAtPosition = pCMech.GetAction<ShootAction>().GetTargetCountAtPosition(gridPosition);
         return new EnemyAIAction
         {
@@ -129,5 +148,4 @@ public class MoveAction : BaseAction
             actionValue = TargetCountAtPosition * 10,
         };
     }
-    #endregion
 }

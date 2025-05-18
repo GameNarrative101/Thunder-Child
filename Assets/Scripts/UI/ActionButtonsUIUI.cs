@@ -7,6 +7,9 @@ public class ActionButtonsUI : MonoBehaviour
 
 
 
+
+
+
     void Start()
     {
         UnitActionSystem.Instance.OnSelectedUnitChange += UnitActionSystem_OnSelectedUnitChange;
@@ -16,10 +19,18 @@ public class ActionButtonsUI : MonoBehaviour
 
 
 
+
+
+
+/* 
+                                                AIN'T MUCH TO IT, THIS IS HERE TO BE PRETTY
+==================================================================================================================================== 
+*/
     void UnitActionSystem_OnSelectedUnitChange(object sender, System.EventArgs e)
     {
         CreateMechActionButtons();
     }
+
     void CreateMechActionButtons ()
     {
         //first, destroy all buttons. we look for a transform, then destroy the object attached to it
