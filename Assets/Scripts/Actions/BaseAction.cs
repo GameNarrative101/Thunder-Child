@@ -18,9 +18,6 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
     public static event EventHandler OnAnyActionStarted; //NOT USED YET
     public static event EventHandler OnAnyActionCompleted; //NOT USED YET
-    
-
-
 
 
 
@@ -35,14 +32,9 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
 
 
-
-
-
-/* 
-                                                       THE PROTECTED
-==================================================================================================================================== 
-*/
-    protected void ActionStart (Action onActionComplete)
+    //==================================================================================================================================== 
+    #region PROTECTED
+    protected void ActionStart(Action onActionComplete)
     {
         isActive = true;
         this.onActionComplete = onActionComplete;
@@ -50,7 +42,6 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         OnAnyActionStarted?.Invoke(this, EventArgs.Empty);
     }
-
     protected void ActionComplete()
     {
         isActive = false;
@@ -58,47 +49,35 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         OnAnyActionCompleted?.Invoke(this, EventArgs.Empty);
     }
+    #endregion
 
 
 
-
-
-
-/* 
-                                            THE VIRTUAL (defaults if not overridden)
-==================================================================================================================================== 
-*/   
-    public virtual bool IsValidActionGridPosition (GridPosition gridPosition) 
+    //==================================================================================================================================== 
+    #region VIRTUAL
+    public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
     {
-        List <GridPosition> validGridPositionList = GetValidActionGridPositionList();
+        List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
         return validGridPositionList.Contains(gridPosition);
     }
     public virtual int GetCorePowerCost() => 1;
     public virtual int GetHeatGenerated() => 1;
+    #endregion
 
 
 
-
-
-
-/* 
-                                        THE ABSTRACT (every extension MUST have these)
-==================================================================================================================================== 
-*/ 
+    //==================================================================================================================================== 
+    #region ABSTRACT
     public abstract string GetActionName();
-    public abstract void TakeAction (GridPosition gridPosition, Action onActionComplete); //useless for some, but oh well.
+    public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete); //useless for some, but oh well.
     public abstract List<GridPosition> GetValidActionGridPositionList();
+    #endregion
 
 
 
-
-
-
-/* 
-                                                    ENEMY AI ACTIONS
-==================================================================================================================================== 
-*/ 
-    public virtual EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition){return null;}
+    //==================================================================================================================================== 
+    #region ENEMY AI
+    public virtual EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition) { return null; }
     public EnemyAIAction GetBestEnemyAIAction()
     {
         List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
@@ -110,11 +89,10 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
             enemyAIActionList.Add(enemyAIAction);
         }
 
-        if (enemyAIActionList.Count == 0) {return null;}
+        if (enemyAIActionList.Count == 0) { return null; }
 
-        enemyAIActionList.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionValue - a.actionValue);  
+        enemyAIActionList.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionValue - a.actionValue);
         return enemyAIActionList[0];
     }
-
-
+    #endregion
 }

@@ -9,8 +9,7 @@ public class RagdollSpawner : MonoBehaviour
     HealthSystem healthSystem;
 
 
-
-
+    
     void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
@@ -18,11 +17,12 @@ public class RagdollSpawner : MonoBehaviour
         healthSystem.OnDead += HealthSystem_OnDead;
     }
 
+
+
     void HealthSystem_OnDead(object sender, EventArgs e)
     {
         Transform ragdollTransform = Instantiate (ragdollPrefab, transform.position, transform.rotation);
         RagdollOperator ragdollOperator = ragdollTransform.GetComponent<RagdollOperator>();
-        ragdollOperator.Setup(originalRootBone);
-        
+        ragdollOperator.Setup(originalRootBone);        
     }
 }

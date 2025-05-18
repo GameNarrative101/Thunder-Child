@@ -11,7 +11,6 @@ public class PathNode
 
 
 
-
     public PathNode (GridPosition gridPosition) => this.gridPosition = gridPosition;
     public GridPosition GetGridPosition() => gridPosition;
     public override string ToString() => $"{gridPosition.x}, {gridPosition.z}";

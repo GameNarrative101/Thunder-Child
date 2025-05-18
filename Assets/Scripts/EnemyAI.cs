@@ -3,19 +3,13 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-                            //CURRENT LOGIC IS FOR ALL ENEMIES TO GO BETWEEN PLAYER TURNS.
-
-
-
+    //CURRENTLY ALL ENEMIES GO BETWEEN PLAYER TURNS.
 
 
 
     enum State {WaitingForEnemyTurn, TakingTurn, Busy}
     State state;
     float timer;
-
-
-
 
 
 
@@ -49,9 +43,6 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
     }
-
-
-
 
 
 
@@ -104,10 +95,7 @@ public class EnemyAI : MonoBehaviour
 
         return false;
     } */
-
-
-
-//INEFFITIENT CODE, SEE SIMPLIFIED VERSION ABOVE
+    //INEFFITIENT CODE, SEE SIMPLIFIED VERSION ABOVE
     bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
     {
         EnemyAIAction bestEnemyAIAction = null;
@@ -142,5 +130,4 @@ public class EnemyAI : MonoBehaviour
         }
         else return false;
     }
-
 }
