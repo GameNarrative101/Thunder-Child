@@ -14,6 +14,7 @@ public class Testing : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
+            /* CHECKING PATHFINDING
             GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
             GridPosition startGridPosition = new GridPosition(0, 0);
 
@@ -23,7 +24,8 @@ public class Testing : MonoBehaviour
             {
                 Debug.DrawLine(LevelGrid.Instance.GetWorldPosition(gridPositionList[i]),
                     LevelGrid.Instance.GetWorldPosition(gridPositionList[i + 1]), Color.green, 10f);
-            }
+            } 
+            */
         }
 
     }

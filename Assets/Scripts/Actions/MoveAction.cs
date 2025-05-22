@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-
 public class MoveAction : BaseAction
 {
     [SerializeField] float moveSpeed = 4f;
@@ -9,23 +8,14 @@ public class MoveAction : BaseAction
     [SerializeField] float rotationSpeed = 30f;
     [SerializeField] int maxMoveDistance = 4;
 
-    Vector3 targetPosition;
+    List<Vector3> positionList;
+    int currentPositionIndex;
 
     public event EventHandler OnStartMoving;
     public event EventHandler OnStopMoving;
 
 
 
-
-
-
-    //using the baseaction awake but changing one thing in it but only in this script's use of it
-    protected override void Awake()
-    {
-        //run the awake on base first, then run this awake after
-        base.Awake();
-        targetPosition = transform.position;
-    }
 
     void Update()
     {
@@ -37,15 +27,17 @@ public class MoveAction : BaseAction
 
 
 
-
-
 /* 
                                                     MOOVIN THANGS
 ==================================================================================================================================== 
 */
-    private void clickToMove()
+    void clickToMove()
     {
+
+        Vector3 targetPosition = positionList[currentPositionIndex];
         Vector3 moveDirection = (targetPosition - transform.position).normalized;
+
+        transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
         {
@@ -53,11 +45,14 @@ public class MoveAction : BaseAction
         }
         else
         {
-            OnStopMoving?.Invoke(this, EventArgs.Empty);
-            ActionComplete();
+            currentPositionIndex++;
+            if (currentPositionIndex >= positionList.Count)
+            {
+                OnStopMoving?.Invoke(this, EventArgs.Empty);
+                ActionComplete();
+            }
         }
 
-        transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
     }
 
 
@@ -72,21 +67,27 @@ public class MoveAction : BaseAction
     public override string GetActionName() => "Move";
     public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
     {
-        this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+        List<GridPosition> pathGridPositionList =
+            Pathfinding.Instance.FindPath(pCMech.GetGridPosition(), gridPosition, out int pathLength); //where pathfinding happens
+        
+        currentPositionIndex = 0;
+        positionList = new List<Vector3>();
+
+        foreach (GridPosition pathGridPosition in pathGridPositionList)
+        {
+            positionList.Add(LevelGrid.Instance.GetWorldPosition(pathGridPosition));
+        }
 
         OnStartMoving?.Invoke(this, EventArgs.Empty);
         
         ActionStart(onActionComplete);
     }
 
-    //a list of valid grid positions for the action.
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List <GridPosition> validGridPositionList = new List<GridPosition>();
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
 
-        //we weanna cycle through all valid grid positions. so, for every x from left to right within range and same with every z,
-        //gimme a new grid position (offset) so we can add it to current grid position
         for (int x = -maxMoveDistance; x <= maxMoveDistance; x++)
         {
             for (int z = -maxMoveDistance; z <= maxMoveDistance; z++)
@@ -94,21 +95,16 @@ public class MoveAction : BaseAction
                 GridPosition offsetGridPosition = new GridPosition(x, z);
                 GridPosition testGridPosition = pcMechGridPosition + offsetGridPosition;
 
-                if (!LevelGrid.Instance.IsValidPosition(testGridPosition))
-                {
-                    //basically if the grid position the loop gives us is not valid, we go back and get another one from the loop, otherwise execute the debug
-                    continue;
-                }
-                if (pcMechGridPosition == testGridPosition) 
-                {
-                    //a valid position can't be where the unit already is
-                    continue; 
-                }
-                if (LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition))
-                {
-                    //skip all grid positions that have another unit on them. right now this says mech but change if needed
-                    continue;
-                }
+                if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;
+                if (pcMechGridPosition == testGridPosition) continue;//unit's own position is invalid
+                if (LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue; //other unit's positions are invalid
+                if (!Pathfinding.Instance.GetIsWalkableGridPosInPath(testGridPosition)) continue; //invalid if the pathfinding node isn't walkable
+                if (!Pathfinding.Instance.HasValidPath(pcMechGridPosition, testGridPosition)) continue; //invalid if there's no path to target position
+
+                int pathfindingDistanceMultiplier = 10;
+                if (Pathfinding.Instance.GetPathLength(pcMechGridPosition, testGridPosition) >
+                    maxMoveDistance *pathfindingDistanceMultiplier) continue; //path too long, position invalid
+
                 validGridPositionList.Add(testGridPosition);
             }
         }

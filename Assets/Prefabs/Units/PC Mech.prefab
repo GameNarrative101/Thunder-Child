@@ -294,6 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnemy: 0
+  corePower: 3
   corePowerIncrease: 3
   maxCorePower: 15
   heat: 0
@@ -326,6 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db23b45bbd0a4dd46908fa28be8e2def, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spinningPowerCost: 2
 --- !u!114 &8149747404443248139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,6 +344,10 @@ MonoBehaviour:
   shootingStateTime: 0.1
   coolOffStateTime: 0.5
   shootActionDamage: 40
+  maxShootDistance: 2
+  obstaclesLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &5984506201132333605
 MonoBehaviour:
   m_ObjectHideFlags: 0

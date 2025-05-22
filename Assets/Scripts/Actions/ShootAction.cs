@@ -17,6 +17,7 @@ public class ShootAction : BaseAction
     [SerializeField] float coolOffStateTime = 0.5f;
     [SerializeField] int shootActionDamage = 10;
     [SerializeField] int maxShootDistance =2;
+    [SerializeField] LayerMask obstaclesLayerMask;
 
     public event EventHandler<OnShootEventArgs> OnShoot;
     public class OnShootEventArgs : EventArgs
@@ -212,18 +213,24 @@ public class ShootAction : BaseAction
                 GridPosition offsetGridPosition = new GridPosition(x, z);
                 GridPosition testGridPosition = pcMechGridPosition + offsetGridPosition;
 
-                // Skip invalid grid positions
-                if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;
-
-                // Skip grid positions without any units
-                if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;
-
-                // Skip grid positions with allied units
+                if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;// Skip invalid grid positions
+                if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;// Skip grid positions without any units
+ 
                 PCMech targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(testGridPosition);
-                if (targetUnit.IsEnemy() == pCMech.IsEnemy()) continue;
+                if (targetUnit.IsEnemy() == pCMech.IsEnemy()) continue;// Skip grid positions with allied units
 
-                // Add valid grid position to the list
-                validGridPositionList.Add(testGridPosition);
+                Vector3 pcMechWorldPosition = LevelGrid.Instance.GetWorldPosition(pcMechGridPosition);
+                Vector3 shootDir = (targetUnit.GetWorldPosition() - pcMechWorldPosition).normalized;
+                float pcMechShoulderHeight = 1.7f;
+                if (Physics.Raycast(pcMechWorldPosition + Vector3.up * pcMechShoulderHeight,
+                        shootDir,
+                        Vector3.Distance(pcMechWorldPosition, targetUnit.GetWorldPosition()),
+                        obstaclesLayerMask))
+                {
+                    continue; // Skip grid positions with obstacles in the way
+                }
+                
+                validGridPositionList.Add(testGridPosition);// Add valid grid position to the list
             }
         }
         return validGridPositionList;   
