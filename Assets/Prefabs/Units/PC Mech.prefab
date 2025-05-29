@@ -425,6 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4203eb947f92bb45aeacddf449ad3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  grenadeProjectilePrefab: {fileID: 370322483711697218, guid: 1415c37904146a8419d8c394566d0056, type: 3}
 --- !u!1 &4225462496246562325
 GameObject:
   m_ObjectHideFlags: 0
