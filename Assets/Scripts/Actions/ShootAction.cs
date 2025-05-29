@@ -20,6 +20,8 @@ public class ShootAction : BaseAction
     [SerializeField] LayerMask obstaclesLayerMask;
 
     public event EventHandler<OnShootEventArgs> OnShoot;
+    public static event EventHandler<OnShootEventArgs> OnAnyShoot; //for scren shake
+
     public class OnShootEventArgs : EventArgs
     {
         //adding more to the event, instead of <> on event handler. another option
@@ -96,6 +98,7 @@ public class ShootAction : BaseAction
     private void ShootBullet()
     {
         OnShoot?.Invoke(this, new OnShootEventArgs{targetUnit=targetUnit, shootingUnit=pCMech});
+        OnAnyShoot?.Invoke(this, new OnShootEventArgs{targetUnit=targetUnit, shootingUnit=pCMech});
         
         //static damage amount for now. implement real action logic later
         targetUnit.TakeDamage(shootActionDamage);
