@@ -10,8 +10,8 @@ public class RagdollOperator : MonoBehaviour
     {
         MatchAllChildTransforms (originalRootBone, ragdollRootBone);
 
-        //variations on this impact could be introduced based on different damaging abilities used
-        ApplyExplosionToRagdoll (ragdollRootBone, 500f, transform.position, 10f);
+        Vector3 randomDir = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+        ApplyExplosionToRagdoll (ragdollRootBone, 500f, transform.position + randomDir, 10f);
     }
     
     void MatchAllChildTransforms (Transform root, Transform clone)

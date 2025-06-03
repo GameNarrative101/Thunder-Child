@@ -5,17 +5,31 @@ public class GrenadeProjectile : MonoBehaviour
 {
     Action onGrenadeBehaviourComplete;
     Vector3 targetPosition;
+    float totalDistance;
+    Vector3 positionXZ;
     [SerializeField] float damageRadius = 8f;
     [SerializeField] int grenadeDamage = 10;
+    [SerializeField] Transform grenadeExplodeVfxPrefab;
+    [SerializeField] TrailRenderer grenadeTrailRenderer;
+    [SerializeField] AnimationCurve arcYAnimationCurve;
+
+    public static event EventHandler OnAnyGrenadeExploded;
 
     void Update()
     {
-        Vector3 MoveDir = (targetPosition - transform.position).normalized;
-        float moveSpeed = 25f;
-        transform.position += MoveDir * moveSpeed * Time.deltaTime;
+        Vector3 MoveDir = (targetPosition - positionXZ).normalized;
+        float moveSpeed = 45f;
+        positionXZ += MoveDir * moveSpeed * Time.deltaTime;
 
-        float reachedTargetDistance = 0.1f;
-        if (Vector3.Distance(transform.position, targetPosition) < reachedTargetDistance)
+        float distance = Vector3.Distance(positionXZ, targetPosition);
+        float distanceNormalized = 1 - distance / totalDistance;
+
+        float maxHeight = totalDistance / 4f;
+        float positionY = arcYAnimationCurve.Evaluate(distanceNormalized) * maxHeight;
+        transform.position = new Vector3(positionXZ.x, positionY, positionXZ.z);
+
+        float reachedTargetDistance = 0.3f;
+        if (Vector3.Distance(positionXZ, targetPosition) < reachedTargetDistance)
         {
             Collider[] colliderArray = Physics.OverlapSphere(targetPosition, damageRadius);
             foreach (Collider collider in colliderArray)
@@ -25,6 +39,11 @@ public class GrenadeProjectile : MonoBehaviour
                     pcMech.TakeDamage(grenadeDamage);
                 }
             }
+
+            OnAnyGrenadeExploded?.Invoke(this, EventArgs.Empty);
+
+            grenadeTrailRenderer.transform.parent = null;
+            Instantiate(grenadeExplodeVfxPrefab, targetPosition + Vector3.up *1f, Quaternion.identity);
 
             Destroy(gameObject);
             onGrenadeBehaviourComplete();
@@ -37,5 +56,9 @@ public class GrenadeProjectile : MonoBehaviour
         this.onGrenadeBehaviourComplete = onGrenadeBehaviourComplete;
 
         targetPosition = LevelGrid.Instance.GetWorldPosition(targetGridPosition);
+
+        positionXZ = transform.position;
+        positionXZ.y = 0;
+        totalDistance = Vector3.Distance(positionXZ, targetPosition);
     }
 }
