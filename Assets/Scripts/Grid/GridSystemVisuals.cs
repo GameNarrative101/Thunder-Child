@@ -100,18 +100,24 @@ public class GridSystemVisuals : MonoBehaviour
         GridVisualType gridVisualType;
         switch (selelctedAction)
         {
-           default:
-           case MoveAction moveAction:
+            default:
+            case MoveAction moveAction:
                 gridVisualType = GridVisualType.White;
-                break; 
+                break;
             case SpinAction spinAction:
                 gridVisualType = GridVisualType.Yellow;
-                break; 
+                break;
             case ShootAction shootAction:
                 gridVisualType = GridVisualType.Red;
-
                 ShowGridPositionRange(selectedMech.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.SoftRed);
                 break; 
+            case GrenadeLauncherAction grenadeLauncherAction:
+                gridVisualType = GridVisualType.Yellow;
+                break;
+            case MeleeAction meleeAction:
+                gridVisualType = GridVisualType.Red;
+                ShowGridPositionRange(selectedMech.GetGridPosition(), meleeAction.GetMaxMeleeDistance(), GridVisualType.SoftRed);
+                break;
         }
         
         ShowGridPositionList (selelctedAction.GetValidActionGridPositionList(), gridVisualType);

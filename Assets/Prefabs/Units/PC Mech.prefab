@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 3821737785300979387}
   - component: {fileID: 6644253763209447500}
   - component: {fileID: 6458105536477719132}
+  - component: {fileID: -2478586375845164213}
   m_Layer: 7
   m_Name: PC Mech
   m_TagString: Untagged
@@ -426,6 +427,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grenadeProjectilePrefab: {fileID: 370322483711697218, guid: 1415c37904146a8419d8c394566d0056, type: 3}
+--- !u!114 &-2478586375845164213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e48ebc31ddbc63842b6c73b79e3a1fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxMeleeDistance: 1
+  meleeDamage: 25
 --- !u!1 &4225462496246562325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1297,9 +1312,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2849161448076057991, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2939996622084365341, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410039248528294615, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -1323,9 +1342,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8898244023931742982, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8985631834389627646, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9021993778544961810, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3186314884134100911, guid: b3beb161f85615d4f8295cb3a66b5ee1, type: 3}

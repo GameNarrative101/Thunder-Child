@@ -14,19 +14,31 @@ public class MechAnimator : MonoBehaviour
 
     void Awake()
     {
-         if (TryGetComponent<MoveAction>(out MoveAction moveAction))
-         {
-            moveAction.OnStartMoving +=MoveAction_OnStartMoving;
-            moveAction.OnStopMoving +=MoveAction_OnStopMoving;
-         }
+        if (TryGetComponent<MoveAction>(out MoveAction moveAction))
+        {
+            moveAction.OnStartMoving += MoveAction_OnStartMoving;
+            moveAction.OnStopMoving += MoveAction_OnStopMoving;
+        }
 
-         if (TryGetComponent<ShootAction>(out ShootAction shootAction))
-         {
-            shootAction.OnShoot += ShootAction_OnShoot;            
-         }
+        if (TryGetComponent<ShootAction>(out ShootAction shootAction))
+        {
+            shootAction.OnShoot += ShootAction_OnShoot;
+        }
+
+        if (TryGetComponent<MeleeAction>(out MeleeAction meleeAction))
+        {
+            meleeAction.OnMeleeActionStarted += MeleeAction_OnMeleeActionStarted;
+            meleeAction.OnMeleeActionCompleted += MeleeAction_OnMeleeActionCompleted;
+        }
     }
 
-
+    private void MeleeAction_OnMeleeActionStarted(object sender, EventArgs e)
+    {
+        animator.SetTrigger("MeleeSlash");
+    }
+    private void MeleeAction_OnMeleeActionCompleted(object sender, EventArgs e)
+    {
+    }
     void MoveAction_OnStartMoving(object sender, EventArgs e)
     {
         animator.SetBool("IsWalking",true);
