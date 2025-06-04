@@ -5,20 +5,16 @@ public class TurnSystemScript : MonoBehaviour
 {
     //core power, heat, and shield handled in the pcmech script
     public static TurnSystemScript Instance { get; private set; }
-
     public event EventHandler OnTurnEnd;
-
     int turnCount = 1;
     bool isPlayerTurn = true;
 
 
 
-
-        private void Awake()
+    private void Awake()
     {
         SetInstanceAndDebug();
     }
-
 
 
 
@@ -29,7 +25,10 @@ public class TurnSystemScript : MonoBehaviour
             Instance = this;
         }
     }
-
+    public void NextTurn()
+    {
+        AdvanceTurnCount();
+    }
     void AdvanceTurnCount()
     {        
         if (!isPlayerTurn)
@@ -42,17 +41,10 @@ public class TurnSystemScript : MonoBehaviour
 
         OnTurnEnd?.Invoke(this, EventArgs.Empty);
     }
-
     public int GetTurnCount()
     {
         return turnCount;
     }
-
-    public void NextTurn()
-    {
-        AdvanceTurnCount();
-    }
-
     public bool IsPlayerTurn()
     {
         return isPlayerTurn;

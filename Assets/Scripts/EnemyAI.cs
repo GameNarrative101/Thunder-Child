@@ -5,17 +5,9 @@ public class EnemyAI : MonoBehaviour
 {
                             //CURRENT LOGIC IS FOR ALL ENEMIES TO GO BETWEEN PLAYER TURNS.
 
-
-
-
-
-
     enum State {WaitingForEnemyTurn, TakingTurn, Busy}
     State state;
     float timer;
-
-
-
 
 
 
@@ -29,9 +21,17 @@ public class EnemyAI : MonoBehaviour
     }
     void Update()
     {
+        bool flowControl = HandleEnemyTurn();
+        if (!flowControl) {return;}
+    }
+
+
+
+    private bool HandleEnemyTurn()
+    {
         if (TurnSystemScript.Instance.IsPlayerTurn())
         {
-            return;
+            return false;
         }
         switch (state)
         {
@@ -41,20 +41,16 @@ public class EnemyAI : MonoBehaviour
                 timer -= Time.deltaTime;
                 if (timer <= 0f)
                 {
-                    if (TryActivateEnemyAI(SetStateTakingTurn)) {state = State.Busy;}
-                    else {TurnSystemScript.Instance.NextTurn();}
+                    if (TryActivateEnemyAI(SetStateTakingTurn)) { state = State.Busy; }
+                    else { TurnSystemScript.Instance.NextTurn(); }
                 }
                 break;
             case State.Busy:
                 break;
         }
+
+        return true;
     }
-
-
-
-
-
-
     private void TurnSystemScript_OnTurnChanged(object sender, EventArgs e)
     {
         if (!TurnSystemScript.Instance.IsPlayerTurn())
@@ -76,38 +72,37 @@ public class EnemyAI : MonoBehaviour
         }
         return false;
     }
-/*     bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
-    {
-        EnemyAIAction bestEnemyAIAction = null;
-        BaseAction bestBaseAction = null;
-
-        foreach (BaseAction baseAction in enemyUnit.GetBaseActionArray())
+    
+    /* INEFFITIENT CODE, SEE SIMPLIFIED VERSION
+         bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
         {
-            if (!enemyUnit.CanSpendCorePowerForAction(baseAction)) continue;
+            EnemyAIAction bestEnemyAIAction = null;
+            BaseAction bestBaseAction = null;
 
-            EnemyAIAction newEnemyAIAction = baseAction.GetBestEnemyAIAction();
-            if (newEnemyAIAction == null) continue;
-
-            // Update the best action if it's better than the current best
-            if (bestEnemyAIAction == null || newEnemyAIAction.actionValue > bestEnemyAIAction.actionValue)
+            foreach (BaseAction baseAction in enemyUnit.GetBaseActionArray())
             {
-                bestEnemyAIAction = newEnemyAIAction;
-                bestBaseAction = baseAction;
+                if (!enemyUnit.CanSpendCorePowerForAction(baseAction)) continue;
+
+                EnemyAIAction newEnemyAIAction = baseAction.GetBestEnemyAIAction();
+                if (newEnemyAIAction == null) continue;
+
+                // Update the best action if it's better than the current best
+                if (bestEnemyAIAction == null || newEnemyAIAction.actionValue > bestEnemyAIAction.actionValue)
+                {
+                    bestEnemyAIAction = newEnemyAIAction;
+                    bestBaseAction = baseAction;
+                }
             }
-        }
 
-        if (bestEnemyAIAction != null && enemyUnit.TrySpendCorePowerForAction(bestBaseAction))
-        {
-            bestBaseAction.TakeAction(bestEnemyAIAction.gridPosition, onEnemyAIActionComplete);
-            return true;
-        }
+            if (bestEnemyAIAction != null && enemyUnit.TrySpendCorePowerForAction(bestBaseAction))
+            {
+                bestBaseAction.TakeAction(bestEnemyAIAction.gridPosition, onEnemyAIActionComplete);
+                return true;
+            }
 
-        return false;
-    } */
-
-
-
-//INEFFITIENT CODE, SEE SIMPLIFIED VERSION ABOVE
+            return false;
+        } 
+    */
     bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
     {
         EnemyAIAction bestEnemyAIAction = null;

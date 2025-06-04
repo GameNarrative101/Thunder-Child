@@ -10,6 +10,8 @@ public class ScreenShakeActions : MonoBehaviour
         MeleeAction.OnAnyMeleeActionHit += MeleeAction_OnAnyMeleeActionHit;
     }
 
+
+
     private void MeleeAction_OnAnyMeleeActionHit(object sender, EventArgs e)
     {
         ScreenShake.Instance.Shake(0.5f);

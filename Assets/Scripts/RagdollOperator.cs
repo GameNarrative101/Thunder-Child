@@ -12,8 +12,7 @@ public class RagdollOperator : MonoBehaviour
 
         Vector3 randomDir = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
         ApplyExplosionToRagdoll (ragdollRootBone, 500f, transform.position + randomDir, 10f);
-    }
-    
+    }    
     void MatchAllChildTransforms (Transform root, Transform clone)
     {
         /*     
@@ -33,14 +32,9 @@ public class RagdollOperator : MonoBehaviour
             }
         }
     }
-
     public void ApplyExplosionToRagdoll (Transform root, float explosionForce, 
     UnityEngine.Vector3 explosionPosition, float explosionRadius)
     {
-        /* 
-            to make the ragdoll not just flop, but react to the bullet force
-            called here, with each damaging ability modifying the explosion force
-        */
         foreach (Transform child in root)
         {
             if (child.TryGetComponent<Rigidbody>(out Rigidbody childRigidbody))

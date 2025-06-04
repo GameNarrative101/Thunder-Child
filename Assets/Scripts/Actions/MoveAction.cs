@@ -16,21 +16,18 @@ public class MoveAction : BaseAction
 
 
 
-
     void Update()
     {
         if (!isActive) return;
-        
+
         clickToMove();
     }
 
 
 
+    //==================================================================================================================================== 
+    #region MOVING THINGS
 
-/* 
-                                                    MOOVIN THANGS
-==================================================================================================================================== 
-*/
     void clickToMove()
     {
 
@@ -55,21 +52,19 @@ public class MoveAction : BaseAction
 
     }
 
+    #endregion  
 
 
 
+    //==================================================================================================================================== 
+    #region OVERRIDES
 
-
-/* 
-                                                     OVERRIDES
-==================================================================================================================================== 
-*/
     public override string GetActionName() => "Move";
-    public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         List<GridPosition> pathGridPositionList =
             Pathfinding.Instance.FindPath(pCMech.GetGridPosition(), gridPosition, out int pathLength); //where pathfinding happens
-        
+
         currentPositionIndex = 0;
         positionList = new List<Vector3>();
 
@@ -79,13 +74,12 @@ public class MoveAction : BaseAction
         }
 
         OnStartMoving?.Invoke(this, EventArgs.Empty);
-        
+
         ActionStart(onActionComplete);
     }
-
     public override List<GridPosition> GetValidActionGridPositionList()
     {
-        List <GridPosition> validGridPositionList = new List<GridPosition>();
+        List<GridPosition> validGridPositionList = new List<GridPosition>();
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
 
         for (int x = -maxMoveDistance; x <= maxMoveDistance; x++)
@@ -103,7 +97,7 @@ public class MoveAction : BaseAction
 
                 int pathfindingDistanceMultiplier = 10;
                 if (Pathfinding.Instance.GetPathLength(pcMechGridPosition, testGridPosition) >
-                    maxMoveDistance *pathfindingDistanceMultiplier) continue; //path too long, position invalid
+                    maxMoveDistance * pathfindingDistanceMultiplier) continue; //path too long, position invalid
 
                 validGridPositionList.Add(testGridPosition);
             }
@@ -112,15 +106,13 @@ public class MoveAction : BaseAction
         return validGridPositionList;
     }
 
+    #endregion  
 
 
 
+    //==================================================================================================================================== 
+    #region ENEMY MOVE
 
-
-/* 
-                                                      ENEMY MOVE
-==================================================================================================================================== 
-*/
     public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
     {
         if (pCMech == null)
@@ -135,8 +127,8 @@ public class MoveAction : BaseAction
             Debug.LogWarning($"ShootAction is missing on {pCMech.gameObject.name}. Skipping AI action.");
             return null;
         }
-    
-    
+
+
         int TargetCountAtPosition = pCMech.GetAction<ShootAction>().GetTargetCountAtPosition(gridPosition);
         return new EnemyAIAction
         {
@@ -144,4 +136,6 @@ public class MoveAction : BaseAction
             actionValue = TargetCountAtPosition * 10,
         };
     }
+    
+    #endregion
 }

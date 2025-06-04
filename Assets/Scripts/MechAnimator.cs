@@ -9,9 +9,6 @@ public class MechAnimator : MonoBehaviour
     [SerializeField] Transform shootPointTransform;
 
 
-
-
-
     void Awake()
     {
         if (TryGetComponent<MoveAction>(out MoveAction moveAction))
@@ -31,6 +28,8 @@ public class MechAnimator : MonoBehaviour
             meleeAction.OnMeleeActionCompleted += MeleeAction_OnMeleeActionCompleted;
         }
     }
+
+
 
     private void MeleeAction_OnMeleeActionStarted(object sender, EventArgs e)
     {

@@ -7,11 +7,16 @@ public class ScreenShake : MonoBehaviour
 
     CinemachineImpulseSource cinemachineImpulseSource;
 
+
+
     void Awake()
     {
         SetInstanceAndDebug();
         cinemachineImpulseSource = GetComponent<CinemachineImpulseSource>();
     }
+
+
+
     private void SetInstanceAndDebug()
     {
         if (Instance != null)
@@ -22,7 +27,6 @@ public class ScreenShake : MonoBehaviour
         }
         Instance = this;
     }
-
     public void Shake(float intensity=1f)
     {
         cinemachineImpulseSource.GenerateImpulse(intensity);

@@ -4,21 +4,18 @@ using UnityEngine.EventSystems;
 
 public class UnitActionSystem : MonoBehaviour
 {
-    public static UnitActionSystem Instance {get; private set;}
-    
+    public static UnitActionSystem Instance { get; private set; }
+
     [SerializeField] PCMech selectedPcMech;
     [SerializeField] LayerMask unitLayerMask;
     BaseAction selectedAction;
-    
-    bool isBusy;
 
     public event EventHandler OnSelectedUnitChange;
-    public event EventHandler <bool> onBusyChanged; //<bool> replaces the eventargs in the eventhandler parameters
+    public event EventHandler<bool> onBusyChanged; //<bool> replaces the eventargs in the eventhandler parameters
     public event EventHandler OnActionStarted;
     public event EventHandler OnSelectedActionChanged;
 
-
-
+    bool isBusy;
 
 
 
@@ -40,10 +37,10 @@ public class UnitActionSystem : MonoBehaviour
 
 
 
-/* 
-                                                       SETUP AND UPDATE
-==================================================================================================================================== 
-*/
+    /* 
+                                                           SETUP AND UPDATE
+    ==================================================================================================================================== 
+    */
     private void SetInstanceAndDebug()
     {
         if (Instance != null)
@@ -58,29 +55,25 @@ public class UnitActionSystem : MonoBehaviour
     {
         selectedPcMech = pcMech;
         SetSelectedAction(pcMech.GetAction<MoveAction>()); //defaults to move action
-        
+
         OnSelectedUnitChange?.Invoke(this, EventArgs.Empty);
     }
     private void UnitActionOperation()
     {
-        if (isBusy) {return;}
+        if (isBusy) { return; }
         OnSelectedActionChanged?.Invoke(this, EventArgs.Empty); //called here so visuals update when mouse is still on UI
-        if (EventSystem.current.IsPointerOverGameObject()){return;} //no action if the mouse is over a UI element
-        if (TryHandleUnitSelection()) {return;} //no action if selecting a unit
-        if (!TurnSystemScript.Instance.IsPlayerTurn()) {return;} //no action if it's not the player's turn
+        if (EventSystem.current.IsPointerOverGameObject()) { return; } //no action if the mouse is over a UI element
+        if (TryHandleUnitSelection()) { return; } //no action if selecting a unit
+        if (!TurnSystemScript.Instance.IsPlayerTurn()) { return; } //no action if it's not the player's turn
 
         HandleSelectedAction();
     }
 
 
 
+    //==================================================================================================================================== 
+    #region UNIT SELECTION
 
-
-
-/* 
-                                                        UNIT SELECTION
-==================================================================================================================================== 
-*/
     bool TryHandleUnitSelection()
     {
         if (!Input.GetMouseButtonDown(0)) return false;
@@ -92,7 +85,6 @@ public class UnitActionSystem : MonoBehaviour
 
         return true;
     }
-
     bool TrySelectPcMech(RaycastHit raycastHit)
     {
         if (!raycastHit.transform.TryGetComponent<PCMech>(out PCMech pcMech)) return false;
@@ -104,15 +96,13 @@ public class UnitActionSystem : MonoBehaviour
         return true;
     }
 
+    #endregion
 
 
 
+    //==================================================================================================================================== 
+    #region ACTIONS
 
-
-/* 
-                                                         ACTION HANDLING
-==================================================================================================================================== 
-*/    
     void SetBusy()
     {
         isBusy = true;
@@ -137,15 +127,13 @@ public class UnitActionSystem : MonoBehaviour
         OnActionStarted?.Invoke(this, EventArgs.Empty);
     }
 
+    #endregion
 
 
 
+    //==================================================================================================================================== 
+    #region GETTERS AND SETTERS
 
-
-/* 
-                                                     GETTING AND SETTING
-==================================================================================================================================== 
-*/  
     public void SetSelectedAction(BaseAction baseAction)
     {
         selectedAction = baseAction;
@@ -158,4 +146,6 @@ public class UnitActionSystem : MonoBehaviour
     {
         return selectedAction;
     }
+    
+    #endregion
 }

@@ -7,6 +7,7 @@ public class GrenadeProjectile : MonoBehaviour
     Vector3 targetPosition;
     float totalDistance;
     Vector3 positionXZ;
+
     [SerializeField] float damageRadius = 8f;
     [SerializeField] int grenadeDamage = 10;
     [SerializeField] Transform grenadeExplodeVfxPrefab;
@@ -15,7 +16,16 @@ public class GrenadeProjectile : MonoBehaviour
 
     public static event EventHandler OnAnyGrenadeExploded;
 
+
+
     void Update()
+    {
+        HandleProjectile();
+    }
+
+
+
+    private void HandleProjectile()
     {
         Vector3 MoveDir = (targetPosition - positionXZ).normalized;
         float moveSpeed = 45f;
@@ -43,12 +53,11 @@ public class GrenadeProjectile : MonoBehaviour
             OnAnyGrenadeExploded?.Invoke(this, EventArgs.Empty);
 
             grenadeTrailRenderer.transform.parent = null;
-            Instantiate(grenadeExplodeVfxPrefab, targetPosition + Vector3.up *1f, Quaternion.identity);
+            Instantiate(grenadeExplodeVfxPrefab, targetPosition + Vector3.up * 1f, Quaternion.identity);
 
             Destroy(gameObject);
             onGrenadeBehaviourComplete();
         }
-        
     }
 
     public void Setup(GridPosition targetGridPosition, Action onGrenadeBehaviourComplete)

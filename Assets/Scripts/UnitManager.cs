@@ -12,9 +12,6 @@ public class UnitManager : MonoBehaviour
 
 
 
-
-
-
     void Awake()
     {
         SetInstanceAndDebug();
@@ -28,9 +25,6 @@ public class UnitManager : MonoBehaviour
         PCMech.OnAnyUnitSpawned += PCMech_OnAnyUnitSpawned;
         PCMech.OnAnyUnitDead += PCMech_OnAnyUnitDead;
     }
-
-
-
 
 
 

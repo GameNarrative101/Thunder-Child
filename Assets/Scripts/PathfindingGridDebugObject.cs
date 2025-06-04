@@ -11,9 +11,6 @@ public class PathfindingGridDebugObject : GridDebugObject
 
 
 
-
-
-
     protected override void Update()
     {
         base.Update();
@@ -30,10 +27,6 @@ public class PathfindingGridDebugObject : GridDebugObject
     }
    
     
-    
-
-
-
 
     public override void SetGridObject(object gridObject)
     {

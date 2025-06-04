@@ -5,26 +5,23 @@ using System;
 
 public class GridSystemVisuals : MonoBehaviour
 {
-    public static GridSystemVisuals Instance {get; private set;}
-    
+    public static GridSystemVisuals Instance { get; private set; }
+
     [Serializable] public struct GridVisualTypeMaterial
     {
         public GridVisualType gridVisualType;
         public Material material;
     }
-    public enum GridVisualType {White, Blue, Red, Yellow, SoftBlue, SoftRed, SoftYellow}
+    public enum GridVisualType { White, Blue, Red, Yellow, SoftBlue, SoftRed, SoftYellow }
 
     [SerializeField] Transform gridSystemVisualsPrefab;
     [SerializeField] List<GridVisualTypeMaterial> gridVisualTypeMaterialList;
-    
+
     /*
         a 2D array of the prefab script, instantiate it, then generate it on start for the whole grid.
         we then decide what we wanna hide or show, and tell the other script to do that
     */
     GridSystemVisualSingle[,] gridSystemVisualSingleArray;
-
-
-
 
 
 
@@ -44,13 +41,9 @@ public class GridSystemVisuals : MonoBehaviour
 
 
 
+    //==================================================================================================================================== 
+    #region SETUP AND SUBSCRIPTIONS
 
-
-
-/* 
-                                                    SETUP AND SUBSCRIPTIONS
-==================================================================================================================================== 
-*/
     void SetInstanceAndDebug()
     {
         if (Instance != null)
@@ -61,18 +54,16 @@ public class GridSystemVisuals : MonoBehaviour
         }
         Instance = this;
     }
-    void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e) {UpdateGridVisual();}
-    void LevelGrid_OnPCMechMovedGridPosition(object sender, EventArgs e) {UpdateGridVisual();}
-    
-    
-    
-    
-    
-    
-/* 
-                                                    GRID THINGS
-==================================================================================================================================== 
-*/
+    void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e) { UpdateGridVisual(); }
+    void LevelGrid_OnPCMechMovedGridPosition(object sender, EventArgs e) { UpdateGridVisual(); }
+
+    #endregion
+
+
+
+    //==================================================================================================================================== 
+    #region GRID THINGS  
+
     void InstantiateGridSystemVisualSingleArray()
     {
         gridSystemVisualSingleArray = new GridSystemVisualSingle[LevelGrid.Instance.GetWidth(), LevelGrid.Instance.GetHeight()];
@@ -110,7 +101,7 @@ public class GridSystemVisuals : MonoBehaviour
             case ShootAction shootAction:
                 gridVisualType = GridVisualType.Red;
                 ShowGridPositionRange(selectedMech.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.SoftRed);
-                break; 
+                break;
             case GrenadeLauncherAction grenadeLauncherAction:
                 gridVisualType = GridVisualType.Yellow;
                 break;
@@ -119,14 +110,14 @@ public class GridSystemVisuals : MonoBehaviour
                 ShowGridPositionRange(selectedMech.GetGridPosition(), meleeAction.GetMaxMeleeDistance(), GridVisualType.SoftRed);
                 break;
         }
-        
-        ShowGridPositionList (selelctedAction.GetValidActionGridPositionList(), gridVisualType);
+
+        ShowGridPositionList(selelctedAction.GetValidActionGridPositionList(), gridVisualType);
     }
     Material GetGridVisualTypeMaterial(GridVisualType gridVisualType)
     {
         foreach (GridVisualTypeMaterial gridVisualTypeMaterial in gridVisualTypeMaterialList)
         {
-            if (gridVisualTypeMaterial.gridVisualType == gridVisualType) {return gridVisualTypeMaterial.material;}
+            if (gridVisualTypeMaterial.gridVisualType == gridVisualType) { return gridVisualTypeMaterial.material; }
         }
         Debug.LogError("Grid visual type not found: " + gridVisualType);
         return null;
@@ -134,7 +125,7 @@ public class GridSystemVisuals : MonoBehaviour
     void ShowGridPositionRange(GridPosition gridPosition, int range, GridVisualType gridVisualType)
     {
         List<GridPosition> gridPositionList = new List<GridPosition>();
-        
+
         for (int x = -range; x <= range; x++)
         {
             for (int z = -range; z <= range; z++)
@@ -149,15 +140,13 @@ public class GridSystemVisuals : MonoBehaviour
         ShowGridPositionList(gridPositionList, gridVisualType);
     }
 
+    #endregion  
 
 
 
+    //==================================================================================================================================== 
+    #region PUBLIC FUNCTIONS
 
-
-/* 
-                                                    PUBLIC FUNCTIONS
-==================================================================================================================================== 
-*/
     //hide everything by default, then decide what to show
     public void HideAllGridPosition()
     {
@@ -176,4 +165,6 @@ public class GridSystemVisuals : MonoBehaviour
             gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].Show(GetGridVisualTypeMaterial(gridVisualType));
         }
     }
+    
+    #endregion
 }

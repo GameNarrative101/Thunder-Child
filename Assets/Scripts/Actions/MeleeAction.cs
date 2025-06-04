@@ -15,13 +15,18 @@ public class MeleeAction : BaseAction
     [SerializeField] int meleeDamage = 25;
 
 
+
     void Update()
     {
         bool flowControl = HandleMelee();
-        if (!flowControl) {return;}
+        if (!flowControl) { return; }
     }
-    
-    
+
+
+
+    //==================================================================================================================================== 
+    #region THE ACTION    
+
     private bool HandleMelee()
     {
         if (!isActive) { return false; }
@@ -60,19 +65,19 @@ public class MeleeAction : BaseAction
                 OnMeleeActionCompleted?.Invoke(this, EventArgs.Empty);
                 ActionComplete();
                 break;
-        }    
+        }
     }
+
+    #endregion
+
+
+
+    //==================================================================================================================================== 
+    #region OVERRIDES
+
     public override string GetActionName()
     {
         return "Melee";
-    }
-    public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
-    {
-        return new EnemyAIAction
-        {
-            gridPosition = gridPosition,
-            actionValue = 200,
-        };
     }
     public override List<GridPosition> GetValidActionGridPositionList()
     {
@@ -109,9 +114,25 @@ public class MeleeAction : BaseAction
         OnMeleeActionStarted?.Invoke(this, EventArgs.Empty);
         ActionStart(onActionComplete);
     }
+    public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
+    {
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = 200,
+        };
+    }
 
+    #endregion
+
+
+
+    //==================================================================================================================================== 
+    #region GETTERS
     public int GetMaxMeleeDistance()
     {
         return maxMeleeDistance;
     }
+    
+    #endregion
 }

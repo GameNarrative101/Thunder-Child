@@ -12,9 +12,6 @@ public class MechManager : MonoBehaviour
 
 
 
-
-
-
     void Awake()
     {
         SetInstanceAndDebug();
@@ -31,13 +28,6 @@ public class MechManager : MonoBehaviour
 
 
 
-
-
-
-/* 
-                                                    Subscriptions & SETUP
-==================================================================================================================================== 
-*/
     private void SetInstanceAndDebug()
     {
         if (Instance != null)
@@ -64,20 +54,10 @@ public class MechManager : MonoBehaviour
         if (pcMech.IsEnemy()) {enemyMechList.Remove(pcMech);}
         else {friendlyMechList.Remove(pcMech);}    
     }
-
-
-
-
-
-
-/* 
-                                                    ACCESS POINTS
-==================================================================================================================================== 
-*/
-    public List <PCMech> GetMechList() {return mechList;}
+    
+    public List<PCMech> GetMechList() { return mechList; }
     public List <PCMech> GetFriendlyMechList() {return friendlyMechList;}
     public List <PCMech> GetEnemyMechList() {return enemyMechList;}
-
     public PCMech GetFriendlyMechAtGridPosition(GridPosition gridPosition)
     {
         foreach (PCMech pcMech in friendlyMechList)

@@ -14,6 +14,9 @@ public class GrenadeLauncherAction : BaseAction
     {
         if (!isActive) { return; }
     }
+
+
+    
     public override string GetActionName() => "Grenade Launcher";
     public override List<GridPosition> GetValidActionGridPositionList()
     {
@@ -37,7 +40,6 @@ public class GrenadeLauncherAction : BaseAction
         }
         return validGridPositionList;
     }
-
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         Transform grenadeProjectileTransform = Instantiate(grenadeProjectilePrefab, pCMech.GetWorldPosition(), Quaternion.identity);
@@ -47,7 +49,6 @@ public class GrenadeLauncherAction : BaseAction
         Debug.Log("Grenade Launched");
         ActionStart(onActionComplete);
     }
-
     void onGrenadeBehaviourComplete()
     {
         ActionComplete();
