@@ -19,7 +19,7 @@ public class MouseWorld : MonoBehaviour
     public static Vector3 GetPosition()
     {
         //get the camera to point a Ray called ray at where the mouse is pointing.
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(InputManager.Instance.GetMouseScreenPosition());
        
         //get the Ray called ray to give us what it hit with no limitation on distance but only on a layer we created called mousePlaneLayerMask so only the ground will be hit.
         Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, instance.mousePlaneLayerMask);

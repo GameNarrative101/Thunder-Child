@@ -32,10 +32,7 @@ public class TurnSystemUI : MonoBehaviour
     void Update()
     {
         //TESTING ONLY
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            TurnSystemScript.Instance.NextTurn();
-        }
+
     }
 
 
