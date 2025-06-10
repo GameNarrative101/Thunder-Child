@@ -38,6 +38,8 @@ public class PCMech : MonoBehaviour
 
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
         healthSystem.OnDead += HealthSystem_OnDead;
+
+        // Time.timeScale = 0.1f;
     }
     private void Update()
     {

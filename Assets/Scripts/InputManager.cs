@@ -30,6 +30,7 @@ public class InputManager : MonoBehaviour
         }
         Instance = this;
     }
+
     public Vector2 GetMouseScreenPosition()
     {
 #if USE_NEW_INPUT_SYSTEM
@@ -39,6 +40,7 @@ public class InputManager : MonoBehaviour
         return Input.mousePosition;
 #endif
     }
+
     public bool IsMouseButtonDownThisFrame()
     {
 #if USE_NEW_INPUT_SYSTEM
@@ -47,6 +49,7 @@ public class InputManager : MonoBehaviour
         return Input.GetMouseButtonDown(0);
 #endif
     }
+
     public Vector2 GetCameraMoveVector()
     {
 #if USE_NEW_INPUT_SYSTEM
@@ -73,6 +76,7 @@ public class InputManager : MonoBehaviour
         return inputMoveDir;
 #endif
     }
+
     public float GetCameraRotateAmount()
     {
 #if USE_NEW_INPUT_SYSTEM
@@ -91,6 +95,7 @@ public class InputManager : MonoBehaviour
         return rotateAmount;
 #endif
     }
+    
     public float GetCameraZoomAmount()
     {
 #if USE_NEW_INPUT_SYSTEM

@@ -49,11 +49,11 @@ public class GridSystem <TGridObject>
     {
         for (int x = 0; x < width; x++)
         {
-            //calling it height just because it makes more sense to codemonkey on a 2D spread. no reason
+            //calling it height just because it makes more sense on a 2D spread
             for (int z = 0; z < height; z++)
             {
                 GridPosition gridPosition = new GridPosition (x, z);
-                //GameObject.Instantiate bc/ this is not mono so unity can't do it for us. 
+                //GameObject.Instantiate bc/ this is not mono so unity can't do it. 
                 Transform debugTransform = GameObject.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity); 
                 GridDebugObject gridDebugObject = debugTransform.GetComponent <GridDebugObject>();
                 gridDebugObject.SetGridObject(GetGridObject(gridPosition));

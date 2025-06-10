@@ -30,7 +30,77 @@ public class MoveAction : BaseAction
 
     void clickToMove()
     {
+        Vector3 targetPosition = positionList[currentPositionIndex];
+        Vector3 moveDirection = (targetPosition - transform.position).normalized;
 
+        // Smooth rotation toward move direction
+        if (moveDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
+
+        // Move with MoveTowards to avoid overshooting and hitching
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPosition,
+            moveSpeed * Time.deltaTime
+        );
+
+        // Check if we've arrived at the current path point
+        if (Vector3.Distance(transform.position, targetPosition) <= stoppingDistance)
+        {
+            currentPositionIndex++;
+
+            if (currentPositionIndex >= positionList.Count)
+            {
+                OnStopMoving?.Invoke(this, EventArgs.Empty);
+                ActionComplete();
+            }
+        }
+        /*
+        Vector3 targetPosition = positionList[currentPositionIndex];
+        Vector3 moveDirection = (targetPosition - transform.position).normalized;
+
+        // 🔁 Smooth rotation toward movement direction (not instant snap)
+        if (moveDirection != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
+
+        // 🧭 Move using moveDirection directly — not transform.forward
+        if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
+        {
+            transform.position += moveDirection * moveSpeed * Time.deltaTime;
+
+            if (Vector3.Distance(transform.position, targetPosition) < stoppingDistance)
+            {
+                transform.position = targetPosition;
+            }
+        }
+        else
+        {
+            transform.position = targetPosition;
+
+            currentPositionIndex++;
+            if (currentPositionIndex >= positionList.Count)
+            {
+                OnStopMoving?.Invoke(this, EventArgs.Empty);
+                ActionComplete();
+            }
+        }  
+        */
+
+        /* 
         Vector3 targetPosition = positionList[currentPositionIndex];
         Vector3 moveDirection = (targetPosition - transform.position).normalized;
 
@@ -49,7 +119,7 @@ public class MoveAction : BaseAction
                 ActionComplete();
             }
         }
-
+        */
     }
 
     #endregion  
