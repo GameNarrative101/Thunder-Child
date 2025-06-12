@@ -62,64 +62,6 @@ public class MoveAction : BaseAction
                 ActionComplete();
             }
         }
-        /*
-        Vector3 targetPosition = positionList[currentPositionIndex];
-        Vector3 moveDirection = (targetPosition - transform.position).normalized;
-
-        // 🔁 Smooth rotation toward movement direction (not instant snap)
-        if (moveDirection != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.RotateTowards(
-                transform.rotation,
-                targetRotation,
-                rotationSpeed * Time.deltaTime
-            );
-        }
-
-        // 🧭 Move using moveDirection directly — not transform.forward
-        if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
-        {
-            transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-            if (Vector3.Distance(transform.position, targetPosition) < stoppingDistance)
-            {
-                transform.position = targetPosition;
-            }
-        }
-        else
-        {
-            transform.position = targetPosition;
-
-            currentPositionIndex++;
-            if (currentPositionIndex >= positionList.Count)
-            {
-                OnStopMoving?.Invoke(this, EventArgs.Empty);
-                ActionComplete();
-            }
-        }  
-        */
-
-        /* 
-        Vector3 targetPosition = positionList[currentPositionIndex];
-        Vector3 moveDirection = (targetPosition - transform.position).normalized;
-
-        transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
-        {
-            transform.position += moveDirection * moveSpeed * Time.deltaTime;
-        }
-        else
-        {
-            currentPositionIndex++;
-            if (currentPositionIndex >= positionList.Count)
-            {
-                OnStopMoving?.Invoke(this, EventArgs.Empty);
-                ActionComplete();
-            }
-        }
-        */
     }
 
     #endregion  
