@@ -126,7 +126,7 @@ public class PCMech : MonoBehaviour
     public bool IsDead() => isDead;
     public void TakeDamage(int damageAmount) { healthSystem.Damage(damageAmount); }
     public bool CanSpendCorePowerForAction(BaseAction baseAction) { return corePower >= baseAction.GetCorePowerCost(); }
-    public bool TrySpendCorePowerForAction(BaseAction baseAction) //for other scripts' use
+    public bool TrySpendCorePowerForAction(BaseAction baseAction)
     {
         if (CanSpendCorePowerForAction(baseAction))
         {
@@ -141,7 +141,7 @@ public class PCMech : MonoBehaviour
         OnHeatChange?.Invoke(this, EventArgs.Empty);
         if (heat > maxHeat) { print("Overheated!"); }
     }
-    public void TryReduceHeat(int amount) //for other scripts' use
+    public void TryReduceHeat(int amount)
     {
         if (heat - amount >= 0) { ReduceHeat(amount); }
         print("Not enough heat to reduce!");

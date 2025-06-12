@@ -391,7 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3ea885eeb6a2cc42b7cb6b9a1e0019f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ragdollPrefab: {fileID: 6812920997967081395, guid: 18d39c7a6206a1a48aa7863335f0a610, type: 3}
+  ragdollPrefab: {fileID: 6812920997967081395, guid: 07b788f11ee1fbb41b250afe41c8a02a, type: 3}
   originalRootBone: {fileID: 3274264604376189535}
 --- !u!65 &6644253763209447500
 BoxCollider:
