@@ -109,12 +109,10 @@ public class PCMech : MonoBehaviour
     void HealthSystem_OnDead(object sender, EventArgs e)
     {
         isDead = true;
+        OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
         LevelGrid.Instance.RemoveMechAtGridPosition(gridPosition, this);
 
-        //add death animation, then destroy
         Destroy(gameObject);
-
-        OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
     }
 
     #endregion
