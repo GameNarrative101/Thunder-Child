@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -22,22 +23,19 @@ public class CameraController : MonoBehaviour
     CinemachineFollow followComponent;
     float accumulatedYaw = 0f;
     bool isFollowingTarget = false;
+    bool initialized = false;
+
 
 
 
     private void Start()
     {
         followComponent = (CinemachineFollow)cinemachineCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
-        targetFollowOffset = followComponent.FollowOffset;
 
-        FollowTarget();
+        AutoFollowTarget();
+        Subscriptions();
 
-        MoveAction moveAction = FindFirstObjectByType<MoveAction>();
-        if (moveAction != null)
-        {
-            moveAction.OnStartMoving += MoveAction_OnStartMoving;
-            moveAction.OnStopMoving += MoveAction_OnStopMoving;
-        }
+        StartCoroutine(ForceInitialCameraUpdate()); // Force immediate follow offset
     }
     void Update()
     {
@@ -47,6 +45,30 @@ public class CameraController : MonoBehaviour
         ProcessZoom();
     }
 
+
+
+    //==================================================================================================================================== 
+    #region Setup
+
+    private IEnumerator ForceInitialCameraUpdate()
+    {
+        yield return new WaitForEndOfFrame(); // Wait for Cinemachine Brain to settle
+
+        followComponent.FollowOffset = followOffset;
+        targetFollowOffset = followOffset;
+
+        Vector3 targetPosition = followTarget.position + followOffset;
+        transform.position = targetPosition; // Snap to correct initial position
+    }
+    private void Subscriptions()
+    {
+        MoveAction moveAction = FindFirstObjectByType<MoveAction>();
+        if (moveAction != null)
+        {
+            moveAction.OnStartMoving += MoveAction_OnStartMoving;
+            moveAction.OnStopMoving += MoveAction_OnStopMoving;
+        }
+    }
     private void OnDestroy()
     {
         MoveAction moveAction = FindFirstObjectByType<MoveAction>();
@@ -59,7 +81,7 @@ public class CameraController : MonoBehaviour
     private void MoveAction_OnStartMoving(object sender, EventArgs e)
     {
         isFollowingTarget = true;
-        FollowTarget();
+        AutoFollowTarget();
     }
     private void MoveAction_OnStopMoving(object sender, EventArgs e)
     {
@@ -76,9 +98,17 @@ public class CameraController : MonoBehaviour
 
         if (isFollowingTarget && followTarget != null)
         {
-            FollowTarget();
+            AutoFollowTarget();
         }
     }
+
+    #endregion
+
+
+
+    //==================================================================================================================================== 
+    #region Camera Controls
+
     void ProcessMove()
     {
         Vector2 inputMoveDir = InputManager.Instance.GetCameraMoveVector();
@@ -88,25 +118,48 @@ public class CameraController : MonoBehaviour
         transform.position += moveVector * cameraSpeed * Time.deltaTime;
         transform.position = new Vector3(transform.position.x, originalY, transform.position.z);
     }
-    void ProcessRotation()
+    void ProcessRotation(float? targetYaw = null)
     {
-        accumulatedYaw += InputManager.Instance.GetCameraRotateAmount() * yawFactor * Time.deltaTime;
-
+        if (targetYaw.HasValue)
+        {
+            accumulatedYaw = targetYaw.Value; // Auto-rotation, used on unit movement
+        }
+        else
+        {
+            accumulatedYaw += InputManager.Instance.GetCameraRotateAmount() * yawFactor * Time.deltaTime;
+        }
         transform.localRotation = Quaternion.Euler(defaultPitch, accumulatedYaw, 0);
     }
     private void ProcessZoom()
     {
         targetFollowOffset.y += InputManager.Instance.GetCameraZoomAmount();
-
         targetFollowOffset.y = Mathf.Clamp(targetFollowOffset.y, MinFollowYOffset, MaxFollowYOffset);
-        followComponent.FollowOffset = Vector3.Lerp(followComponent.FollowOffset, targetFollowOffset, zoomSpeed * Time.deltaTime);
+
+        if (!initialized)
+        {
+            followComponent.FollowOffset = targetFollowOffset;
+            initialized = true;
+        }
+        else
+        {
+            followComponent.FollowOffset = Vector3.Lerp(followComponent.FollowOffset, targetFollowOffset, zoomSpeed * Time.deltaTime);
+        }
     }
-    void FollowTarget()
+    void AutoFollowTarget()
     {
         if (followTarget == null) return;
 
-        // Smoothly follow the target position with an offset
-        Vector3 targetPosition = followTarget.position + followOffset;
+        Vector3 targetPosition = followTarget.position + followOffset; // Follow target
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, followSmoothTime);
+
+        Vector3 lookDirection = followTarget.position - transform.position; // Rotate towards target
+        lookDirection.y = 0f; // horizontal rotation only
+        if (lookDirection.sqrMagnitude > 0.001f)
+        {
+            float desiredYaw = Quaternion.LookRotation(lookDirection).eulerAngles.y;
+            ProcessRotation(Mathf.LerpAngle(accumulatedYaw, desiredYaw, Time.deltaTime * 5f)); // smooth rotation
+        }
     }
+
+    #endregion
 }

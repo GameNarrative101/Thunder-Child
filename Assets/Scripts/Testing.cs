@@ -31,7 +31,6 @@ public class Testing : MonoBehaviour
         {
             TurnSystemScript.Instance.NextTurn();
         }
-
     }
 
 
