@@ -34511,6 +34511,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3821737785300979387, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
+      propertyPath: ragdollPrefab
+      value: 
+      objectReference: {fileID: 6812920997967081395, guid: 18d39c7a6206a1a48aa7863335f0a610, type: 3}
     - target: {fileID: 3873984016508158188, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
       propertyPath: m_Name
       value: PC Mech

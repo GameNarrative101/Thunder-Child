@@ -10,6 +10,11 @@ public class GrenadeLauncherAction : BaseAction
 
 
 
+    protected override void Awake()
+    {
+        base.Awake();
+        isEnemyAction = false; // Player only
+    }
     void Update()
     {
         if (!isActive) { return; }

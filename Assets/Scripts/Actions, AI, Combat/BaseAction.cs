@@ -11,9 +11,11 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     protected Action onActionComplete;
     protected PCMech pCMech; //Protoected: can be accessed but not changed
     protected bool isActive;
+    [SerializeField] protected bool isPlayerAction = true;
+    [SerializeField] protected bool isEnemyAction = true;
 
-    public static event EventHandler OnAnyActionStarted; //NOT USED YET
-    public static event EventHandler OnAnyActionCompleted; //NOT USED YET
+    public static event EventHandler OnAnyActionStarted;
+    public static event EventHandler OnAnyActionCompleted;
 
 
 
@@ -57,6 +59,8 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     }
     public virtual int GetCorePowerCost() => 1;
     public virtual int GetHeatGenerated() => 1;
+    public bool IsPlayerAction() => isPlayerAction; // Not used yet since all actions are player actions for now.
+    public bool IsEnemyAction() => isEnemyAction;
 
     #endregion
 
@@ -85,7 +89,14 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
         foreach (GridPosition gridPosition in validActionGridPositionList)
         {
             EnemyAIAction enemyAIAction = GetBestEnemyAIAction(gridPosition);
-            enemyAIActionList.Add(enemyAIAction);
+            if (enemyAIAction == null)
+            {
+                Debug.LogWarning($"{GetType().Name}: GetBestEnemyAIAction returned null for {gridPosition}");
+            }
+            else
+            {
+                enemyAIActionList.Add(enemyAIAction);
+            }
         }
 
         if (enemyAIActionList.Count == 0) { return null; }

@@ -72,7 +72,7 @@ public class EnemyAI : MonoBehaviour
         }
         return false;
     }
-    
+
     /* INEFFITIENT CODE, SEE SIMPLIFIED VERSION
          bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
         {
@@ -110,6 +110,7 @@ public class EnemyAI : MonoBehaviour
 
         foreach (BaseAction baseAction in enemyUnit.GetBaseActionArray())
         {
+            if (!baseAction.IsEnemyAction()) continue;
             if (!enemyUnit.CanSpendCorePowerForAction(baseAction)) continue;
 
             if (bestEnemyAIAction == null)
@@ -120,7 +121,7 @@ public class EnemyAI : MonoBehaviour
             else
             {
                 EnemyAIAction newEnemyAIAction = baseAction.GetBestEnemyAIAction();
-                
+
                 if (newEnemyAIAction == null) continue;
                 if (newEnemyAIAction.actionValue > bestEnemyAIAction.actionValue)
                 {
@@ -129,13 +130,14 @@ public class EnemyAI : MonoBehaviour
                 }
             }
         }
-        
+
         if (bestEnemyAIAction != null && enemyUnit.TrySpendCorePowerForAction(bestBaseAction))
         {
             bestBaseAction.TakeAction(bestEnemyAIAction.gridPosition, onEnemyAIActionComplete);
             return true;
         }
         else return false;
+        
     }
 
 }
