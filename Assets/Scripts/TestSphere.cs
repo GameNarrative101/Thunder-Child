@@ -1,0 +1,45 @@
+using System;
+using UnityEngine;
+
+public class TestSphere : MonoBehaviour, IInteractable
+{
+    [SerializeField] private Material greenMaterial;
+    [SerializeField] private Material redMaterial;
+    [SerializeField] private MeshRenderer meshRenderer;
+    private GridPosition gridPosition;
+    bool isGreen;
+
+    private void Start()
+    {
+        gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+        LevelGrid.Instance.SetInteractableAtGridPosition(gridPosition, this);
+        SetColorGreen();
+    }
+    void SetColorGreen()
+    {
+        isGreen = true;
+        if (meshRenderer != null && greenMaterial != null)
+        {
+            meshRenderer.material = greenMaterial;
+        }
+    }
+    void SetColorRed()
+    {
+        isGreen = false;
+        if (meshRenderer != null && redMaterial != null)
+        {
+            meshRenderer.material = redMaterial;
+        }
+    }
+    public void Interact(Action onInteractComplete)
+    {
+        if (isGreen)
+        {
+            SetColorRed();
+        }
+        else
+        {
+            SetColorGreen();
+        }
+    }
+}

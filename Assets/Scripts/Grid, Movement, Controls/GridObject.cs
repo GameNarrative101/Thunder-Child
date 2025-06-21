@@ -7,7 +7,7 @@ public class GridObject
     private GridSystem<GridObject> gridSystem;
     //make it a LIST of mechs to allow for multiple pc units to be on the same cell. Not in a game rule sense, just in a system understands it sense. cells keep updating nice
     private List<PCMech> pCMechList;
-    PrometheusCore prometheusCore;
+    IInteractable interactable;
 
 
 
@@ -36,6 +36,6 @@ public class GridObject
     public void RemovePcMech(PCMech pCMech) { pCMechList.Remove(pCMech); }
     public List<PCMech> GetPcMechList() { return pCMechList; }
     public bool HasAnyPcMech() { return pCMechList.Count > 0; }
-    public PrometheusCore GetPrometheusCore() => prometheusCore;
-    public void SetPrometheusCore(PrometheusCore prometheusCore) { this.prometheusCore = prometheusCore; }
+    public IInteractable GetInteractable() => interactable;
+    public void SetInteractable(IInteractable interactable) { this.interactable = interactable; }
 }

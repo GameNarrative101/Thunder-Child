@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class PrometheusCore : MonoBehaviour
+public class PrometheusCore : MonoBehaviour, IInteractable
 {
     bool hasPrometheusCore;
 
@@ -35,12 +36,12 @@ public class PrometheusCore : MonoBehaviour
 
                 if (!LevelGrid.Instance.IsValidPosition(occupiedGridPos)) continue;
 
-                LevelGrid.Instance.SetPrometheusCoreAtGridPosition(occupiedGridPos, this);
+                LevelGrid.Instance.SetInteractableAtGridPosition(occupiedGridPos, this);
             }
         }
 
     }
-    public void Interact()
+    public void Interact(Action onInteractComplete)
     {
         Light spotLight = GetComponentInChildren<Light>();
         if (spotLight != null && spotLight.type == LightType.Spot)
