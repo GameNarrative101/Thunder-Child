@@ -65,6 +65,16 @@ public class LevelGrid : MonoBehaviour
         return gridObject.HasAnyPcMech();
     }
     public bool IsValidPosition(GridPosition gridPosition) => gridSystem.IsValidPosition(gridPosition);
+    public PrometheusCore GetPrometheusCoreAtGridPosition(GridPosition gridPosition)
+    {
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+        return gridObject.GetPrometheusCore();
+    }
+    public void SetPrometheusCoreAtGridPosition(GridPosition gridPosition, PrometheusCore prometheusCore)
+    {
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+        gridObject.SetPrometheusCore(prometheusCore);
+    }
 
 
 

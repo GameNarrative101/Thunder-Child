@@ -258,6 +258,7 @@ GameObject:
   - component: {fileID: 6644253763209447500}
   - component: {fileID: 6458105536477719132}
   - component: {fileID: -2478586375845164213}
+  - component: {fileID: 5060653246394423761}
   m_Layer: 7
   m_Name: PC Mech
   m_TagString: Untagged
@@ -313,6 +314,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e38ab20841b94c42ab6bd7ac6eac41d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayerAction: 1
+  isEnemyAction: 1
   moveSpeed: 30
   stoppingDistance: 0.1
   rotationSpeed: 30
@@ -329,6 +332,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db23b45bbd0a4dd46908fa28be8e2def, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayerAction: 1
+  isEnemyAction: 1
   spinningPowerCost: 2
 --- !u!114 &8149747404443248139
 MonoBehaviour:
@@ -342,6 +347,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 775f2a118f86179459ac554dd020aad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayerAction: 1
+  isEnemyAction: 1
   aimingStateTime: 0.5
   shootingStateTime: 0.1
   coolOffStateTime: 0.5
@@ -426,6 +433,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4203eb947f92bb45aeacddf449ad3f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayerAction: 1
+  isEnemyAction: 1
   grenadeProjectilePrefab: {fileID: 370322483711697218, guid: 1415c37904146a8419d8c394566d0056, type: 3}
 --- !u!114 &-2478586375845164213
 MonoBehaviour:
@@ -439,8 +448,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e48ebc31ddbc63842b6c73b79e3a1fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayerAction: 1
+  isEnemyAction: 1
   maxMeleeDistance: 1
   meleeDamage: 25
+--- !u!114 &5060653246394423761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f7cefac6f1c4d419917c77a3f32c7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4225462496246562325
 GameObject:
   m_ObjectHideFlags: 0

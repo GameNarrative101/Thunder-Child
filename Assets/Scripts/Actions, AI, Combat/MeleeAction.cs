@@ -75,10 +75,7 @@ public class MeleeAction : BaseAction
     //==================================================================================================================================== 
     #region OVERRIDES
 
-    public override string GetActionName()
-    {
-        return "Melee";
-    }
+    public override string GetActionName() => "Melee";
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
@@ -129,10 +126,7 @@ public class MeleeAction : BaseAction
 
     //==================================================================================================================================== 
     #region GETTERS
-    public int GetMaxMeleeDistance()
-    {
-        return maxMeleeDistance;
-    }
-    
+    public int GetMaxMeleeDistance() => maxMeleeDistance;
+
     #endregion
 }
