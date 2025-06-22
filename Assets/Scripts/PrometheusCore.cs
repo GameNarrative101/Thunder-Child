@@ -4,6 +4,7 @@ using UnityEngine;
 public class PrometheusCore : MonoBehaviour, IInteractable
 {
     bool hasPrometheusCore;
+    public static event EventHandler OnPrometheusCoreCollected;
 
 
 
@@ -48,6 +49,7 @@ public class PrometheusCore : MonoBehaviour, IInteractable
         {
             spotLight.enabled = false;
         }
+        OnPrometheusCoreCollected?.Invoke(this, EventArgs.Empty);
         hasPrometheusCore = true;
     }
 }
