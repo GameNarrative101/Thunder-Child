@@ -13,7 +13,7 @@ public class TestSphere : MonoBehaviour, IInteractable
     {
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
         LevelGrid.Instance.SetInteractableAtGridPosition(gridPosition, this);
-        SetColorGreen();
+        SetColorRed();
     }
     void SetColorGreen()
     {
@@ -33,6 +33,9 @@ public class TestSphere : MonoBehaviour, IInteractable
     }
     public void Interact(Action onInteractComplete)
     {
+        PrometheusCore prometheusCore = FindFirstObjectByType<PrometheusCore>();
+        if (!prometheusCore.GetHasPrometheusCore()) {return;}
+
         if (isGreen)
         {
             SetColorRed();

@@ -52,4 +52,8 @@ public class PrometheusCore : MonoBehaviour, IInteractable
         OnPrometheusCoreCollected?.Invoke(this, EventArgs.Empty);
         hasPrometheusCore = true;
     }
+    public bool GetHasPrometheusCore()
+    {
+        return hasPrometheusCore;
+    }
 }
