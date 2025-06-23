@@ -386,6 +386,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxShield: 70
   shield: 30
+  ExpeditionFailed: {fileID: 0}
+  pcMech: {fileID: 3670705484915049570}
 --- !u!114 &3821737785300979387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,6 +466,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6f7cefac6f1c4d419917c77a3f32c7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayerAction: 1
+  isEnemyAction: 1
+  interactPowerCost: 0
+  interactHeatGenerated: 0
 --- !u!1 &4225462496246562325
 GameObject:
   m_ObjectHideFlags: 0

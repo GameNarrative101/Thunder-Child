@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
 
-public class TestSphere : MonoBehaviour, IInteractable
+public class Extraction : MonoBehaviour, IInteractable
 {
     [SerializeField] private Material greenMaterial;
     [SerializeField] private Material redMaterial;
     [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private GameObject expeditionSuccessful;
     private GridPosition gridPosition;
     bool isGreen;
 
@@ -42,7 +43,8 @@ public class TestSphere : MonoBehaviour, IInteractable
         }
         else
         {
-            SetColorGreen();
+            SetColorGreen(); //only option. turns red for testing purposes
+            expeditionSuccessful.SetActive(true);
         }
     }
 }

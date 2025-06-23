@@ -5,6 +5,8 @@ public class HealthSystem : MonoBehaviour
 {
     [SerializeField] int maxShield = 70;
     [SerializeField] int shield;
+    [SerializeField] GameObject ExpeditionFailed;
+    [SerializeField] PCMech pcMech;
     // bool isDead = false;
 
     public event EventHandler OnDead;
@@ -39,6 +41,11 @@ public class HealthSystem : MonoBehaviour
     void Die()
     {
         OnDead?.Invoke(this, EventArgs.Empty);
+
+        if (!pcMech.IsEnemy())
+        {
+            ExpeditionFailed.SetActive(true);
+        }
     }
     public float GetShieldNormalized()
     {
