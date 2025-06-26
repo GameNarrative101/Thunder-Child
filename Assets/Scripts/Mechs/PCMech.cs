@@ -152,6 +152,11 @@ public class PCMech : MonoBehaviour
         if (heat - amount >= 0) { ReduceHeat(amount); }
         print("Not enough heat to reduce!");
     }
+    public void ResetHeat()
+    {
+        heat = 0;
+        OnHeatChange?.Invoke(this, EventArgs.Empty);
+    }
 
     #endregion
 

@@ -1,22 +1,20 @@
 using System;
 using UnityEngine;
 
-public class PrometheusCore : MonoBehaviour, IInteractable
+public class PowerStation : MonoBehaviour, IInteractable
 {
-    bool hasPrometheusCore;
-    public static event EventHandler OnPrometheusCoreCollected;
+    [SerializeField] PCMech pCMech;
 
 
 
     void Start()
     {
-        FindAndSetPrometheusCorePosition();
-        hasPrometheusCore = false;
+        FindAndSetPowerStationPosition();
     }
 
 
 
-    void FindAndSetPrometheusCorePosition()
+    void FindAndSetPowerStationPosition()
     {
         Collider collider = GetComponentInChildren<Collider>();
         Bounds bounds = collider.bounds;
@@ -41,16 +39,6 @@ public class PrometheusCore : MonoBehaviour, IInteractable
     }
     public void Interact(Action onInteractComplete)
     {
-        Light spotLight = GetComponentInChildren<Light>();
-        if (spotLight != null && spotLight.type == LightType.Spot)
-        {
-            spotLight.enabled = false;
-        }
-        OnPrometheusCoreCollected?.Invoke(this, EventArgs.Empty);
-        hasPrometheusCore = true;
-    }
-    public bool GetHasPrometheusCore()
-    {
-        return hasPrometheusCore;
+        pCMech.GainCorePower(7);
     }
 }
