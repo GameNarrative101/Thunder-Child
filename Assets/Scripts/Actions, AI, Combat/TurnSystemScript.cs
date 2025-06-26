@@ -49,25 +49,4 @@ public class TurnSystemScript : MonoBehaviour
     {
         return isPlayerTurn;
     }
-
-
-
-
-
-
-    /* 
-
-    
-    public event EventHandler OnTurnStart;
-
-
-
-    public void EndTurn()
-    {
-    }
-
-    public void StartTurn()
-    {
-        OnTurnStart?.Invoke(this, EventArgs.Empty);
-    } */
 }

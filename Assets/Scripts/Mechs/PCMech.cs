@@ -99,7 +99,7 @@ public class PCMech : MonoBehaviour
         if ((IsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) ||
         (!IsEnemy() && TurnSystemScript.Instance.IsPlayerTurn()))
         {
-            corePower += corePowerIncrease;
+            GainCorePower(corePowerIncrease);
             OnCorePowerChange?.Invoke(this, EventArgs.Empty);
 
             TryReduceHeat(2);
@@ -134,6 +134,12 @@ public class PCMech : MonoBehaviour
             return true;
         }
         return false;
+    }
+    public void GainCorePower(int amount)
+    {
+        corePower += amount;
+        OnCorePowerChange?.Invoke(this, EventArgs.Empty);
+        if (corePower > maxCorePower) { print("Overloaded!"); }
     }
     public void GainHeat(int amount) //effects of overheating to be implemented later
     {
