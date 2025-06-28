@@ -15,7 +15,6 @@ public class ShootAction : BaseAction
     [SerializeField] float aimingStateTime = 0.5f;
     [SerializeField] float shootingStateTime = 0.1f;
     [SerializeField] float coolOffStateTime = 0.5f;
-    [SerializeField] int shootActionDamage = 10;
     [SerializeField] int maxShootDistance = 2;
     [SerializeField] LayerMask obstaclesLayerMask;
 
@@ -94,7 +93,7 @@ public class ShootAction : BaseAction
         OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
 
         //static damage amount for now. implement real action logic later
-        targetUnit.TakeDamage(shootActionDamage);
+        targetUnit.TakeDamage(GetRolledDamage());
     }
 
     #endregion
@@ -122,6 +121,7 @@ public class ShootAction : BaseAction
 
         ActionStart(onActionComplete);
     }
+    protected override (int, int, int) GetDamageByTier() => (4, 7, 10);
 
     /* RESTOROE THIS AND DELETE ALL OTHERS */
 

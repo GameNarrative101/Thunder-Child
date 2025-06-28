@@ -5,8 +5,10 @@ using UnityEngine;
 public class GrenadeLauncherAction : BaseAction
 {
     [SerializeField] Transform grenadeProjectilePrefab;
+    [SerializeField] float damageRadius = 8f; //ADDED
 
     int maxGrenadeDistance = 7;
+    int pendingDamage;//ADDED
 
 
 
@@ -45,17 +47,30 @@ public class GrenadeLauncherAction : BaseAction
         }
         return validGridPositionList;
     }
+    protected override (int, int, int) GetDamageByTier() => (8, 12, 18);
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
+        pendingDamage = GetRolledDamage();
+        // int rolledDamage = GetRolledDamage();
+
         Transform grenadeProjectileTransform = Instantiate(grenadeProjectilePrefab, pCMech.GetWorldPosition(), Quaternion.identity);
         GrenadeProjectile grenadeProjectile = grenadeProjectileTransform.GetComponent<GrenadeProjectile>();
-        grenadeProjectile.Setup(gridPosition, onGrenadeBehaviourComplete);
+        grenadeProjectile.Setup(gridPosition, OnGrenadeExploded);
 
         Debug.Log("Grenade Launched");
         ActionStart(onActionComplete);
     }
-    void onGrenadeBehaviourComplete()
+
+    private void OnGrenadeExploded(Vector3 explosionPosition)
     {
+        Collider[] colliderArray = Physics.OverlapSphere(explosionPosition, damageRadius);
+        foreach (Collider collider in colliderArray)
+        {
+            if (collider.TryGetComponent(out PCMech pcMech))
+            {
+                pcMech.TakeDamage(pendingDamage);
+            }
+        }
         ActionComplete();
     }
 }

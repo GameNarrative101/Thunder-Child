@@ -44,6 +44,18 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         OnAnyActionCompleted?.Invoke(this, EventArgs.Empty);
     }
+    protected int GetRolledDamage(int bonusModifier = 0)
+    {
+        var (tier1, tier2, tier3) = GetDamageByTier();
+        PowerRoll.PowerRollTier tier = PowerRoll.Instance.Roll(bonusModifier);
+        return tier switch
+        {
+            PowerRoll.PowerRollTier.Tier1 => tier1,
+            PowerRoll.PowerRollTier.Tier2 => tier2,
+            PowerRoll.PowerRollTier.Tier3 => tier3,
+            _ => tier1,
+        };
+    }
 
     #endregion
 
@@ -61,6 +73,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     public virtual int GetHeatGenerated() => 1;
     public bool IsPlayerAction() => isPlayerAction; // Not used yet since all actions are player actions for now.
     public bool IsEnemyAction() => isEnemyAction;
+    protected virtual (int tier1, int tier2, int tier3) GetDamageByTier() => (0, 0, 0);
 
     #endregion
 

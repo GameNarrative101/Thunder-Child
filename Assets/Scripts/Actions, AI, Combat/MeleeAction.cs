@@ -12,8 +12,6 @@ public class MeleeAction : BaseAction
     public event EventHandler OnMeleeActionCompleted;
     public static event EventHandler OnAnyMeleeActionHit; //for screen shake
     [SerializeField] int maxMeleeDistance = 1;
-    [SerializeField] int meleeDamage = 25;
-
 
 
     void Update()
@@ -46,7 +44,6 @@ public class MeleeAction : BaseAction
         }
 
         if (stateTimer <= 0f) { NextState(); }
-
         return true;
     }
     private void NextState()
@@ -58,7 +55,7 @@ public class MeleeAction : BaseAction
                 state = State.AfterHit;
                 float AfterHitStateTime = 0.5f;
                 stateTimer = AfterHitStateTime;
-                targetUnit.TakeDamage(meleeDamage);
+                targetUnit.TakeDamage(GetRolledDamage());
                 OnAnyMeleeActionHit?.Invoke(this, EventArgs.Empty); //for screen shake
                 break;
             case State.AfterHit:
@@ -119,6 +116,7 @@ public class MeleeAction : BaseAction
             actionValue = 200,
         };
     }
+protected override (int, int, int) GetDamageByTier() => (10, 20, 30);
 
     #endregion
 

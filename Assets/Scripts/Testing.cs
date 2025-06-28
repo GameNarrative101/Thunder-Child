@@ -14,7 +14,7 @@ public class Testing : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-                pcMech.TakeDamage(150);
+            pcMech.TakeDamage(150);
             /* CHECKING PATHFINDING
             GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
             GridPosition startGridPosition = new GridPosition(0, 0);
@@ -32,7 +32,9 @@ public class Testing : MonoBehaviour
         {
             TurnSystemScript.Instance.NextTurn();
         }
+        // if (Input.GetKeyDown(KeyCode.R))
+        // {
+        //     PowerRoll.Instance.Roll();
+        // }
     }
-
-
 }

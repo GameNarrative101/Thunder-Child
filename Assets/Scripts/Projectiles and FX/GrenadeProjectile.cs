@@ -3,13 +3,11 @@ using UnityEngine;
 
 public class GrenadeProjectile : MonoBehaviour
 {
-    Action onGrenadeBehaviourComplete;
+    Action<Vector3> onExplodedCallback; //ADDED
     Vector3 targetPosition;
     float totalDistance;
     Vector3 positionXZ;
 
-    [SerializeField] float damageRadius = 8f;
-    [SerializeField] int grenadeDamage = 10;
     [SerializeField] Transform grenadeExplodeVfxPrefab;
     [SerializeField] TrailRenderer grenadeTrailRenderer;
     [SerializeField] AnimationCurve arcYAnimationCurve;
@@ -41,33 +39,24 @@ public class GrenadeProjectile : MonoBehaviour
         float reachedTargetDistance = 0.3f;
         if (Vector3.Distance(positionXZ, targetPosition) < reachedTargetDistance)
         {
-            Collider[] colliderArray = Physics.OverlapSphere(targetPosition, damageRadius);
-            foreach (Collider collider in colliderArray)
-            {
-                if (collider.TryGetComponent(out PCMech pcMech))
-                {
-                    pcMech.TakeDamage(grenadeDamage);
-                }
-            }
-
+            onExplodedCallback?.Invoke(targetPosition);
             OnAnyGrenadeExploded?.Invoke(this, EventArgs.Empty);
 
             grenadeTrailRenderer.transform.parent = null;
             Instantiate(grenadeExplodeVfxPrefab, targetPosition + Vector3.up * 1f, Quaternion.identity);
 
             Destroy(gameObject);
-            onGrenadeBehaviourComplete();
+            // onGrenadeBehaviourComplete();
         }
     }
 
-    public void Setup(GridPosition targetGridPosition, Action onGrenadeBehaviourComplete)
+    public void Setup(GridPosition targetGridPosition, Action<Vector3> onExploded)
     {
-        this.onGrenadeBehaviourComplete = onGrenadeBehaviourComplete;
-
         targetPosition = LevelGrid.Instance.GetWorldPosition(targetGridPosition);
 
         positionXZ = transform.position;
         positionXZ.y = 0;
         totalDistance = Vector3.Distance(positionXZ, targetPosition);
+        this.onExplodedCallback = onExploded;
     }
 }
