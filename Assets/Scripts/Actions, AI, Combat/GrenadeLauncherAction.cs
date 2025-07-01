@@ -17,14 +17,10 @@ public class GrenadeLauncherAction : BaseAction
         base.Awake();
         isEnemyAction = false; // Player only
     }
-    void Update()
-    {
-        if (!isActive) { return; }
-    }
 
 
     
-    public override string GetActionName() => "Grenade Launcher";
+    public override string GetActionName() => "Falconnet Cannon";
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();

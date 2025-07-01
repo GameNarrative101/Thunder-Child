@@ -62,16 +62,7 @@ public class GridSystem <TGridObject>
     }
     public TGridObject GetGridObject(GridPosition gridPosition)
     { 
-        // if (gridPosition.x >= 0 && gridPosition.x < gridObjectArray.GetLength(0) &&
-        //     gridPosition.z >= 0 && gridPosition.z < gridObjectArray.GetLength(1))
-        // {
-            return gridObjectArray[gridPosition.x, gridPosition.z];
-        // }
-        // else
-        // {
-        //     Debug.LogError("Grid position out of bounds: " + gridPosition);
-        //     return null;
-        // }
+        return gridObjectArray[gridPosition.x, gridPosition.z];
     }
     public bool IsValidPosition(GridPosition gridPosition)
     {

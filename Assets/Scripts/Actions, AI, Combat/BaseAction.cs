@@ -11,8 +11,8 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     protected Action onActionComplete;
     protected PCMech pCMech; //Protoected: can be accessed but not changed
     protected bool isActive;
-    [SerializeField] protected bool isPlayerAction = true;
-    [SerializeField] protected bool isEnemyAction = true;
+    protected bool isPlayerAction = true;
+    protected bool isEnemyAction = true;
 
     public static event EventHandler OnAnyActionStarted;
     public static event EventHandler OnAnyActionCompleted;
@@ -71,8 +71,8 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     }
     public virtual int GetCorePowerCost() => 1;
     public virtual int GetHeatGenerated() => 1;
-    public bool IsPlayerAction() => isPlayerAction; // Not used yet since all actions are player actions for now.
-    public bool IsEnemyAction() => isEnemyAction;
+    public bool GetIsPlayerAction() => isPlayerAction; // Not used yet since all actions are player actions for now.
+    public bool GetIsEnemyAction() => isEnemyAction;
     protected virtual (int tier1, int tier2, int tier3) GetDamageByTier() => (0, 0, 0);
 
     #endregion

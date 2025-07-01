@@ -110,7 +110,7 @@ public class EnemyAI : MonoBehaviour
 
         foreach (BaseAction baseAction in enemyUnit.GetBaseActionArray())
         {
-            if (!baseAction.IsEnemyAction()) continue;
+            if (!baseAction.GetIsEnemyAction()) continue;
             if (!enemyUnit.CanSpendCorePowerForAction(baseAction)) continue;
 
             if (bestEnemyAIAction == null)

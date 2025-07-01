@@ -21,9 +21,8 @@ public class ShootAction : BaseAction
     public event EventHandler<OnShootEventArgs> OnShoot;
     public static event EventHandler<OnShootEventArgs> OnAnyShoot; //for scren shake
 
-    public class OnShootEventArgs : EventArgs
+    public class OnShootEventArgs : EventArgs //adding more to the event, instead of <> on event handler. another option
     {
-        //adding more to the event, instead of <> on event handler. another option
         public PCMech targetUnit;
         public PCMech shootingUnit;
     }
@@ -49,8 +48,7 @@ public class ShootAction : BaseAction
         switch (state)
         {
             case State.Aiming:
-                //rotate towards target
-                Vector3 aimDir = (targetUnit.GetWorldPosition() - pCMech.GetWorldPosition()).normalized;
+                Vector3 aimDir = (targetUnit.GetWorldPosition() - pCMech.GetWorldPosition()).normalized; //rotate towards target
                 float rotationSpeed = 30f;
                 transform.forward = Vector3.Lerp(transform.forward, aimDir, rotationSpeed * Time.deltaTime);
                 break;
@@ -92,7 +90,6 @@ public class ShootAction : BaseAction
         OnShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
         OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
 
-        //static damage amount for now. implement real action logic later
         targetUnit.TakeDamage(GetRolledDamage());
     }
 
@@ -103,7 +100,7 @@ public class ShootAction : BaseAction
     //==================================================================================================================================== 
     #region OVERRIDES
 
-    public override string GetActionName() => "Shoot";
+    public override string GetActionName() => "Anti-materiel Rifle";
     public override int GetHeatGenerated()
     {
         if (!pCMech.IsEnemy()) { return 4; }
@@ -112,7 +109,7 @@ public class ShootAction : BaseAction
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);
-        HealthSystem targetHealthSystem = targetUnit.GetComponent<HealthSystem>();
+        // HealthSystem targetHealthSystem = targetUnit.GetComponent<HealthSystem>();
 
         state = State.Aiming;
         stateTimer = aimingStateTime;
