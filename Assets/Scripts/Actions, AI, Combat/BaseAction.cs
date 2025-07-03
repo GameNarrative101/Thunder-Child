@@ -53,7 +53,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
             PowerRoll.PowerRollTier.Tier1 => tier1,
             PowerRoll.PowerRollTier.Tier2 => tier2,
             PowerRoll.PowerRollTier.Tier3 => tier3,
-            _ => tier1,
+            _ => tier2,
         };
     }
 

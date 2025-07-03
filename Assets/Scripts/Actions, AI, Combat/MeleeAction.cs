@@ -116,7 +116,7 @@ public class MeleeAction : BaseAction
             actionValue = 200,
         };
     }
-protected override (int, int, int) GetDamageByTier() => (10, 20, 30);
+    protected override (int, int, int) GetDamageByTier() => (10, 20, 30);
 
     #endregion
 
