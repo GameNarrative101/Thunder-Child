@@ -1,0 +1,111 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ParticleBeamCannonAction : BaseAction
+{
+    [SerializeField] Transform beamProjectilePrefab;
+    [SerializeField] int beamLength = 7;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        isEnemyAction = false; // player only
+    }
+
+
+
+    public override string GetActionName() => "Particle Beam Cannon";
+    protected override (int, int, int) GetDamageByTier() => (6, 10, 15);
+
+    public override List<GridPosition> GetValidActionGridPositionList()
+    {
+        List<GridPosition> validGridPositionList = new List<GridPosition>();
+        GridPosition originGridPosition = pCMech.GetGridPosition();
+
+        Vector2Int[] directions = new Vector2Int[] //All 8 directions, up to beamLength
+        {
+            new Vector2Int(1, 0),   // East
+            new Vector2Int(-1, 0),  // West
+            new Vector2Int(0, 1),   // North
+            new Vector2Int(0, -1),  // South
+            new Vector2Int(1, 1),   // NE
+            new Vector2Int(-1, 1),  // NW
+            new Vector2Int(1, -1),  // SE
+            new Vector2Int(-1, -1), // SW
+        };
+
+        foreach (var dir in directions)
+        {
+            for (int i = 1; i <= beamLength; i++)
+            {
+                GridPosition target = originGridPosition + new GridPosition(dir.x * i, dir.y * i); //Z instead of Y?
+                if (!LevelGrid.Instance.IsValidPosition(target)) break;
+                validGridPositionList.Add(target);
+            }
+        }
+
+        return validGridPositionList;
+    }
+
+    public override void TakeAction(GridPosition targetGridPosition, Action clearBusyOnActionComplete)
+    {
+        ActionStart(clearBusyOnActionComplete);
+
+        GridPosition startGridPosition = pCMech.GetGridPosition();
+        GridPosition[] path = LevelGrid.Instance.GetDirection(startGridPosition, targetGridPosition);
+
+        // Truncate to beamLength (skipping the origin)
+        List<GridPosition> damageLine = new List<GridPosition>();
+        for (int i = 1; i < path.Length && i <= beamLength; i++)
+        {
+            damageLine.Add(path[i]);
+        }
+
+        // Spawn beam VFX
+        Transform beamTransform = Instantiate(beamProjectilePrefab, pCMech.GetWorldPosition(), Quaternion.identity);
+        ParticleBeam beam = beamTransform.GetComponent<ParticleBeam>();
+        beam.SetShooter(pCMech);
+        beam.TryShootBeam(LevelGrid.Instance.GetWorldPosition(damageLine[^1])); // endpoint of beam
+
+        BeamDamage(damageLine);
+
+    }
+    private void BeamDamage(List<GridPosition> damageLine)
+    {
+        int rolledDamage = GetRolledDamage();
+        foreach (GridPosition gridPos in damageLine)
+        {
+            List<PCMech> pcMechList = new List<PCMech> (LevelGrid.Instance.GetMechListAtGridPosition(gridPos));
+            foreach (PCMech mech in pcMechList)
+            {
+                mech.TakeDamage(rolledDamage);
+            }
+        }
+
+        ActionComplete();
+    }
+        /* 
+        1. make a particle beam prefab
+        2. in its script, make it extend from the PCMech position to the mousegrid position (a la grenade projectile)
+        3. make it deal damage to all PCMechs in its path (a la grenadelauncher)
+
+        Grenade Launcher:
+    
+        public override void TakeAction(GridPosition targetGridPosition, Action clearBusyOnActionComplete)
+        {
+            Transform particleBeamTransform = Instantiate(particleBeamPrefab, pCMech.GetWorldPosition(), Quaternion.identity);
+            ParticleBeam particleBeam = particleBeamTransform.GetComponent<ParticleBeam>();
+            particleBeam.Setup(targetGridPosition, OnGrenadeExploded);
+
+            ActionStart(clearBusyOnActionComplete);
+        }
+
+
+        KNOCKBACK:
+        handle like the pcmech takedamage method
+        receive and pass a direction into the method somehow, and an int foor number of squares to knock back
+        then, in the action scripts, that just goes into the same place as takedamage
+         */
+
+}

@@ -101,12 +101,13 @@ public class ShootAction : BaseAction
     #region OVERRIDES
 
     public override string GetActionName() => "Anti-materiel Rifle";
+    protected override (int, int, int) GetDamageByTier() => (4, 7, 10);
     public override int GetHeatGenerated()
     {
         if (!pCMech.IsEnemy()) { return 4; }
         else { return 0; }
     }
-    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
         targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);
         // HealthSystem targetHealthSystem = targetUnit.GetComponent<HealthSystem>();
@@ -116,9 +117,8 @@ public class ShootAction : BaseAction
 
         canShootBullet = true;
 
-        ActionStart(onActionComplete);
+        ActionStart(clearBusyOnActionComplete);
     }
-    protected override (int, int, int) GetDamageByTier() => (4, 7, 10);
 
     /* RESTOROE THIS AND DELETE ALL OTHERS */
 

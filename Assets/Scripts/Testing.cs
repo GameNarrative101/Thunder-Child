@@ -4,7 +4,9 @@ using UnityEngine;
 public class Testing : MonoBehaviour
 {
 
-    [SerializeField] PCMech pcMech;   
+    [SerializeField] PCMech pcMech;  
+    [SerializeField] GameObject particleBeamPrefab; // Drag your ParticleBeam prefab here in the Inspector
+    ParticleBeam activeBeam;
     void Start()
     {
     }
@@ -28,13 +30,33 @@ public class Testing : MonoBehaviour
             } 
             */
         }
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             TurnSystemScript.Instance.NextTurn();
         }
-        // if (Input.GetKeyDown(KeyCode.R))
-        // {
-        //     PowerRoll.Instance.Roll();
-        // }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            if (activeBeam == null)
+            {
+                // Instantiate the beam
+                GameObject beamGO = Instantiate(particleBeamPrefab, pcMech.GetWorldPosition(), Quaternion.identity);
+
+                // Get the script
+                activeBeam = beamGO.GetComponent<ParticleBeam>();
+                if (activeBeam == null)
+                {
+                    Debug.LogError("No ParticleBeam script found on instantiated prefab!");
+                    return;
+                }
+
+                // Assign shooter mech
+                activeBeam.SetShooter(pcMech);
+            }
+
+            // Trigger the beam shot
+            activeBeam.TryShootBeam(MouseWorld.GetPosition());
+        }
     }
 }

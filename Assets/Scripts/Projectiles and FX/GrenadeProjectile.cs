@@ -46,7 +46,6 @@ public class GrenadeProjectile : MonoBehaviour
             Instantiate(grenadeExplodeVfxPrefab, targetPosition + Vector3.up * 1f, Quaternion.identity);
 
             Destroy(gameObject);
-            // onGrenadeBehaviourComplete();
         }
     }
 

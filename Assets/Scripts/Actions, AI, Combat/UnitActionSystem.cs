@@ -34,13 +34,8 @@ public class UnitActionSystem : MonoBehaviour
 
 
 
-
-
-
-    /* 
-                                                           SETUP AND UPDATE
-    ==================================================================================================================================== 
-    */
+    //==================================================================================================================================== 
+    #region SETUP
     private void SetInstanceAndDebug()
     {
         if (Instance != null)
@@ -68,6 +63,7 @@ public class UnitActionSystem : MonoBehaviour
 
         HandleSelectedAction();
     }
+    #endregion
 
 
 
@@ -117,13 +113,13 @@ public class UnitActionSystem : MonoBehaviour
     }
     void HandleSelectedAction()
     {
-        GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
+        GridPosition targetMouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
         if (!InputManager.Instance.IsMouseButtonDownThisFrame()) return;
-        if (!selectedAction.IsValidActionGridPosition(mouseGridPosition)) return;
+        if (!selectedAction.IsValidActionGridPosition(targetMouseGridPosition)) return;
         if (!selectedPcMech.TrySpendCorePowerForAction(selectedAction)) return;
 
         SetBusy();
-        selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+        selectedAction.TakeAction(targetMouseGridPosition, ClearBusy);
         OnActionStarted?.Invoke(this, EventArgs.Empty);
     }
 
@@ -132,7 +128,7 @@ public class UnitActionSystem : MonoBehaviour
 
 
     //==================================================================================================================================== 
-    #region GETTERS AND SETTERS
+    #region GETTERS-SETTERS
 
     public void SetSelectedAction(BaseAction baseAction)
     {

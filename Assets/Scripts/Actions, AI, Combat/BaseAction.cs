@@ -6,9 +6,11 @@ using System.Collections.Generic;
 public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract. 
 
 {
-    /*  onActionComplete is a delegate, just a container, nothing in it necessarily, could ask for return or argument, etc. 
-        action and func are 2 premade delegates. action is the same as void*/
-    protected Action onActionComplete;
+    /*  clearBusyOnActionComplete is a delegate, just a container, used to call ClearBusy from UnitActionSystem
+        could ask for return or argument, etc. 
+        action and func are 2 premade delegates. action is the same as void
+    */
+    protected Action clearBusyOnActionComplete;
     protected PCMech pCMech; //Protoected: can be accessed but not changed
     protected bool isActive;
     protected bool isPlayerAction = true;
@@ -29,10 +31,10 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     //==================================================================================================================================== 
     #region THE PROTECTED
 
-    protected void ActionStart(Action onActionComplete)
+    protected void ActionStart(Action clearBusyOnActionComplete)
     {
         isActive = true;
-        this.onActionComplete = onActionComplete;
+        this.clearBusyOnActionComplete = clearBusyOnActionComplete;
         pCMech.GainHeat(GetHeatGenerated());
 
         OnAnyActionStarted?.Invoke(this, EventArgs.Empty);
@@ -40,7 +42,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     protected void ActionComplete()
     {
         isActive = false;
-        onActionComplete();
+        clearBusyOnActionComplete();
 
         OnAnyActionCompleted?.Invoke(this, EventArgs.Empty);
     }
@@ -83,7 +85,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     #region THE ABSTRACT
 
     public abstract string GetActionName();
-    public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete); //useless for some, but oh well.
+    public abstract void TakeAction(GridPosition targetGridPosition, Action clearBusyOnActionComplete); //grid position useless for some, but oh well.
     public abstract List<GridPosition> GetValidActionGridPositionList();
 
     #endregion

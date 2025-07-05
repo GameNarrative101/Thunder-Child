@@ -72,7 +72,7 @@ public class MoveAction : BaseAction
     #region OVERRIDES
 
     public override string GetActionName() => "Move";
-    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
         List<GridPosition> pathGridPositionList =
             Pathfinding.Instance.FindPath(pCMech.GetGridPosition(), gridPosition, out int pathLength); //where pathfinding happens
@@ -87,7 +87,7 @@ public class MoveAction : BaseAction
 
         OnStartMoving?.Invoke(this, EventArgs.Empty);
 
-        ActionStart(onActionComplete);
+        ActionStart(clearBusyOnActionComplete);
     }
     public override List<GridPosition> GetValidActionGridPositionList()
     {

@@ -97,7 +97,7 @@ public class MeleeAction : BaseAction
         return validGridPositionList;
     }
 
-    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
         targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);
 
@@ -106,7 +106,7 @@ public class MeleeAction : BaseAction
         stateTimer = BeforeHitStateTime;
 
         OnMeleeActionStarted?.Invoke(this, EventArgs.Empty);
-        ActionStart(onActionComplete);
+        ActionStart(clearBusyOnActionComplete);
     }
     public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
     {

@@ -59,11 +59,11 @@ public class SpinAction : BaseAction
     //put the delegate (still empty container) in a function. This means when we call this function, we can also put whatever other function we like into the delegate box and it'll run.
     //note: no () after the function name because we're not calling the function itself, we are referencing it
     //see UnitActionSystem for how clearing isBusy works.
-    public override void TakeAction (GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction (GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
         totalSpinAmount = 0f;
         
-        ActionStart(onActionComplete);
+        ActionStart(clearBusyOnActionComplete);
     }
     public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
     {

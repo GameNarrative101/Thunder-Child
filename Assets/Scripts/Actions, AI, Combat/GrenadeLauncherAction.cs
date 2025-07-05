@@ -20,6 +20,7 @@ public class GrenadeLauncherAction : BaseAction
 
     
     public override string GetActionName() => "Falconnet Cannon";
+    protected override (int, int, int) GetDamageByTier() => (8, 12, 18);
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
@@ -42,14 +43,13 @@ public class GrenadeLauncherAction : BaseAction
         }
         return validGridPositionList;
     }
-    protected override (int, int, int) GetDamageByTier() => (8, 12, 18);
-    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction(GridPosition targetGridPosition, Action clearBusyOnActionComplete)
     {
         Transform grenadeProjectileTransform = Instantiate(grenadeProjectilePrefab, pCMech.GetWorldPosition(), Quaternion.identity);
         GrenadeProjectile grenadeProjectile = grenadeProjectileTransform.GetComponent<GrenadeProjectile>();
-        grenadeProjectile.Setup(gridPosition, OnGrenadeExploded);
+        grenadeProjectile.Setup(targetGridPosition, OnGrenadeExploded);
 
-        ActionStart(onActionComplete);
+        ActionStart(clearBusyOnActionComplete);
     }
 
     private void OnGrenadeExploded(Vector3 explosionPosition)

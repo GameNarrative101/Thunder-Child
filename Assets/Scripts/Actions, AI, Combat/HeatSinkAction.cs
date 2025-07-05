@@ -18,9 +18,9 @@ public class HeatSinkAction : BaseAction
 
         return new List<GridPosition> { pcMechGridPosition };
     }
-    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+    public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
-        ActionStart(onActionComplete);
+        ActionStart(clearBusyOnActionComplete);
         if (!(heatSinkCharges == 0))
         {
             heatSinkCharges--;
