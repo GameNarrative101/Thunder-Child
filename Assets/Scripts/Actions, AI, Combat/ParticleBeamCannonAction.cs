@@ -10,7 +10,7 @@ public class ParticleBeamCannonAction : BaseAction
     protected override void Awake()
     {
         base.Awake();
-        isEnemyAction = false; // player only
+        isEnemyAction = false;
     }
 
 
@@ -22,13 +22,12 @@ public class ParticleBeamCannonAction : BaseAction
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
         GridPosition originGridPosition = pCMech.GetGridPosition();
-
-        Vector2Int[] directions = new Vector2Int[] //All 8 directions, up to beamLength
+        Vector2Int[] directions = new Vector2Int[] //all 8 directions, up to beamLength
         {
-            new Vector2Int(1, 0),   // East
-            new Vector2Int(-1, 0),  // West
-            new Vector2Int(0, 1),   // North
-            new Vector2Int(0, -1),  // South
+            new Vector2Int(1, 0),   // E
+            new Vector2Int(-1, 0),  // W
+            new Vector2Int(0, 1),   // N
+            new Vector2Int(0, -1),  // S
             new Vector2Int(1, 1),   // NE
             new Vector2Int(-1, 1),  // NW
             new Vector2Int(1, -1),  // SE
@@ -39,7 +38,7 @@ public class ParticleBeamCannonAction : BaseAction
         {
             for (int i = 1; i <= beamLength; i++)
             {
-                GridPosition target = originGridPosition + new GridPosition(dir.x * i, dir.y * i); //Z instead of Y?
+                GridPosition target = originGridPosition + new GridPosition(dir.x * i, dir.y * i); // wait, Y or Z?!
                 if (!LevelGrid.Instance.IsValidPosition(target)) break;
                 validGridPositionList.Add(target);
             }
@@ -54,22 +53,20 @@ public class ParticleBeamCannonAction : BaseAction
 
         GridPosition startGridPosition = pCMech.GetGridPosition();
         GridPosition[] path = LevelGrid.Instance.GetDirection(startGridPosition, targetGridPosition);
+        List<GridPosition> damageLine = new List<GridPosition>(); //skipping the origin 
 
-        // Truncate to beamLength (skipping the origin)
-        List<GridPosition> damageLine = new List<GridPosition>();
         for (int i = 1; i < path.Length && i <= beamLength; i++)
         {
             damageLine.Add(path[i]);
         }
 
-        // Spawn beam VFX
+        //beam VFX
         Transform beamTransform = Instantiate(beamProjectilePrefab, pCMech.GetWorldPosition(), Quaternion.identity);
         ParticleBeam beam = beamTransform.GetComponent<ParticleBeam>();
         beam.SetShooter(pCMech);
-        beam.TryShootBeam(LevelGrid.Instance.GetWorldPosition(damageLine[^1])); // endpoint of beam
+        beam.TryShootBeam(LevelGrid.Instance.GetWorldPosition(damageLine[^1])); //endpoint of beam
 
         BeamDamage(damageLine);
-
     }
     private void BeamDamage(List<GridPosition> damageLine)
     {

@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 0}
+  fadeDuration: 0.2
 --- !u!1 &4832253482532018565
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,3 +305,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 1822866129310184241}
+  fadeDuration: 0.11

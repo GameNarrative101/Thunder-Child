@@ -35,28 +35,5 @@ public class Testing : MonoBehaviour
         {
             TurnSystemScript.Instance.NextTurn();
         }
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            if (activeBeam == null)
-            {
-                // Instantiate the beam
-                GameObject beamGO = Instantiate(particleBeamPrefab, pcMech.GetWorldPosition(), Quaternion.identity);
-
-                // Get the script
-                activeBeam = beamGO.GetComponent<ParticleBeam>();
-                if (activeBeam == null)
-                {
-                    Debug.LogError("No ParticleBeam script found on instantiated prefab!");
-                    return;
-                }
-
-                // Assign shooter mech
-                activeBeam.SetShooter(pcMech);
-            }
-
-            // Trigger the beam shot
-            activeBeam.TryShootBeam(MouseWorld.GetPosition());
-        }
     }
 }
