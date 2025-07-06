@@ -250,6 +250,7 @@ GameObject:
   - component: {fileID: 6812920997967081395}
   - component: {fileID: 3670705484915049570}
   - component: {fileID: 4507073548260348634}
+  - component: {fileID: -6968653430954253021}
   - component: {fileID: 8149747404443248139}
   - component: {fileID: -6801997478047366072}
   - component: {fileID: 5984506201132333605}
@@ -319,6 +320,19 @@ MonoBehaviour:
   stoppingDistance: 0.1
   rotationSpeed: 30
   maxMoveDistance: 3
+--- !u!114 &-6968653430954253021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 926b682c8d6f04a409b747668e94157b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healAmount: 10
 --- !u!114 &8149747404443248139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,6 +364,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03318d99666ce0a4c96dc326cf4dc802, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  beamProjectilePrefab: {fileID: 0}
+  beamLength: 7
 --- !u!114 &5984506201132333605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,8 +393,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4090c8347426fb148add4a40346f2d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxShield: 70
-  shield: 30
+  maxPCShield: 70
+  maxEnemyShield: 100
   ExpeditionFailed: {fileID: 0}
   pcMech: {fileID: 3670705484915049570}
 --- !u!114 &3821737785300979387

@@ -36,5 +36,7 @@ public class PowerToShieldAction : BaseAction
     {
         HealthSystem healthSystem = pCMech.GetComponent<HealthSystem>();
         healthSystem.Heal(healAmount);
+
+        ActionComplete();
     }
 }
