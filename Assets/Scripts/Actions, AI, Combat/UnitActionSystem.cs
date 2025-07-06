@@ -86,7 +86,7 @@ public class UnitActionSystem : MonoBehaviour
         if (!raycastHit.transform.TryGetComponent<PCMech>(out PCMech pcMech)) return false;
 
         if (pcMech == selectedPcMech) return false;
-        if (pcMech.IsEnemy()) return false;
+        if (pcMech.GetIsEnemy()) return false;
 
         SetSelectedPcMech(pcMech);
         return true;

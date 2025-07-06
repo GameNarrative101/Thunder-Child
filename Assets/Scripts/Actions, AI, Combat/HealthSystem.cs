@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
 {
-    [SerializeField] int maxShield = 70;
-    [SerializeField] int shield;
+    [SerializeField] int maxPCShield = 70;
+    [SerializeField] int maxEnemyShield = 100;
     [SerializeField] GameObject ExpeditionFailed;
     [SerializeField] PCMech pcMech;
     // bool isDead = false;
 
+    int shield;
     public event EventHandler OnDead;
     public event EventHandler OnShieldChanged;
 
@@ -16,12 +17,22 @@ public class HealthSystem : MonoBehaviour
 
     private void Awake()
     {
-        shield = maxShield;
+        SetMaxShield();
     }
 
+    private void SetMaxShield()
+    {
+        if (pcMech.GetIsEnemy())
+        {
+            shield = maxEnemyShield;
+        }
+        else
+        {
+            shield = maxPCShield;
+        }
+    }
 
-
-    public void Damage (int damageAmount)
+    public void Damage(int damageAmount)
     {
         shield -= damageAmount;
         OnShieldChanged?.Invoke(this, EventArgs.Empty);
@@ -36,24 +47,42 @@ public class HealthSystem : MonoBehaviour
             Die();
         }
 
-        Debug.Log ("Remaining shield =" + shield);
+        Debug.Log("Remaining shield =" + shield);
     }
     void Die()
     {
         OnDead?.Invoke(this, EventArgs.Empty);
 
-        if (!pcMech.IsEnemy())
+        if (!pcMech.GetIsEnemy())
         {
             ExpeditionFailed.SetActive(true);
         }
     }
     public float GetShieldNormalized()
     {
-        return shield / (float)maxShield;
+        if (pcMech.GetIsEnemy())
+        {
+            return shield / (float)maxEnemyShield;
+        }
+        else
+        {
+            return shield / (float)maxPCShield;
+        }
     }
     public int GetShield()
     {
         return shield;
+    }
+    public void Heal(int healAmount)
+    {
+        shield += healAmount;
+
+        if (!pcMech.GetIsEnemy() && shield > maxPCShield)
+        {
+            shield = maxPCShield;
+        }
+
+        OnShieldChanged?.Invoke(this, EventArgs.Empty);
     }
     //     public bool IsDead()
     // {

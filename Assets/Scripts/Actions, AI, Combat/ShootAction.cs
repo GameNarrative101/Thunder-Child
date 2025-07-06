@@ -104,7 +104,7 @@ public class ShootAction : BaseAction
     protected override (int, int, int) GetDamageByTier() => (4, 7, 10);
     public override int GetHeatGenerated()
     {
-        if (!pCMech.IsEnemy()) { return 4; }
+        if (!pCMech.GetIsEnemy()) { return 4; }
         else { return 0; }
     }
     public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
@@ -204,7 +204,7 @@ public class ShootAction : BaseAction
                 if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;// Skip grid positions without any units
 
                 PCMech targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(testGridPosition);
-                if (targetUnit.IsEnemy() == pCMech.IsEnemy()) continue;// Skip grid positions with allied units
+                if (targetUnit.GetIsEnemy() == pCMech.GetIsEnemy()) continue;// Skip grid positions with allied units
 
                 Vector3 pcMechWorldPosition = LevelGrid.Instance.GetWorldPosition(pcMechGridPosition);
                 Vector3 shootDir = (targetUnit.GetWorldPosition() - pcMechWorldPosition).normalized;

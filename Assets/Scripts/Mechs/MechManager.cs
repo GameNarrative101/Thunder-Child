@@ -43,7 +43,7 @@ public class MechManager : MonoBehaviour
         PCMech pcMech = sender as PCMech;
         mechList.Add(pcMech);
 
-        if (pcMech.IsEnemy()) {enemyMechList.Add(pcMech);}
+        if (pcMech.GetIsEnemy()) {enemyMechList.Add(pcMech);}
         else {friendlyMechList.Add(pcMech);}
     }
     private void PCMech_anyUnitDied(object sender, EventArgs e)
@@ -51,7 +51,7 @@ public class MechManager : MonoBehaviour
         PCMech pcMech = sender as PCMech;
         mechList.Remove(pcMech);
 
-        if (pcMech.IsEnemy()) {enemyMechList.Remove(pcMech);}
+        if (pcMech.GetIsEnemy()) {enemyMechList.Remove(pcMech);}
         else {friendlyMechList.Remove(pcMech);}    
     }
     

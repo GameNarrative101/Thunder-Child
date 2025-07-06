@@ -206,8 +206,8 @@ public class PCMech : MonoBehaviour
     //==================================================================================================================================== 
     #region HEALTH & ACTIONS
 
-    public bool IsEnemy() => isEnemy;
-    public bool IsDead() => isDead;
+    public bool GetIsEnemy() => isEnemy;
+    public bool GetIsDead() => isDead;
     public void TakeDamage(int damageAmount) { healthSystem.Damage(damageAmount); }
     
     public T GetAction<T>() where T : BaseAction
@@ -233,8 +233,8 @@ public class PCMech : MonoBehaviour
     void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
     {
         //increase core power at the beginning of the player's turn
-        if ((IsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) ||
-        (!IsEnemy() && TurnSystemScript.Instance.IsPlayerTurn()))
+        if ((GetIsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) ||
+        (!GetIsEnemy() && TurnSystemScript.Instance.IsPlayerTurn()))
         {
             GainCorePower(corePowerIncrease);
             OnCorePowerChange?.Invoke(this, EventArgs.Empty);

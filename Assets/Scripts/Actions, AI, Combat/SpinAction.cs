@@ -43,7 +43,7 @@ public class SpinAction : BaseAction
     public override string GetActionName() => "Federation Spin 3000";
     public override int GetHeatGenerated() 
     {
-        if (!pCMech.IsEnemy()) { return 6;}
+        if (!pCMech.GetIsEnemy()) { return 6;}
         else {return 0;}
     }
 

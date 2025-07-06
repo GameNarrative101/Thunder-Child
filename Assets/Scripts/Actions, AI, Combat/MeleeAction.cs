@@ -89,7 +89,7 @@ public class MeleeAction : BaseAction
                 if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;// Skip grid positions without any units
 
                 PCMech targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(testGridPosition);
-                if (targetUnit.IsEnemy() == pCMech.IsEnemy()) continue;// Skip grid positions with allied units
+                if (targetUnit.GetIsEnemy() == pCMech.GetIsEnemy()) continue;// Skip grid positions with allied units
 
                 validGridPositionList.Add(testGridPosition);// Add valid grid position to the list
             }
