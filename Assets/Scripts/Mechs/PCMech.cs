@@ -40,8 +40,6 @@ public class PCMech : MonoBehaviour
 
         TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
         healthSystem.OnDead += HealthSystem_OnDead;
-
-        // Time.timeScale = 0.1f;
     }
     private void Update()
     {
@@ -51,7 +49,7 @@ public class PCMech : MonoBehaviour
 
 
     //==================================================================================================================================== 
-    #region GRID FUNCTIONS 
+    #region GRID & MOVEMENT 
 
     void SetGridPosition()
     {
@@ -67,19 +65,116 @@ public class PCMech : MonoBehaviour
             gridPosition = newGridPosition;
         }
     }
+    public GridPosition GetGridPosition() => gridPosition;
+    public Vector3 GetWorldPosition() => transform.position;
+
+    public void Knockback(int knockbackDistance, GridPosition forceOriginGridPosition)
+    {
+        GridPosition selfGridPos = GetGridPosition();
+        GridPosition[] knockbackDirectionPath = LevelGrid.Instance.GetDirection(forceOriginGridPosition, selfGridPos);
+
+        if (knockbackDirectionPath.Length < 2)
+        {
+            Debug.LogWarning("Knockback direction invalid — no path found.");
+            return;
+        }
+
+        Vector2Int knockbackDir = new Vector2Int(
+            knockbackDirectionPath[^1].x - knockbackDirectionPath[^2].x,
+            knockbackDirectionPath[^1].z - knockbackDirectionPath[^2].z
+        );
+
+        List<GridPosition> knockbackPath = new List<GridPosition>();
+        GridPosition current = selfGridPos;
+
+        for (int i = 0; i < knockbackDistance; i++)
+        {
+            GridPosition next = new GridPosition(current.x + knockbackDir.x, current.z + knockbackDir.y);
+
+            if (!LevelGrid.Instance.IsValidPosition(next)) break; 
+            if (LevelGrid.Instance.HasAnyPcMechOnGridPosition(next)) break;
+
+            knockbackPath.Add(next);
+            current = next;
+        }
+
+        int actualDistance = knockbackPath.Count;
+        int knockbackDamage = knockbackDistance - actualDistance;
+
+        if (actualDistance == 0)
+        {
+            Debug.Log("Knockback blocked immediately — applying full knockback damage.");
+        }
+
+        if (actualDistance > 0)
+        {
+            StartCoroutine(KnockbackMoveRoutine(knockbackPath));
+        }
+
+        if (knockbackDamage > 0)
+        {
+            Debug.Log($"Partial knockback damage: dealing {knockbackDamage} damage.");
+            TakeDamage(knockbackDamage);
+        }
+    }
+    private System.Collections.IEnumerator KnockbackMoveRoutine(List<GridPosition> path)
+    {
+        foreach (GridPosition targetGridPos in path)
+        {
+            Vector3 start = transform.position;
+            Vector3 end = LevelGrid.Instance.GetWorldPosition(targetGridPos);
+
+            float timer = 0f;
+            float duration = Vector3.Distance(start, end) / knockbackSpeed;
+
+            while (timer < duration)
+            {
+                timer += Time.deltaTime;
+                float t = Mathf.Clamp01(timer / duration);
+                transform.position = Vector3.Lerp(start, end, t);
+                yield return null;
+            }
+
+            transform.position = end;
+        }
+
+        GetNewGridPositionAndUpdate();
+    }
 
     #endregion
 
 
 
     //==================================================================================================================================== 
-    #region RESOURCE FUNCTIONS
+    #region RESOURCES
 
+    public bool CanSpendCorePowerForAction(BaseAction baseAction) { return corePower >= baseAction.GetCorePowerCost(); }
+    public bool TrySpendCorePowerForAction(BaseAction baseAction)
+    {
+        if (CanSpendCorePowerForAction(baseAction))
+        {
+            SpendCorePower(baseAction.GetCorePowerCost());
+            return true;
+        }
+        return false;
+    }
     void SpendCorePower(int amount) // instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem)
     {
         corePower -= amount;
         OnCorePowerChange?.Invoke(this, EventArgs.Empty);
         if (corePower > maxCorePower) { print("Overloaded!"); }
+    }
+    public void GainCorePower(int amount)
+    {
+        corePower += amount;
+        OnCorePowerChange?.Invoke(this, EventArgs.Empty);
+        if (corePower > maxCorePower) { print("Overloaded!"); }
+    }
+
+    public void TryReduceHeat(int amount)
+    {
+        if (heat - amount >= 0) { ReduceHeat(amount); }
+        print("Not enough heat to reduce!");
     }
     void ReduceHeat(int amount)
     {
@@ -87,6 +182,46 @@ public class PCMech : MonoBehaviour
         OnHeatChange?.Invoke(this, EventArgs.Empty);
         if (heat < 0) { heat = 0; }
     }
+    public void GainHeat(int amount) //effects of overheating to be implemented later
+    {
+        heat += amount;
+        OnHeatChange?.Invoke(this, EventArgs.Empty);
+        if (heat > maxHeat) { print("Overheated!"); }
+    }
+    public void ResetHeat()
+    {
+        heat = 0;
+        OnHeatChange?.Invoke(this, EventArgs.Empty);
+    }
+
+    public int GetCorePower() => corePower;
+    public float GetCorePowerNormalized() => corePower / (float)maxCorePower;
+    public int GetHeat() => heat;
+    public float GetHeatNormalized() => heat / (float)maxHeat;
+
+    #endregion
+
+
+
+    //==================================================================================================================================== 
+    #region HEALTH & ACTIONS
+
+    public bool IsEnemy() => isEnemy;
+    public bool IsDead() => isDead;
+    public void TakeDamage(int damageAmount) { healthSystem.Damage(damageAmount); }
+    
+    public T GetAction<T>() where T : BaseAction
+    {
+        foreach (BaseAction baseAction in baseActionArray)
+        {
+            if (baseAction is T)
+            {
+                return (T)baseAction;
+            }
+        }
+        return null;
+    }
+    public BaseAction[] GetBaseActionArray() => baseActionArray;
 
     #endregion
 
@@ -119,138 +254,4 @@ public class PCMech : MonoBehaviour
 
     #endregion
 
-
-
-    //==================================================================================================================================== 
-    #region PUBLIC FUNCTIONS
-
-    public bool IsEnemy() => isEnemy;
-    public bool IsDead() => isDead;
-    public void TakeDamage(int damageAmount) { healthSystem.Damage(damageAmount); }
-    public bool CanSpendCorePowerForAction(BaseAction baseAction) { return corePower >= baseAction.GetCorePowerCost(); }
-    public bool TrySpendCorePowerForAction(BaseAction baseAction)
-    {
-        if (CanSpendCorePowerForAction(baseAction))
-        {
-            SpendCorePower(baseAction.GetCorePowerCost());
-            return true;
-        }
-        return false;
-    }
-    public void GainCorePower(int amount)
-    {
-        corePower += amount;
-        OnCorePowerChange?.Invoke(this, EventArgs.Empty);
-        if (corePower > maxCorePower) { print("Overloaded!"); }
-    }
-    public void GainHeat(int amount) //effects of overheating to be implemented later
-    {
-        heat += amount;
-        OnHeatChange?.Invoke(this, EventArgs.Empty);
-        if (heat > maxHeat) { print("Overheated!"); }
-    }
-    public void TryReduceHeat(int amount)
-    {
-        if (heat - amount >= 0) { ReduceHeat(amount); }
-        print("Not enough heat to reduce!");
-    }
-    public void ResetHeat()
-    {
-        heat = 0;
-        OnHeatChange?.Invoke(this, EventArgs.Empty);
-    }
-    public void Knockback(int knockbackDistance, GridPosition forceOriginGridPosition)
-    {
-        GridPosition selfGridPos = GetGridPosition();
-        GridPosition[] knockbackDirectionPath = LevelGrid.Instance.GetDirection(forceOriginGridPosition, selfGridPos);
-
-        if (knockbackDirectionPath.Length < 2)
-        {
-            Debug.LogWarning("Knockback direction invalid — no path found.");
-            return;
-        }
-
-        Vector2Int knockbackDir = new Vector2Int(
-            knockbackDirectionPath[^1].x - knockbackDirectionPath[^2].x,
-            knockbackDirectionPath[^1].z - knockbackDirectionPath[^2].z
-        );
-
-        List <GridPosition> knockbackPath = new List<GridPosition>();
-        GridPosition current = selfGridPos;
-        for (int i = 0; i < knockbackDistance; i++)
-        {
-            GridPosition next = new GridPosition(current.x + knockbackDir.x, current.z + knockbackDir.y);
-            if (!LevelGrid.Instance.IsValidPosition(next)) break; //CONDITIONS WILL CHANGE SIGNIFICANTLY ONCE DAMAGE IS ADDED TO KNOCKBACK
-            if (LevelGrid.Instance.HasAnyPcMechOnGridPosition(next)) break;
-
-            knockbackPath.Add(next);
-            current = next;
-        }
-
-        if (knockbackPath.Count == 0)
-        {
-            Debug.Log("No valid tiles for knockback");
-            return;
-        }
-
-        StartCoroutine(KnockbackMoveRoutine(knockbackPath));
-    }
-    private System.Collections.IEnumerator KnockbackMoveRoutine(List<GridPosition> path)
-    {
-        foreach (GridPosition targetGridPos in path)
-        {
-            Vector3 start = transform.position;
-            Vector3 end = LevelGrid.Instance.GetWorldPosition(targetGridPos);
-
-            float timer = 0f;
-            float duration = Vector3.Distance(start, end) / knockbackSpeed;
-
-            while (timer < duration)
-            {
-                timer += Time.deltaTime;
-                float t = Mathf.Clamp01(timer / duration);
-                transform.position = Vector3.Lerp(start, end, t);
-                yield return null;
-            }
-
-            transform.position = end;
-        }
-
-        GetNewGridPositionAndUpdate();
-    }
-
-    #endregion
-
-
-
-    //==================================================================================================================================== 
-    #region GETTIN' THANGS
-
-    public T GetAction<T>() where T : BaseAction
-    {
-        foreach (BaseAction baseAction in baseActionArray)
-        {
-            if (baseAction is T)
-            {
-                return (T)baseAction;
-            }
-        }
-        return null;
-    }
-    public BaseAction[] GetBaseActionArray() => baseActionArray;
-    public GridPosition GetGridPosition() => gridPosition;
-    public Vector3 GetWorldPosition() => transform.position;
-    public int GetCorePower() => corePower;
-    public float GetCorePowerNormalized() => corePower / (float)maxCorePower;
-    public int GetHeat() => heat;
-    public float GetHeatNormalized() => heat / (float)maxHeat;
-
-    #endregion
-
-        /* 
-        KNOCKBACK:
-        handle like the pcmech takedamage method
-        receive and pass a direction into the method somehow, and an int foor number of squares to knock back
-        then, in the action scripts, that just goes into the same place as takedamage
-         */
 }
