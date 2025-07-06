@@ -60,6 +60,7 @@ public class GrenadeLauncherAction : BaseAction
             if (collider.TryGetComponent(out PCMech pcMech))
             {
                 pcMech.TakeDamage(GetRolledDamage());
+                pcMech.Knockback(3, LevelGrid.Instance.GetGridPosition(explosionPosition));
             }
         }
         ActionComplete();

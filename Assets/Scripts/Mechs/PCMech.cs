@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PCMech : MonoBehaviour
@@ -16,6 +17,7 @@ public class PCMech : MonoBehaviour
     [SerializeField] int maxCorePower = 15;
     [SerializeField] int heat = 0;
     [SerializeField] int maxHeat = 10;
+    /* [SerializeField] */ float knockbackSpeed = 60f;
 
     public static event EventHandler OnAnyUnitSpawned;
     public static event EventHandler OnAnyUnitDead;
@@ -157,6 +159,65 @@ public class PCMech : MonoBehaviour
         heat = 0;
         OnHeatChange?.Invoke(this, EventArgs.Empty);
     }
+    public void Knockback(int knockbackDistance, GridPosition forceOriginGridPosition)
+    {
+        GridPosition selfGridPos = GetGridPosition();
+        GridPosition[] knockbackDirectionPath = LevelGrid.Instance.GetDirection(forceOriginGridPosition, selfGridPos);
+
+        if (knockbackDirectionPath.Length < 2)
+        {
+            Debug.LogWarning("Knockback direction invalid — no path found.");
+            return;
+        }
+
+        Vector2Int knockbackDir = new Vector2Int(
+            knockbackDirectionPath[^1].x - knockbackDirectionPath[^2].x,
+            knockbackDirectionPath[^1].z - knockbackDirectionPath[^2].z
+        );
+
+        List <GridPosition> knockbackPath = new List<GridPosition>();
+        GridPosition current = selfGridPos;
+        for (int i = 0; i < knockbackDistance; i++)
+        {
+            GridPosition next = new GridPosition(current.x + knockbackDir.x, current.z + knockbackDir.y);
+            if (!LevelGrid.Instance.IsValidPosition(next)) break; //CONDITIONS WILL CHANGE SIGNIFICANTLY ONCE DAMAGE IS ADDED TO KNOCKBACK
+            if (LevelGrid.Instance.HasAnyPcMechOnGridPosition(next)) break;
+
+            knockbackPath.Add(next);
+            current = next;
+        }
+
+        if (knockbackPath.Count == 0)
+        {
+            Debug.Log("No valid tiles for knockback");
+            return;
+        }
+
+        StartCoroutine(KnockbackMoveRoutine(knockbackPath));
+    }
+    private System.Collections.IEnumerator KnockbackMoveRoutine(List<GridPosition> path)
+    {
+        foreach (GridPosition targetGridPos in path)
+        {
+            Vector3 start = transform.position;
+            Vector3 end = LevelGrid.Instance.GetWorldPosition(targetGridPos);
+
+            float timer = 0f;
+            float duration = Vector3.Distance(start, end) / knockbackSpeed;
+
+            while (timer < duration)
+            {
+                timer += Time.deltaTime;
+                float t = Mathf.Clamp01(timer / duration);
+                transform.position = Vector3.Lerp(start, end, t);
+                yield return null;
+            }
+
+            transform.position = end;
+        }
+
+        GetNewGridPositionAndUpdate();
+    }
 
     #endregion
 
@@ -185,4 +246,11 @@ public class PCMech : MonoBehaviour
     public float GetHeatNormalized() => heat / (float)maxHeat;
 
     #endregion
+
+        /* 
+        KNOCKBACK:
+        handle like the pcmech takedamage method
+        receive and pass a direction into the method somehow, and an int foor number of squares to knock back
+        then, in the action scripts, that just goes into the same place as takedamage
+         */
 }
