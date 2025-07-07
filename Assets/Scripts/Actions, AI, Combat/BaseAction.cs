@@ -46,17 +46,42 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         OnAnyActionCompleted?.Invoke(this, EventArgs.Empty);
     }
-    protected int GetRolledDamage(int bonusModifier = 0)
+    // protected int GetRolledDamage(int bonusModifier = 0)
+    // {
+    //     var (tier1, tier2, tier3) = GetDamageByTier();
+    //     PowerRoll.PowerRollTier tier = PowerRoll.Instance.Roll(bonusModifier);
+    //     return tier switch
+    //     {
+    //         PowerRoll.PowerRollTier.Tier1 => tier1,
+    //         PowerRoll.PowerRollTier.Tier2 => tier2,
+    //         PowerRoll.PowerRollTier.Tier3 => tier3,
+    //         _ => tier2,
+    //     };
+    // }
+    protected (int damage, int knockback, PowerRoll.PowerRollTier tier) GetRolledDamageAndKnockback(int bonusModifier = 0)
     {
-        var (tier1, tier2, tier3) = GetDamageByTier();
+        var (d1, d2, d3) = GetDamageByTier();
+        var (k1, k2, k3) = GetKnockbackByTier();
+
         PowerRoll.PowerRollTier tier = PowerRoll.Instance.Roll(bonusModifier);
-        return tier switch
+
+        int damage = tier switch
         {
-            PowerRoll.PowerRollTier.Tier1 => tier1,
-            PowerRoll.PowerRollTier.Tier2 => tier2,
-            PowerRoll.PowerRollTier.Tier3 => tier3,
-            _ => tier2,
+            PowerRoll.PowerRollTier.Tier1 => d1,
+            PowerRoll.PowerRollTier.Tier2 => d2,
+            PowerRoll.PowerRollTier.Tier3 => d3,
+            _ => d2
         };
+
+        int knockback = tier switch
+        {
+            PowerRoll.PowerRollTier.Tier1 => k1,
+            PowerRoll.PowerRollTier.Tier2 => k2,
+            PowerRoll.PowerRollTier.Tier3 => k3,
+            _ => k2
+        };
+
+        return (damage, knockback, tier);
     }
 
     #endregion
@@ -76,6 +101,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     public bool GetIsPlayerAction() => isPlayerAction; // Not used yet since all actions are player actions for now.
     public bool GetIsEnemyAction() => isEnemyAction;
     protected virtual (int tier1, int tier2, int tier3) GetDamageByTier() => (0, 0, 0);
+    protected virtual (int tier1, int tier2, int tier3) GetKnockbackByTier() => (0, 0, 0);
 
     #endregion
 

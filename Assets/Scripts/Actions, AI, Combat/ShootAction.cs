@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
 using UnityEngine;
 
 public class ShootAction : BaseAction
@@ -90,7 +91,8 @@ public class ShootAction : BaseAction
         OnShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
         OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
 
-        targetUnit.TakeDamage(GetRolledDamage());
+        var (rolledDamage, _, _) = GetRolledDamageAndKnockback();
+        targetUnit.TakeDamage(rolledDamage);
     }
 
     #endregion
@@ -101,7 +103,7 @@ public class ShootAction : BaseAction
     #region OVERRIDES
 
     public override string GetActionName() => "Anti-materiel Rifle";
-    protected override (int, int, int) GetDamageByTier() => (4, 7, 10);
+    protected override (int, int, int) GetDamageByTier() => (4, 5, 7);
     public override int GetHeatGenerated()
     {
         if (!pCMech.GetIsEnemy()) { return 4; }

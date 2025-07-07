@@ -299,11 +299,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnemy: 0
-  corePower: 3
-  corePowerIncrease: 3
-  maxCorePower: 15
+  corePower: 4
+  corePowerIncrease: 4
+  maxCorePower: 9
   heat: 0
-  maxHeat: 10
+  maxHeat: 9
 --- !u!114 &4507073548260348634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,7 +319,7 @@ MonoBehaviour:
   moveSpeed: 30
   stoppingDistance: 0.1
   rotationSpeed: 30
-  maxMoveDistance: 3
+  maxMoveDistance: 5
 --- !u!114 &-6968653430954253021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,7 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 926b682c8d6f04a409b747668e94157b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healAmount: 10
+  healAmount: 80
 --- !u!114 &8149747404443248139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,7 +348,7 @@ MonoBehaviour:
   aimingStateTime: 0.5
   shootingStateTime: 0.1
   coolOffStateTime: 0.5
-  maxShootDistance: 2
+  maxShootDistance: 5
   obstaclesLayerMask:
     serializedVersion: 2
     m_Bits: 256
@@ -393,8 +393,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4090c8347426fb148add4a40346f2d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPCShield: 70
-  maxEnemyShield: 100
+  maxPCShield: 330
+  maxEnemyShield: 72
   ExpeditionFailed: {fileID: 0}
   pcMech: {fileID: 3670705484915049570}
 --- !u!114 &3821737785300979387
@@ -457,7 +457,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grenadeProjectilePrefab: {fileID: 370322483711697218, guid: 1415c37904146a8419d8c394566d0056, type: 3}
-  damageRadius: 8
+  damageRadius: 5
+  maxGrenadeDistance: 5
 --- !u!114 &-2478586375845164213
 MonoBehaviour:
   m_ObjectHideFlags: 0

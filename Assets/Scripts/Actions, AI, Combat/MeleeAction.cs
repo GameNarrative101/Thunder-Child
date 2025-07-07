@@ -5,13 +5,13 @@ using UnityEngine;
 public class MeleeAction : BaseAction
 {
     enum State { BeforeHit, AfterHit }
+    [SerializeField] int maxMeleeDistance = 1;
     State state;
     float stateTimer;
     PCMech targetUnit;
     public event EventHandler OnMeleeActionStarted;
     public event EventHandler OnMeleeActionCompleted;
     public static event EventHandler OnAnyMeleeActionHit; //for screen shake
-    [SerializeField] int maxMeleeDistance = 1;
 
 
     void Update()
@@ -55,7 +55,9 @@ public class MeleeAction : BaseAction
                 state = State.AfterHit;
                 float AfterHitStateTime = 0.5f;
                 stateTimer = AfterHitStateTime;
-                targetUnit.TakeDamage(GetRolledDamage());
+
+                var (rolledDamage, _, _) = GetRolledDamageAndKnockback();
+                targetUnit.TakeDamage(rolledDamage);
                 OnAnyMeleeActionHit?.Invoke(this, EventArgs.Empty); //for screen shake
                 break;
             case State.AfterHit:
@@ -116,7 +118,7 @@ public class MeleeAction : BaseAction
             actionValue = 200,
         };
     }
-    protected override (int, int, int) GetDamageByTier() => (10, 20, 30);
+    protected override (int, int, int) GetDamageByTier() => (3, 5, 8);
 
     #endregion
 

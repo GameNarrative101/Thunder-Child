@@ -6,8 +6,7 @@ public class GrenadeLauncherAction : BaseAction
 {
     [SerializeField] Transform grenadeProjectilePrefab;
     [SerializeField] float damageRadius = 8f; //ADDED
-
-    int maxGrenadeDistance = 7;
+    [SerializeField] int maxGrenadeDistance = 7;
 
 
 
@@ -20,7 +19,9 @@ public class GrenadeLauncherAction : BaseAction
 
     
     public override string GetActionName() => "Falconnet Cannon";
-    protected override (int, int, int) GetDamageByTier() => (8, 12, 18);
+    protected override (int, int, int) GetDamageByTier() => (3, 5, 8);
+    protected override (int, int, int) GetKnockbackByTier() => (2, 4, 6);
+    
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
@@ -54,13 +55,15 @@ public class GrenadeLauncherAction : BaseAction
 
     private void OnGrenadeExploded(Vector3 explosionPosition)
     {
+        (int damage, int knockback, PowerRoll.PowerRollTier tier) = GetRolledDamageAndKnockback();
+
         Collider[] colliderArray = Physics.OverlapSphere(explosionPosition, damageRadius);
         foreach (Collider collider in colliderArray)
         {
             if (collider.TryGetComponent(out PCMech pcMech))
             {
-                pcMech.TakeDamage(GetRolledDamage());
-                pcMech.Knockback(3, LevelGrid.Instance.GetGridPosition(explosionPosition));
+                pcMech.TakeDamage(damage);
+                pcMech.Knockback(knockback, LevelGrid.Instance.GetGridPosition(explosionPosition));
             }
         }
         ActionComplete();

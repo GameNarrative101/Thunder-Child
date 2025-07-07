@@ -16,7 +16,7 @@ public class ParticleBeamCannonAction : BaseAction
 
 
     public override string GetActionName() => "Particle Beam Cannon";
-    protected override (int, int, int) GetDamageByTier() => (6, 10, 15);
+    protected override (int, int, int) GetDamageByTier() => (6, 10, 14);
 
     public override List<GridPosition> GetValidActionGridPositionList()
     {
@@ -70,7 +70,7 @@ public class ParticleBeamCannonAction : BaseAction
     }
     private void BeamDamage(List<GridPosition> damageLine)
     {
-        int rolledDamage = GetRolledDamage();
+        var (rolledDamage, _, _) = GetRolledDamageAndKnockback();
         foreach (GridPosition gridPos in damageLine)
         {
             List<PCMech> pcMechList = new List<PCMech> (LevelGrid.Instance.GetMechListAtGridPosition(gridPos));
