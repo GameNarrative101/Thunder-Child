@@ -162,14 +162,25 @@ public class PCMech : MonoBehaviour
     {
         corePower -= amount;
         OnCorePowerChange?.Invoke(this, EventArgs.Empty);
-        if (corePower > maxCorePower) { print("Overloaded!"); }
     }
     public void GainCorePower(int amount)
     {
         corePower += amount;
         OnCorePowerChange?.Invoke(this, EventArgs.Empty);
-        if (corePower > maxCorePower) { print("Overloaded!"); }
+
+        if (corePower > maxCorePower)
+        {
+            OverLoad();
+        }
     }
+    private void OverLoad()
+    {
+        int overloadAmount = corePower - maxCorePower;
+
+        GainHeat(overloadAmount);
+    }
+    public int GetCorePower() => corePower;
+    public float GetCorePowerNormalized() => corePower / (float)maxCorePower;
 
     public void TryReduceHeat(int amount)
     {
@@ -182,20 +193,26 @@ public class PCMech : MonoBehaviour
         OnHeatChange?.Invoke(this, EventArgs.Empty);
         if (heat < 0) { heat = 0; }
     }
-    public void GainHeat(int amount) //effects of overheating to be implemented later
-    {
-        heat += amount;
-        OnHeatChange?.Invoke(this, EventArgs.Empty);
-        if (heat > maxHeat) { print("Overheated!"); }
-    }
     public void ResetHeat()
     {
         heat = 0;
         OnHeatChange?.Invoke(this, EventArgs.Empty);
     }
+    public void GainHeat(int amount) //effects of overheating to be implemented later
+    {
+        heat += amount;
+        OnHeatChange?.Invoke(this, EventArgs.Empty);
+        if (heat > maxHeat)
+        {
+            OverHeat();
+        }
+    }
+    private void OverHeat()
+    {
+        int overHeatAmount = heat - maxHeat;
 
-    public int GetCorePower() => corePower;
-    public float GetCorePowerNormalized() => corePower / (float)maxCorePower;
+        TakeDamage(overHeatAmount);
+    }
     public int GetHeat() => heat;
     public float GetHeatNormalized() => heat / (float)maxHeat;
 

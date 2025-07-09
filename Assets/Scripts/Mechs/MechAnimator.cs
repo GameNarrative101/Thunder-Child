@@ -17,7 +17,7 @@ public class MechAnimator : MonoBehaviour
             moveAction.OnStopMoving += MoveAction_OnStopMoving;
         }
 
-        if (TryGetComponent<ShootAction>(out ShootAction shootAction))
+        if (TryGetComponent<AntiMaterielAction>(out AntiMaterielAction shootAction))
         {
             shootAction.OnShoot += ShootAction_OnShoot;
         }
@@ -48,7 +48,7 @@ public class MechAnimator : MonoBehaviour
         animator.SetBool("IsWalking",false);
     }
   
-    private void ShootAction_OnShoot(object sender, ShootAction.OnShootEventArgs e)
+    private void ShootAction_OnShoot(object sender, AntiMaterielAction.OnShootEventArgs e)
     {
         animator.SetTrigger("Shoot");
 

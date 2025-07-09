@@ -5,8 +5,8 @@ using UnityEngine;
 public class PowerToShieldAction : BaseAction
 {
     public override string GetActionName() => "All Power to Shields";
-    public override int GetCorePowerCost() => 5;
-    public override int GetHeatGenerated() => 5;
+    public override int GetCorePowerCost() => 3;
+    public override int GetHeatGenerated() => 3;
     [SerializeField] int healAmount = 10;
 
 

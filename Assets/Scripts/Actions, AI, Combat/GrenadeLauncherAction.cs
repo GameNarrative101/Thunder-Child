@@ -21,6 +21,8 @@ public class GrenadeLauncherAction : BaseAction
     public override string GetActionName() => "Falconnet Cannon";
     protected override (int, int, int) GetDamageByTier() => (3, 5, 8);
     protected override (int, int, int) GetKnockbackByTier() => (2, 4, 6);
+    public override int GetCorePowerCost() => 3;
+    public override int GetHeatGenerated() => 3;
     
     public override List<GridPosition> GetValidActionGridPositionList()
     {

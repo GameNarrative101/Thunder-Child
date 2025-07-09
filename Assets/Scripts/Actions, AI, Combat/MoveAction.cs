@@ -72,6 +72,8 @@ public class MoveAction : BaseAction
     #region OVERRIDES
 
     public override string GetActionName() => "Move";
+    public override int GetCorePowerCost() => 1;
+    public override int GetHeatGenerated() => 1;
     public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
         List<GridPosition> pathGridPositionList =
@@ -133,7 +135,7 @@ public class MoveAction : BaseAction
             return null;
         }
 
-        ShootAction shootAction = pCMech.GetAction<ShootAction>();
+        AntiMaterielAction shootAction = pCMech.GetAction<AntiMaterielAction>();
         if (shootAction == null)
         {
             Debug.LogWarning($"ShootAction is missing on {pCMech.gameObject.name}. Skipping AI action.");
@@ -141,7 +143,7 @@ public class MoveAction : BaseAction
         }
 
 
-        int TargetCountAtPosition = pCMech.GetAction<ShootAction>().GetTargetCountAtPosition(gridPosition);
+        int TargetCountAtPosition = pCMech.GetAction<AntiMaterielAction>().GetTargetCountAtPosition(gridPosition);
         return new EnemyAIAction
         {
             gridPosition = gridPosition,

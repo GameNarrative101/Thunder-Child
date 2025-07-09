@@ -98,12 +98,16 @@ public class GridSystemVisuals : MonoBehaviour
             case SpinAction spinAction:
                 gridVisualType = GridVisualType.Yellow;
                 break;
-            case ShootAction shootAction:
+            case AntiMaterielAction antiMaterielAction:
                 gridVisualType = GridVisualType.Red;
-                ShowGridPositionRange(selectedMech.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.SoftRed);
+                ShowGridPositionRange(selectedMech.GetGridPosition(), antiMaterielAction.GetMaxShootDistance(), GridVisualType.SoftRed);
+                break;
+            case LaserMinigunAction laserMinigunAction:
+                gridVisualType = GridVisualType.Red;
+                ShowGridPositionRange(selectedMech.GetGridPosition(), laserMinigunAction.GetMaxShootDistance(), GridVisualType.SoftRed);
                 break;
             case GrenadeLauncherAction grenadeLauncherAction:
-                gridVisualType = GridVisualType.Yellow;
+                gridVisualType = GridVisualType.White;
                 break;
             case MeleeAction meleeAction:
                 gridVisualType = GridVisualType.Red;

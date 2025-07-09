@@ -394,7 +394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxPCShield: 330
-  maxEnemyShield: 72
+  maxEnemyShield: 35
   ExpeditionFailed: {fileID: 0}
   pcMech: {fileID: 3670705484915049570}
 --- !u!114 &3821737785300979387
