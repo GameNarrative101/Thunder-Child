@@ -10,12 +10,24 @@ public class MoveAction : BaseAction
 
     List<Vector3> positionList;
     int currentPositionIndex;
+    int enemyMovesLeft = 1;
 
     public event EventHandler OnStartMoving;
     public event EventHandler OnStopMoving;
 
 
 
+    private void Start()
+    {
+        if (TurnSystemScript.Instance != null)
+        {
+            TurnSystemScript.Instance.OnTurnEnd += TurnSystemScript_OnTurnEnd;
+        }
+        else
+        {
+            Debug.LogError("TurnSystemScript.Instance is null in MoveAction.Start");
+        }
+    }
     void Update()
     {
         if (!isActive) return;
@@ -76,6 +88,11 @@ public class MoveAction : BaseAction
     public override int GetHeatGenerated() => 1;
     public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
+        if (pCMech.GetIsEnemy())
+        {
+            enemyMovesLeft--;
+        }
+
         List<GridPosition> pathGridPositionList =
             Pathfinding.Instance.FindPath(pCMech.GetGridPosition(), gridPosition, out int pathLength); //where pathfinding happens
 
@@ -120,35 +137,59 @@ public class MoveAction : BaseAction
         return validGridPositionList;
     }
 
-    #endregion  
+    #endregion
 
 
 
     //==================================================================================================================================== 
     #region ENEMY MOVE
 
-    public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
+    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
     {
-        if (pCMech == null)
+        if (pCMech != null && pCMech.GetIsEnemy())
         {
-            Debug.LogError("pCMech is null in MoveAction.GetBestEnemyAIAction.");
+            enemyMovesLeft = 1;
+        }
+    }
+    public override EnemyAIAction GetBestEnemyAIAction(GridPosition simulatedMovePosition)
+    {
+        if (pCMech.GetIsEnemy() && enemyMovesLeft <= 0)
+        {
             return null;
         }
 
-        AntiMaterielAction shootAction = pCMech.GetAction<AntiMaterielAction>();
-        if (shootAction == null)
+        PCMech closestTarget = GetClosestPCMech(simulatedMovePosition);
+        if (closestTarget != null && Pathfinding.Instance.HasValidPath(simulatedMovePosition, closestTarget.GetGridPosition()))
         {
-            Debug.LogWarning($"ShootAction is missing on {pCMech.gameObject.name}. Skipping AI action.");
-            return null;
+            int distance = Pathfinding.Instance.GetPathLength(simulatedMovePosition, closestTarget.GetGridPosition());
+
+            int fallbackValue = Mathf.Max(1, 100 - distance); // Closer = higher value
+            return new EnemyAIAction
+            {
+                gridPosition = simulatedMovePosition,
+                actionValue = fallbackValue
+            };
         }
 
+        return null;
+    }
+    private PCMech GetClosestPCMech(GridPosition fromPosition)
+    {
+        PCMech closest = null;
+        int shortestDistance = int.MaxValue;
 
-        int TargetCountAtPosition = pCMech.GetAction<AntiMaterielAction>().GetTargetCountAtPosition(gridPosition);
-        return new EnemyAIAction
+        foreach (PCMech target in UnitManager.Instance.GetFriendlyMechList())
         {
-            gridPosition = gridPosition,
-            actionValue = TargetCountAtPosition * 10,
-        };
+            int distance = Pathfinding.Instance.GetPathLength(fromPosition, target.GetGridPosition());
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                closest = target;
+            }
+        }
+
+        return closest;
+
     }
     
     #endregion

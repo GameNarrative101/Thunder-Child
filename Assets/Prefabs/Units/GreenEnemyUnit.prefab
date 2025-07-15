@@ -529,6 +529,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3821737785300979387, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
+    - {fileID: -6801997478047366072, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
+    - {fileID: 8149747404443248139, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
+    - {fileID: 3518970526770110091, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
     m_RemovedGameObjects:
     - {fileID: 5993268644447019065, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
     m_AddedGameObjects:
@@ -537,8 +540,11 @@ PrefabInstance:
       addedObject: {fileID: 3356463005105734912}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3873984016508158188, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
-      insertIndex: 7
+      insertIndex: 5
       addedObject: {fileID: 9129707900208592303}
+    - targetCorrespondingSourceObject: {fileID: 3873984016508158188, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8782440469232993968}
   m_SourcePrefab: {fileID: 100100000, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
 --- !u!1 &2803124575487556567 stripped
 GameObject:
@@ -559,6 +565,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ragdollPrefab: {fileID: 5596231121940010120, guid: c1fcf72e9cac6d14f9f105f2ca9ade6f, type: 3}
   originalRootBone: {fileID: 5216802616900957242}
+--- !u!114 &8782440469232993968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2803124575487556567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68296de28c87ed9419a0c4f783a06894, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aimingStateTime: 0.5
+  shootingStateTime: 0.1
+  coolOffStateTime: 0.5
+  maxShootDistance: 5
+  obstaclesLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!4 &5596231121940010120 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6812920997967081395, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}

@@ -80,15 +80,18 @@ public class MeleeAction : BaseAction
     public override int GetHeatGenerated() => 1;
     public override List<GridPosition> GetValidActionGridPositionList()
     {
+        return GetValidActionGridPositionList(pCMech.GetGridPosition());
+    }
+    public List<GridPosition> GetValidActionGridPositionList(GridPosition simulatedPosition)
+    {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
 
-        GridPosition pcMechGridPosition = pCMech.GetGridPosition();
         for (int x = -maxMeleeDistance; x <= maxMeleeDistance; x++)
         {
             for (int z = -maxMeleeDistance; z <= maxMeleeDistance; z++)
             {
                 GridPosition offsetGridPosition = new GridPosition(x, z);
-                GridPosition testGridPosition = pcMechGridPosition + offsetGridPosition;
+                GridPosition testGridPosition = simulatedPosition + offsetGridPosition;
 
                 if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;// Skip invalid grid positions
                 if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;// Skip grid positions without any units
@@ -113,12 +116,15 @@ public class MeleeAction : BaseAction
         OnMeleeActionStarted?.Invoke(this, EventArgs.Empty);
         ActionStart(clearBusyOnActionComplete);
     }
-    public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
+    public override EnemyAIAction GetBestEnemyAIAction(GridPosition simulatedPosition)
     {
+        List<GridPosition> targetList = GetValidActionGridPositionList(simulatedPosition);
+        if (targetList.Count == 0) return null;
+
         return new EnemyAIAction
         {
-            gridPosition = gridPosition,
-            actionValue = 200,
+            gridPosition = simulatedPosition,
+            actionValue = 100,
         };
     }
 

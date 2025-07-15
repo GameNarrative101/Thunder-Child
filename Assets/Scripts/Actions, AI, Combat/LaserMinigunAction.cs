@@ -45,6 +45,41 @@ public class LaserMinigunAction : BaseAction
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
         return GetValidActionGridPositionList(pcMechGridPosition);
     }
+    public List<GridPosition> GetValidActionGridPositionList(GridPosition pcMechGridPosition)
+    {
+        List<GridPosition> validGridPositionList = new List<GridPosition>();
+
+        //we weanna cycle through all valid grid positions. so, for every x from left to right within range and same with every z,
+        //gimme a new grid position (offset) so we can add it to current grid position
+        for (int x = -maxShootDistance; x <= maxShootDistance; x++)
+        {
+            for (int z = -maxShootDistance; z <= maxShootDistance; z++)
+            {
+                GridPosition offsetGridPosition = new GridPosition(x, z);
+                GridPosition testGridPosition = pcMechGridPosition + offsetGridPosition;
+
+                if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;// Skip invalid grid positions
+                if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;// Skip grid positions without any units
+
+                PCMech targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(testGridPosition);
+                if (targetUnit.GetIsEnemy() == pCMech.GetIsEnemy()) continue;// Skip grid positions with allied units
+
+                Vector3 pcMechWorldPosition = LevelGrid.Instance.GetWorldPosition(pcMechGridPosition);
+                Vector3 shootDir = (targetUnit.GetWorldPosition() - pcMechWorldPosition).normalized;
+                float pcMechShoulderHeight = 1.7f;
+                if (Physics.Raycast(pcMechWorldPosition + Vector3.up * pcMechShoulderHeight,
+                        shootDir,
+                        Vector3.Distance(pcMechWorldPosition, targetUnit.GetWorldPosition()),
+                        obstaclesLayerMask))
+                {
+                    continue; // Skip grid positions with obstacles in the way
+                }
+
+                validGridPositionList.Add(testGridPosition);// Add valid grid position to the list
+            }
+        }
+        return validGridPositionList;
+    }
     public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
         targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(gridPosition);
@@ -132,48 +167,16 @@ public class LaserMinigunAction : BaseAction
     //==================================================================================================================================== 
     #region ENEMY SHOOTIN THANGS
 
-    public override EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition)
+    public override EnemyAIAction GetBestEnemyAIAction(GridPosition simulatedPosition)
     {
+        List<GridPosition> targetList = GetValidActionGridPositionList(simulatedPosition);
+        if (targetList.Count == 0) return null;
+
         return new EnemyAIAction
         {
-            gridPosition = gridPosition,
-            actionValue = 100,
+            gridPosition = simulatedPosition,
+            actionValue = 50,
         };
-    }
-    public List<GridPosition> GetValidActionGridPositionList(GridPosition pcMechGridPosition)
-    {
-        List<GridPosition> validGridPositionList = new List<GridPosition>();
-
-        //we weanna cycle through all valid grid positions. so, for every x from left to right within range and same with every z,
-        //gimme a new grid position (offset) so we can add it to current grid position
-        for (int x = -maxShootDistance; x <= maxShootDistance; x++)
-        {
-            for (int z = -maxShootDistance; z <= maxShootDistance; z++)
-            {
-                GridPosition offsetGridPosition = new GridPosition(x, z);
-                GridPosition testGridPosition = pcMechGridPosition + offsetGridPosition;
-
-                if (!LevelGrid.Instance.IsValidPosition(testGridPosition)) continue;// Skip invalid grid positions
-                if (!LevelGrid.Instance.HasAnyPcMechOnGridPosition(testGridPosition)) continue;// Skip grid positions without any units
-
-                PCMech targetUnit = LevelGrid.Instance.GetPcMechAtGridPosition(testGridPosition);
-                if (targetUnit.GetIsEnemy() == pCMech.GetIsEnemy()) continue;// Skip grid positions with allied units
-
-                Vector3 pcMechWorldPosition = LevelGrid.Instance.GetWorldPosition(pcMechGridPosition);
-                Vector3 shootDir = (targetUnit.GetWorldPosition() - pcMechWorldPosition).normalized;
-                float pcMechShoulderHeight = 1.7f;
-                if (Physics.Raycast(pcMechWorldPosition + Vector3.up * pcMechShoulderHeight,
-                        shootDir,
-                        Vector3.Distance(pcMechWorldPosition, targetUnit.GetWorldPosition()),
-                        obstaclesLayerMask))
-                {
-                    continue; // Skip grid positions with obstacles in the way
-                }
-
-                validGridPositionList.Add(testGridPosition);// Add valid grid position to the list
-            }
-        }
-        return validGridPositionList;
     }
     public int GetTargetCountAtPosition(GridPosition gridPosition)
     {

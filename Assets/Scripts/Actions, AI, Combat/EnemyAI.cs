@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-                            //CURRENT LOGIC IS FOR ALL ENEMIES TO GO BETWEEN PLAYER TURNS.
+    //CURRENT LOGIC IS FOR ALL ENEMIES TO GO BETWEEN PLAYER TURNS.
 
-    enum State {WaitingForEnemyTurn, TakingTurn, Busy}
+    enum State { WaitingForEnemyTurn, TakingTurn, Busy }
     State state;
     float timer;
 
@@ -22,7 +23,7 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         bool flowControl = HandleEnemyTurn();
-        if (!flowControl) {return;}
+        if (!flowControl) { return; }
     }
 
 
@@ -68,7 +69,7 @@ public class EnemyAI : MonoBehaviour
     {
         foreach (PCMech enemyUnit in UnitManager.Instance.GetEnemyMechList())
         {
-            if (TryTakeEnemyAIAction(enemyUnit, onEnemyAIActionComplete)) {return true;}
+            if (TryTakeEnemyAIAction(enemyUnit, onEnemyAIActionComplete)) { return true; }
         }
         return false;
     }
@@ -103,6 +104,8 @@ public class EnemyAI : MonoBehaviour
             return false;
         } 
     */
+
+    /* TRYING SOMETHING GIMME A SEC
     bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
     {
         EnemyAIAction bestEnemyAIAction = null;
@@ -133,11 +136,60 @@ public class EnemyAI : MonoBehaviour
 
         if (bestEnemyAIAction != null && enemyUnit.TrySpendCorePowerForAction(bestBaseAction))
         {
+            Debug.Log($"Taking action {bestEnemyAIAction.GetType()} at {bestEnemyAIAction.gridPosition}");
             bestBaseAction.TakeAction(bestEnemyAIAction.gridPosition, onEnemyAIActionComplete);
             return true;
         }
         else return false;
         
+    } */
+    bool TryTakeEnemyAIAction(PCMech enemyUnit, Action onEnemyAIActionComplete)
+    {
+        List<(BaseAction, EnemyAIAction)> scoredActions = new();
+
+        foreach (BaseAction enemyAction in enemyUnit.GetBaseActionArray())
+        {
+            if (!enemyAction.GetIsEnemyAction()) continue; // not an enemy action
+            if (!enemyUnit.CanSpendCorePowerForAction(enemyAction)) continue; // can't afford action
+
+            EnemyAIAction aiAction = enemyAction.GetBestEnemyAIAction();
+            if (aiAction != null && aiAction.actionValue > 0)
+            {
+                scoredActions.Add((enemyAction, aiAction));
+            }
+        }
+
+        if (scoredActions.Count > 0)
+        {
+            // Sort actions by value
+            scoredActions.Sort((a, b) => b.Item2.actionValue.CompareTo(a.Item2.actionValue));
+
+            BaseAction bestAction = scoredActions[0].Item1;
+            EnemyAIAction bestAIAction = scoredActions[0].Item2;
+
+            if (enemyUnit.TrySpendCorePowerForAction(bestAction))
+            {
+                Debug.Log($"[AI] {enemyUnit.name} using {bestAction.GetType().Name} at {bestAIAction.gridPosition} (value {bestAIAction.actionValue})");
+                bestAction.TakeAction(bestAIAction.gridPosition, onEnemyAIActionComplete);
+                return true;
+            }
+        }
+
+        // Fallback: Move toward closest player
+        return TryMoveTowardPlayer(enemyUnit, onEnemyAIActionComplete);
+
+    }
+    private bool TryMoveTowardPlayer(PCMech enemyUnit, Action onComplete)
+    {
+        MoveAction moveAction = enemyUnit.GetAction<MoveAction>();
+        if (moveAction == null || !enemyUnit.CanSpendCorePowerForAction(moveAction)) return false;
+
+        EnemyAIAction bestMove = moveAction.GetBestEnemyAIAction(); // already simulates which tile is best
+        if (bestMove == null || bestMove.actionValue <= 0) return false;
+
+        Debug.Log($"[AI Fallback] {enemyUnit.name} moving toward player to {bestMove.gridPosition} (value {bestMove.actionValue})");
+        moveAction.TakeAction(bestMove.gridPosition, onComplete);
+        return true;
     }
 
 }

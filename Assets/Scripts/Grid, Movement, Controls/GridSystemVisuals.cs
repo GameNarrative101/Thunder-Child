@@ -106,7 +106,7 @@ public class GridSystemVisuals : MonoBehaviour
                 gridVisualType = GridVisualType.Red;
                 ShowGridPositionRange(selectedMech.GetGridPosition(), laserMinigunAction.GetMaxShootDistance(), GridVisualType.SoftRed);
                 break;
-            case GrenadeLauncherAction grenadeLauncherAction:
+            case FalconnetCannonAction grenadeLauncherAction:
                 gridVisualType = GridVisualType.White;
                 break;
             case MeleeAction meleeAction:
