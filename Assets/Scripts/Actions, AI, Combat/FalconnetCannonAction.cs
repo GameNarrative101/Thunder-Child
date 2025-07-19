@@ -19,7 +19,17 @@ public class FalconnetCannonAction : BaseAction
 
 
     public override string GetActionName() => "Falconnet Cannon";
-    protected override (int, int, int) GetDamageByTier() => (3, 5, 8);
+    protected override (int, int, int) GetDamageByTier()
+    {
+       if (!pCMech.GetIsEnemy())
+       {
+           return (9, 15, 24);
+       }
+       else
+       {
+           return (3, 5, 8);
+       }
+    }
     protected override (int, int, int) GetKnockbackByTier() => (2, 4, 6);
     public override int GetCorePowerCost() => 3;
     public override int GetHeatGenerated() => 3;

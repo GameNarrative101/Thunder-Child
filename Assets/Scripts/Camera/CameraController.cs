@@ -120,14 +120,13 @@ public class CameraController : MonoBehaviour
     }
     void ProcessRotation(float? targetYaw = null)
     {
-        if (targetYaw.HasValue)
-        {
-            accumulatedYaw = targetYaw.Value; // Auto-rotation, used on unit movement
-        }
-        else
-        {
-            accumulatedYaw += InputManager.Instance.GetCameraRotateAmount() * yawFactor * Time.deltaTime;
-        }
+        /*  No Auto-Rotation for now 
+            if (targetYaw.HasValue)
+            {
+                accumulatedYaw = targetYaw.Value; // Auto-rotation, used on unit movement
+            } 
+        */
+        accumulatedYaw += InputManager.Instance.GetCameraRotateAmount() * yawFactor * Time.deltaTime;
         transform.localRotation = Quaternion.Euler(defaultPitch, accumulatedYaw, 0);
     }
     private void ProcessZoom()
@@ -152,13 +151,15 @@ public class CameraController : MonoBehaviour
         Vector3 targetPosition = followTarget.position + followOffset; // Follow target
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, followSmoothTime);
 
-        Vector3 lookDirection = followTarget.position - transform.position; // Rotate towards target
-        lookDirection.y = 0f; // horizontal rotation only
-        if (lookDirection.sqrMagnitude > 0.001f)
-        {
-            float desiredYaw = Quaternion.LookRotation(lookDirection).eulerAngles.y;
-            ProcessRotation(Mathf.LerpAngle(accumulatedYaw, desiredYaw, Time.deltaTime * 5f)); // smooth rotation
-        }
+        /*  No Auto-Rotation for now 
+            Vector3 lookDirection = followTarget.position - transform.position; // Rotate towards target
+            lookDirection.y = 0f; // horizontal rotation only
+            if (lookDirection.sqrMagnitude > 0.001f)
+            {
+                float desiredYaw = Quaternion.LookRotation(lookDirection).eulerAngles.y;
+                ProcessRotation(Mathf.LerpAngle(accumulatedYaw, desiredYaw, Time.deltaTime * 5f)); // smooth rotation
+            } 
+        */
     }
 
     #endregion

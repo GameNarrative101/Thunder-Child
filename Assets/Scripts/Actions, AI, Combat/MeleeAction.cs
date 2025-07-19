@@ -75,7 +75,17 @@ public class MeleeAction : BaseAction
     #region OVERRIDES
 
     public override string GetActionName() => "Melee";
-    protected override (int, int, int) GetDamageByTier() => (3, 5, 8);
+    protected override (int, int, int) GetDamageByTier()
+    {
+       if (!pCMech.GetIsEnemy())
+       {
+           return (9, 15, 24);
+       }
+       else
+       {
+           return (3, 5, 8);
+       }
+    }
     public override int GetCorePowerCost() => 1;
     public override int GetHeatGenerated() => 1;
     public override List<GridPosition> GetValidActionGridPositionList()

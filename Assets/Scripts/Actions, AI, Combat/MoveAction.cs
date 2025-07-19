@@ -9,11 +9,17 @@ public class MoveAction : BaseAction
     [SerializeField] int maxMoveDistance = 4;
 
     List<Vector3> positionList;
+    Vector3 targetPosition;
     int currentPositionIndex;
     int enemyMovesLeft = 1;
 
-    public event EventHandler OnStartMoving;
     public event EventHandler OnStopMoving;
+    public event EventHandler<OnStartMovingEventArgs> OnStartMoving;
+    public class OnStartMovingEventArgs : EventArgs
+    {
+        public Vector3 worldFrom;
+        public Vector3 worldTo;
+    }
 
 
 
@@ -42,7 +48,7 @@ public class MoveAction : BaseAction
 
     void clickToMove()
     {
-        Vector3 targetPosition = positionList[currentPositionIndex];
+        targetPosition = positionList[currentPositionIndex];
         Vector3 moveDirection = (targetPosition - transform.position).normalized;
 
         // Smooth rotation toward move direction
@@ -104,7 +110,11 @@ public class MoveAction : BaseAction
             positionList.Add(LevelGrid.Instance.GetWorldPosition(pathGridPosition));
         }
 
-        OnStartMoving?.Invoke(this, EventArgs.Empty);
+        OnStartMoving?.Invoke(this, new OnStartMovingEventArgs
+        {
+            worldFrom = transform.position,
+            worldTo = targetPosition 
+        });
 
         ActionStart(clearBusyOnActionComplete);
     }

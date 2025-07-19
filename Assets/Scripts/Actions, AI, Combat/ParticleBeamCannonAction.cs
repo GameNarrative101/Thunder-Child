@@ -16,7 +16,7 @@ public class ParticleBeamCannonAction : BaseAction
 
 
     public override string GetActionName() => "Particle Beam Cannon";
-    protected override (int, int, int) GetDamageByTier() => (6, 10, 14);
+    protected override (int, int, int) GetDamageByTier() => (18, 30, 42);
     public override int GetCorePowerCost() => 7;
     public override int GetHeatGenerated() => 7;
 

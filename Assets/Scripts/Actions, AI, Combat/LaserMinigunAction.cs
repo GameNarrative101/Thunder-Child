@@ -154,7 +154,17 @@ public class LaserMinigunAction : BaseAction
     #region SETTIN' & GETTIN'
 
     public override string GetActionName() => "Laser Minigun";
-    protected override (int, int, int) GetDamageByTier() => (4, 5, 7);
+    protected override (int, int, int) GetDamageByTier()
+    {
+       if (!pCMech.GetIsEnemy())
+       {
+           return (12, 15, 21);
+       }
+       else
+       {
+           return (4, 5, 7);
+       }
+    }
     public override int GetCorePowerCost() => 1;
     public override int GetHeatGenerated() => 1;
     public int GetMaxShootDistance() => maxShootDistance;
