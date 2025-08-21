@@ -21,10 +21,12 @@ public class AntiMaterielAction : BaseAction
 
     public event EventHandler<OnShootEventArgs> OnShoot;
     public static event EventHandler<OnShootEventArgs> OnAnyShoot; //for scren shake
+    public event EventHandler OnShootCompleted;
+
 
     public class OnShootEventArgs : EventArgs //adding more to the event, instead of <> on event handler. another option
     {
-        public PCMech targetUnit;
+        public PCMech targetMech;
         public PCMech shootingUnit;
     }
 
@@ -135,13 +137,14 @@ public class AntiMaterielAction : BaseAction
                 break;
             case State.Cooloff:
                 ActionComplete();
+                OnShootCompleted?.Invoke(this, EventArgs.Empty);
                 break;
         }
     }
     private void ShootBullet()
     {
-        OnShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
-        OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
+        OnShoot?.Invoke(this, new OnShootEventArgs { targetMech = targetUnit, shootingUnit = pCMech });
+        OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetMech = targetUnit, shootingUnit = pCMech });
 
         var (rolledDamage, _, _) = GetRolledDamageAndKnockback();
         targetUnit.TakeDamage(rolledDamage);

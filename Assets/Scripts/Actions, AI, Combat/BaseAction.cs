@@ -15,6 +15,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     protected bool isActive;
     protected bool isPlayerAction = true;
     protected bool isEnemyAction = true;
+    public static bool EnemyActionTaken = false;
 
     public static event EventHandler OnAnyActionStarted;
     public static event EventHandler OnAnyActionCompleted;
@@ -46,18 +47,6 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         OnAnyActionCompleted?.Invoke(this, EventArgs.Empty);
     }
-    // protected int GetRolledDamage(int bonusModifier = 0)
-    // {
-    //     var (tier1, tier2, tier3) = GetDamageByTier();
-    //     PowerRoll.PowerRollTier tier = PowerRoll.Instance.Roll(bonusModifier);
-    //     return tier switch
-    //     {
-    //         PowerRoll.PowerRollTier.Tier1 => tier1,
-    //         PowerRoll.PowerRollTier.Tier2 => tier2,
-    //         PowerRoll.PowerRollTier.Tier3 => tier3,
-    //         _ => tier2,
-    //     };
-    // }
     protected (int damage, int knockback, PowerRoll.PowerRollTier tier) GetRolledDamageAndKnockback(int bonusModifier = 0)
     {
         var (d1, d2, d3) = GetDamageByTier();
@@ -113,6 +102,10 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     public abstract string GetActionName();
     public abstract void TakeAction(GridPosition targetGridPosition, Action clearBusyOnActionComplete); //grid position useless for some, but oh well.
     public abstract List<GridPosition> GetValidActionGridPositionList();
+    public static void ResetEnemyActionFlag() //called from EnemyAI
+    {
+        EnemyActionTaken = false;
+    }
 
     #endregion
 
@@ -124,6 +117,11 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     public virtual EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition) { return null; }
     public EnemyAIAction GetBestEnemyAIAction()
     {
+        if (EnemyActionTaken && GetType() != typeof(MoveAction))
+        {
+            return null; // One action per turn for enemies, except moving
+        }
+
         List<EnemyAIAction> enemyAIActionList = new List<EnemyAIAction>();
         List<GridPosition> validActionGridPositionList = GetValidActionGridPositionList();
 

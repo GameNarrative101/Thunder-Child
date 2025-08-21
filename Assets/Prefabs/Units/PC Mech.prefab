@@ -346,7 +346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimingStateTime: 0.5
-  shootingStateTime: 0.1
+  shootingStateTime: 0.5
   coolOffStateTime: 0.5
   maxShootDistance: 5
   obstaclesLayerMask:
@@ -381,6 +381,7 @@ MonoBehaviour:
   animator: {fileID: 1718457562192171965}
   bulletProjectilePrefab: {fileID: 8764697905737213464, guid: fa17b9cd5c394724db4f8c7e3aff3e54, type: 3}
   shootPointTransform: {fileID: 199363312546342701}
+  shootDelay: 0
 --- !u!114 &8138175617954225887
 MonoBehaviour:
   m_ObjectHideFlags: 0

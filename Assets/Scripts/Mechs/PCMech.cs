@@ -17,7 +17,8 @@ public class PCMech : MonoBehaviour
     [SerializeField] int maxCorePower = 15;
     [SerializeField] int heat = 0;
     [SerializeField] int maxHeat = 10;
-    /* [SerializeField] */ float knockbackSpeed = 60f;
+    float knockbackSpeed = 60f;
+    int turnsTaken = 0;
 
     public static event EventHandler OnAnyUnitSpawned;
     public static event EventHandler OnAnyUnitDead;
@@ -239,6 +240,9 @@ public class PCMech : MonoBehaviour
         return null;
     }
     public BaseAction[] GetBaseActionArray() => baseActionArray;
+    public void IncrementTurnTaken() => turnsTaken++;
+    public int GetTurnsTaken() => turnsTaken;
+    public void ResetTurnsTaken() => turnsTaken = 0;
 
     #endregion
 
@@ -250,8 +254,8 @@ public class PCMech : MonoBehaviour
     void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
     {
         //increase core power at the beginning of the player's turn
-        if ((GetIsEnemy() && !TurnSystemScript.Instance.IsPlayerTurn()) ||
-        (!GetIsEnemy() && TurnSystemScript.Instance.IsPlayerTurn()))
+        if ((GetIsEnemy() && !TurnSystemScript.Instance.GetIsPlayerTurn()) ||
+        (!GetIsEnemy() && TurnSystemScript.Instance.GetIsPlayerTurn()))
         {
             GainCorePower(corePowerIncrease);
             OnCorePowerChange?.Invoke(this, EventArgs.Empty);

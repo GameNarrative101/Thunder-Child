@@ -59,7 +59,7 @@ public class UnitActionSystem : MonoBehaviour
         OnSelectedActionChanged?.Invoke(this, EventArgs.Empty); //called here so visuals update when mouse is still on UI
         if (EventSystem.current.IsPointerOverGameObject()) { return; } //no action if the mouse is over a UI element
         if (TryHandleUnitSelection()) { return; } //no action if selecting a unit
-        if (!TurnSystemScript.Instance.IsPlayerTurn()) { return; } //no action if it's not the player's turn
+        if (!TurnSystemScript.Instance.GetIsPlayerTurn()) { return; } //no action if it's not the player's turn
 
         HandleSelectedAction();
     }

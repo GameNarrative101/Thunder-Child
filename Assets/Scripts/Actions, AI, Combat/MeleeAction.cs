@@ -123,6 +123,8 @@ public class MeleeAction : BaseAction
         float BeforeHitStateTime = 0.7f;
         stateTimer = BeforeHitStateTime;
 
+        if (pCMech.GetIsEnemy()) EnemyActionTaken = true;
+
         OnMeleeActionStarted?.Invoke(this, EventArgs.Empty);
         ActionStart(clearBusyOnActionComplete);
     }

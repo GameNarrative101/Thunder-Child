@@ -20,7 +20,7 @@ public class ActionButtonUI : MonoBehaviour
     //subscribes to action system's onBusyChanged event and makes buttons unusable when busy
     private void UnitActionSystem_onBusyChanged(object sender, bool isBusy)
     {
-        if (isBusy || !TurnSystemScript.Instance.IsPlayerTurn())
+        if (isBusy || !TurnSystemScript.Instance.GetIsPlayerTurn())
         {
             button.interactable = false;
         }

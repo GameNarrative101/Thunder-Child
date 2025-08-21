@@ -23,7 +23,7 @@ public class LaserMinigunAction : BaseAction
 
     public class OnShootEventArgs : EventArgs //adding more to the event, instead of <> on event handler. another option
     {
-        public PCMech targetUnit;
+        public PCMech targetMech;
         public PCMech shootingUnit;
     }
 
@@ -89,6 +89,7 @@ public class LaserMinigunAction : BaseAction
         stateTimer = aimingStateTime;
 
         canShootBullet = true;
+        if (pCMech.GetIsEnemy()) EnemyActionTaken = true;
 
         ActionStart(clearBusyOnActionComplete);
     }
@@ -139,8 +140,8 @@ public class LaserMinigunAction : BaseAction
     }
     private void ShootBullet()
     {
-        OnShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
-        OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = pCMech });
+        OnShoot?.Invoke(this, new OnShootEventArgs { targetMech = targetUnit, shootingUnit = pCMech });
+        OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetMech = targetUnit, shootingUnit = pCMech });
 
         var (rolledDamage, _, _) = GetRolledDamageAndKnockback();
         targetUnit.TakeDamage(rolledDamage);

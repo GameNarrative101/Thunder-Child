@@ -56,9 +56,9 @@ public class TurnSystemUI : MonoBehaviour
     }
     void UpdateEnemyTurnPanel()
     {
-        enemyTurnPanel.SetActive (!TurnSystemScript.Instance.IsPlayerTurn());
-        endTurnUI.SetActive (TurnSystemScript.Instance.IsPlayerTurn());
-        actionBar.SetActive (TurnSystemScript.Instance.IsPlayerTurn());
-        resourceBars.SetActive (TurnSystemScript.Instance.IsPlayerTurn());
+        enemyTurnPanel.SetActive (!TurnSystemScript.Instance.GetIsPlayerTurn());
+        endTurnUI.SetActive (TurnSystemScript.Instance.GetIsPlayerTurn());
+        actionBar.SetActive (TurnSystemScript.Instance.GetIsPlayerTurn());
+        resourceBars.SetActive (TurnSystemScript.Instance.GetIsPlayerTurn());
     }
 }

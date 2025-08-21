@@ -66,6 +66,8 @@ public class FalconnetCannonAction : BaseAction
         GrenadeProjectile grenadeProjectile = grenadeProjectileTransform.GetComponent<GrenadeProjectile>();
         grenadeProjectile.Setup(targetGridPosition, OnGrenadeExploded);
 
+        if (pCMech.GetIsEnemy()) EnemyActionTaken = true;
+
         ActionStart(clearBusyOnActionComplete);
     }
 

@@ -31,6 +31,12 @@ public class Testing : MonoBehaviour
             */
         }
 
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            var order = TurnSystemScript.Instance.GetInitiativeOrder();
+            Debug.Log(string.Join(", ", order));
+        }   
+        
         if (Input.GetKeyDown(KeyCode.Space))
         {
             TurnSystemScript.Instance.NextTurn();

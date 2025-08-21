@@ -23,13 +23,12 @@ public class BulletProjectile : MonoBehaviour
 
         float distanceAfterMoving = Vector3.Distance(transform.position, targetPosition);
 
-        //at high speeds, the object can bug out and go back and forth, so we check for that and then destroy
         if (distanceBeforeMoving < distanceAfterMoving)
         {
             //preventing any overshot for an object this fast
             transform.position=targetPosition;
 
-            //to keep the trail there a bit longer after the bullet hits, we unparent and autodestruct it
+            //to keep the trail there a bit longer after the bullet hits, unparent and autodestruct it
             trailRenderer.transform.parent = null;
 
             Destroy (gameObject);
