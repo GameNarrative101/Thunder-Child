@@ -5,13 +5,19 @@ using UnityEngine;
 public class MeleeAction : BaseAction
 {
     enum State { BeforeHit, AfterHit }
-    [SerializeField] int maxMeleeDistance = 1;
     State state;
-    float stateTimer;
     PCMech targetUnit;
+    float stateTimer;
     public event EventHandler OnMeleeActionStarted;
     public event EventHandler OnMeleeActionCompleted;
     public static event EventHandler OnAnyMeleeActionHit; //for screen shake
+
+    [SerializeField] int maxMeleeDistance = 1;
+    [SerializeField] int heatGenerated = 1;
+    [SerializeField] int corePowerCost = 1;
+    [SerializeField] Vector3Int enemyDamageByTier = new Vector3Int(3, 5, 8);
+    [SerializeField] Vector3Int playerDamageByTier = new Vector3Int(9, 15, 24);
+
 
 
     void Update()
@@ -77,17 +83,17 @@ public class MeleeAction : BaseAction
     public override string GetActionName() => "Melee";
     protected override (int, int, int) GetDamageByTier()
     {
-       if (!pCMech.GetIsEnemy())
-       {
-           return (9, 15, 24);
-       }
-       else
-       {
-           return (3, 5, 8);
-       }
+        if (!pCMech.GetIsEnemy())
+        {
+            return (playerDamageByTier.x, playerDamageByTier.y, playerDamageByTier.z);
+        }
+        else
+        {
+            return (enemyDamageByTier.x, enemyDamageByTier.y, enemyDamageByTier.z);
+        }
     }
-    public override int GetCorePowerCost() => 1;
-    public override int GetHeatGenerated() => 1;
+    public override int GetCorePowerCost() => corePowerCost;
+    public override int GetHeatGenerated() => heatGenerated;
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         return GetValidActionGridPositionList(pCMech.GetGridPosition());

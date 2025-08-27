@@ -12,10 +12,14 @@ public class LaserMinigunAction : BaseAction
     float stateTimer;
 
     //once tested and confirmed, store each state's timer locally
+    [SerializeField] int maxShootDistance = 5;
+    [SerializeField] Vector3Int enemyDamageByTier = new Vector3Int(4, 5, 7);
+    [SerializeField] Vector3Int playerDamageByTier = new Vector3Int(12, 15, 21);
+    [SerializeField] int heatGenerated = 1;
+    [SerializeField] int corePowerCost = 1;
     [SerializeField] float aimingStateTime = 0.5f;
     [SerializeField] float shootingStateTime = 0.1f;
     [SerializeField] float coolOffStateTime = 0.5f;
-    [SerializeField] int maxShootDistance = 5;
     [SerializeField] LayerMask obstaclesLayerMask;
 
     public event EventHandler<OnShootEventArgs> OnShoot;
@@ -159,15 +163,15 @@ public class LaserMinigunAction : BaseAction
     {
        if (!pCMech.GetIsEnemy())
        {
-           return (12, 15, 21);
+           return (playerDamageByTier.x, playerDamageByTier.y, playerDamageByTier.z);
        }
        else
        {
-           return (4, 5, 7);
+           return (enemyDamageByTier.x, enemyDamageByTier.y, enemyDamageByTier.z);
        }
     }
-    public override int GetCorePowerCost() => 1;
-    public override int GetHeatGenerated() => 1;
+    public override int GetCorePowerCost() => corePowerCost;
+    public override int GetHeatGenerated() => heatGenerated;
     public int GetMaxShootDistance() => maxShootDistance;
     public PCMech GetTargetUnit() => targetUnit;
 

@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class PowerToShieldAction : BaseAction
 {
-    public override string GetActionName() => "All Power to Shields";
-    public override int GetCorePowerCost() => 3;
-    public override int GetHeatGenerated() => 3;
     [SerializeField] int healAmount = 10;
+    [SerializeField] int corePowerCost = 3;
+    [SerializeField] int heatGenerated = 3;
 
 
     protected override void Awake()
@@ -18,9 +17,12 @@ public class PowerToShieldAction : BaseAction
 
 
 
+    public override string GetActionName() => "All Power to Shields";
+    public override int GetCorePowerCost() => corePowerCost;
+    public override int GetHeatGenerated() => heatGenerated;
     public override List<GridPosition> GetValidActionGridPositionList()
     {
-        List<GridPosition> validGridPositionList = new List<GridPosition>();
+        // List<GridPosition> validGridPositionList = new List<GridPosition>();
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
 
         return new List<GridPosition> { pcMechGridPosition };

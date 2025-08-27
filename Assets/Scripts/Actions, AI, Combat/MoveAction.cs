@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System;
 public class MoveAction : BaseAction
 {
-    [SerializeField] float moveSpeed = 4f;
-    [SerializeField] float stoppingDistance = .1f;
-    [SerializeField] float rotationSpeed = 30f;
-    [SerializeField] int maxMoveDistance = 4;
-
     List<Vector3> positionList;
     Vector3 targetPosition;
     int currentPositionIndex;
     int enemyMovesLeft = 1;
+
+    [SerializeField] float moveSpeed = 4f;
+    [SerializeField] float stoppingDistance = .1f;
+    [SerializeField] float rotationSpeed = 30f;
+    [SerializeField] int maxMoveDistance = 4;
+    [SerializeField] int heatGenerated = 1;
+    [SerializeField] int corePowerCost = 1;
 
     public event EventHandler OnStopMoving;
     public event EventHandler<OnStartMovingEventArgs> OnStartMoving;
@@ -90,8 +92,8 @@ public class MoveAction : BaseAction
     #region OVERRIDES
 
     public override string GetActionName() => "Move";
-    public override int GetCorePowerCost() => 1;
-    public override int GetHeatGenerated() => 1;
+    public override int GetCorePowerCost() => corePowerCost;
+    public override int GetHeatGenerated() => heatGenerated;
     public override void TakeAction(GridPosition gridPosition, Action clearBusyOnActionComplete)
     {
         if (pCMech.GetIsEnemy())

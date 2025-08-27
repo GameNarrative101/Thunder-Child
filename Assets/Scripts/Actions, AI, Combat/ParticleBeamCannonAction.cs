@@ -4,22 +4,24 @@ using UnityEngine;
 
 public class ParticleBeamCannonAction : BaseAction
 {
-    [SerializeField] Transform beamProjectilePrefab;
-    [SerializeField] int beamLength = 7;
-
     protected override void Awake()
     {
         base.Awake();
         isEnemyAction = false;
     }
 
+    [SerializeField] Transform beamProjectilePrefab;
+    [SerializeField] int beamLength = 7;
+    [SerializeField] int heatGenerated = 7;
+    [SerializeField] int corePowerCost = 7;
+    [SerializeField] Vector3Int damageByTier = new Vector3Int(18, 30, 42);
+
 
 
     public override string GetActionName() => "Particle Beam Cannon";
-    protected override (int, int, int) GetDamageByTier() => (18, 30, 42);
-    public override int GetCorePowerCost() => 7;
-    public override int GetHeatGenerated() => 7;
-
+    protected override (int, int, int) GetDamageByTier() => (damageByTier.x, damageByTier.y, damageByTier.z);
+    public override int GetCorePowerCost() => corePowerCost;
+    public override int GetHeatGenerated() => heatGenerated;
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();

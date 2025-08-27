@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour
     {
         followComponent = (CinemachineFollow)cinemachineCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
 
-        AutoFollowTarget();
+        // AutoFollowTarget();
         Subscriptions();
 
         StartCoroutine(ForceInitialCameraUpdate()); // Force immediate follow offset
@@ -81,7 +81,7 @@ public class CameraController : MonoBehaviour
     private void MoveAction_OnStartMoving(object sender, EventArgs e)
     {
         isFollowingTarget = true;
-        AutoFollowTarget();
+        // AutoFollowTarget();
     }
     private void MoveAction_OnStopMoving(object sender, EventArgs e)
     {
@@ -98,7 +98,7 @@ public class CameraController : MonoBehaviour
 
         if (isFollowingTarget && followTarget != null)
         {
-            AutoFollowTarget();
+            // AutoFollowTarget();
         }
     }
 
@@ -144,23 +144,23 @@ public class CameraController : MonoBehaviour
             followComponent.FollowOffset = Vector3.Lerp(followComponent.FollowOffset, targetFollowOffset, zoomSpeed * Time.deltaTime);
         }
     }
-    void AutoFollowTarget()
-    {
-        if (followTarget == null) return;
+    // void AutoFollowTarget()
+    // {
+    //     if (followTarget == null) return;
 
-        Vector3 targetPosition = followTarget.position + followOffset; // Follow target
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, followSmoothTime);
+    //     Vector3 targetPosition = followTarget.position + followOffset; // Follow target
+    //     transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, followSmoothTime);
 
-        /*  No Auto-Rotation for now 
-            Vector3 lookDirection = followTarget.position - transform.position; // Rotate towards target
-            lookDirection.y = 0f; // horizontal rotation only
-            if (lookDirection.sqrMagnitude > 0.001f)
-            {
-                float desiredYaw = Quaternion.LookRotation(lookDirection).eulerAngles.y;
-                ProcessRotation(Mathf.LerpAngle(accumulatedYaw, desiredYaw, Time.deltaTime * 5f)); // smooth rotation
-            } 
-        */
-    }
+    //     /*  No Auto-Rotation for now 
+    //         Vector3 lookDirection = followTarget.position - transform.position; // Rotate towards target
+    //         lookDirection.y = 0f; // horizontal rotation only
+    //         if (lookDirection.sqrMagnitude > 0.001f)
+    //         {
+    //             float desiredYaw = Quaternion.LookRotation(lookDirection).eulerAngles.y;
+    //             ProcessRotation(Mathf.LerpAngle(accumulatedYaw, desiredYaw, Time.deltaTime * 5f)); // smooth rotation
+    //         } 
+    //     */
+    // }
 
     #endregion
 }

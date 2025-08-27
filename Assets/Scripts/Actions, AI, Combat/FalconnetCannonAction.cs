@@ -4,16 +4,21 @@ using UnityEngine;
 
 public class FalconnetCannonAction : BaseAction
 {
-    [SerializeField] Transform grenadeProjectilePrefab;
-    [SerializeField] float damageRadius = 8f; //ADDED
     [SerializeField] int maxGrenadeDistance = 7;
+    [SerializeField] Vector3Int knockbackByTier = new Vector3Int(2, 4, 6);
+    [SerializeField] Vector3Int enemyDamageByTier = new Vector3Int(3, 5, 8);
+    [SerializeField] Vector3Int playerDamageByTier = new Vector3Int(9, 15, 24);
+    [SerializeField] int heatGenerated = 3;
+    [SerializeField] int corePowerCost = 3;
+    [SerializeField] float damageRadius = 8f; //ADDED
+    [SerializeField] Transform grenadeProjectilePrefab;
 
 
 
     protected override void Awake()
     {
         base.Awake();
-        isEnemyAction = false; // Player only
+        // isEnemyAction = false; // Player only
     }
 
 
@@ -23,16 +28,16 @@ public class FalconnetCannonAction : BaseAction
     {
        if (!pCMech.GetIsEnemy())
        {
-           return (9, 15, 24);
+           return (playerDamageByTier.x, playerDamageByTier.y, playerDamageByTier.z);
        }
        else
        {
-           return (3, 5, 8);
+           return (enemyDamageByTier.x, enemyDamageByTier.y, enemyDamageByTier.z);
        }
     }
-    protected override (int, int, int) GetKnockbackByTier() => (2, 4, 6);
-    public override int GetCorePowerCost() => 3;
-    public override int GetHeatGenerated() => 3;
+    protected override (int, int, int) GetKnockbackByTier() => (knockbackByTier.x, knockbackByTier.y, knockbackByTier.z);
+    public override int GetCorePowerCost() => corePowerCost;
+    public override int GetHeatGenerated() => heatGenerated;
 
     public override List<GridPosition> GetValidActionGridPositionList()
     {

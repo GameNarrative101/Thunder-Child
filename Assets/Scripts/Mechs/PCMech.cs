@@ -10,15 +10,16 @@ public class PCMech : MonoBehaviour
     BaseAction[] baseActionArray;
 
     bool isDead = false;
-    [SerializeField] bool isEnemy;
+    float knockbackSpeed = 60f;
+    int turnsTaken = 0;
 
+    [SerializeField] bool isEnemy;
     [SerializeField] int corePower = 3;
-    [SerializeField] int corePowerIncrease = 3;
+    [SerializeField] int corePowerPerTurn = 3;
     [SerializeField] int maxCorePower = 15;
     [SerializeField] int heat = 0;
     [SerializeField] int maxHeat = 10;
-    float knockbackSpeed = 60f;
-    int turnsTaken = 0;
+    [SerializeField] int heatReductionPerTurn = 3;
 
     public static event EventHandler OnAnyUnitSpawned;
     public static event EventHandler OnAnyUnitDead;
@@ -257,10 +258,10 @@ public class PCMech : MonoBehaviour
         if ((GetIsEnemy() && !TurnSystemScript.Instance.GetIsPlayerTurn()) ||
         (!GetIsEnemy() && TurnSystemScript.Instance.GetIsPlayerTurn()))
         {
-            GainCorePower(corePowerIncrease);
+            GainCorePower(corePowerPerTurn);
             OnCorePowerChange?.Invoke(this, EventArgs.Empty);
 
-            TryReduceHeat(2);
+            TryReduceHeat(heatReductionPerTurn);
             OnHeatChange?.Invoke(this, EventArgs.Empty);
         }
     }

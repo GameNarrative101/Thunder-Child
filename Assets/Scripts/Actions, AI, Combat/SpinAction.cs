@@ -50,7 +50,7 @@ public class SpinAction : BaseAction
     //only do this action exactly where the unit is standing. it's just spinning
     public override List<GridPosition> GetValidActionGridPositionList()
     {
-        List <GridPosition> validGridPositionList = new List<GridPosition>();
+        // List <GridPosition> validGridPositionList = new List<GridPosition>();
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
 
         return new List<GridPosition> {pcMechGridPosition};
