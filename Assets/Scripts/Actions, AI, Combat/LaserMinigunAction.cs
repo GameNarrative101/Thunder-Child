@@ -93,8 +93,15 @@ public class LaserMinigunAction : BaseAction
         stateTimer = aimingStateTime;
 
         canShootBullet = true;
-        if (pCMech.GetIsEnemy()) EnemyActionTaken = true;
-
+        if (pCMech.GetIsEnemy())
+        {
+            enemyActionTaken = true;
+        }
+        else
+        {
+            playerActionTaken = true;
+        }
+        
         ActionStart(clearBusyOnActionComplete);
     }
     private bool HandleShooting()

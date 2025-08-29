@@ -15,7 +15,8 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
     protected bool isActive;
     protected bool isPlayerAction = true;
     protected bool isEnemyAction = true;
-    public static bool EnemyActionTaken = false;
+    public static bool enemyActionTaken = false;
+    public static bool playerActionTaken = false;
 
     public static event EventHandler OnAnyActionStarted;
     public static event EventHandler OnAnyActionCompleted;
@@ -30,7 +31,7 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
 
     //==================================================================================================================================== 
-    #region THE PROTECTED
+    #region SHIT ACTIONS USE
 
     protected void ActionStart(Action clearBusyOnActionComplete)
     {
@@ -72,52 +73,46 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         return (damage, knockback, tier);
     }
+    public static void ResetPlayerActionFlag() //called from 
+    {
+        playerActionTaken = false;
+    }
+    public abstract void TakeAction
+        (GridPosition targetGridPosition, Action clearBusyOnActionComplete); //grid position useless for some, but oh well.
 
     #endregion
 
 
 
     //==================================================================================================================================== 
-    #region THE VIRTUAL
+    #region GETTERS AND SUCH
 
     public virtual bool IsValidActionGridPosition(GridPosition gridPosition)
     {
         List<GridPosition> validGridPositionList = GetValidActionGridPositionList();
         return validGridPositionList.Contains(gridPosition);
     }
+    public abstract List<GridPosition> GetValidActionGridPositionList();
+    public abstract string GetActionName();
     public virtual int GetCorePowerCost() => 1;
     public virtual int GetHeatGenerated() => 1;
     public bool GetIsPlayerAction() => isPlayerAction; // Not used yet since all actions are player actions for now.
     public bool GetIsEnemyAction() => isEnemyAction;
     protected virtual (int tier1, int tier2, int tier3) GetDamageByTier() => (0, 0, 0);
     protected virtual (int tier1, int tier2, int tier3) GetKnockbackByTier() => (0, 0, 0);
+    public bool GetPlayerActionTaken() => playerActionTaken;
 
     #endregion
 
 
 
     //==================================================================================================================================== 
-    #region THE ABSTRACT
-
-    public abstract string GetActionName();
-    public abstract void TakeAction(GridPosition targetGridPosition, Action clearBusyOnActionComplete); //grid position useless for some, but oh well.
-    public abstract List<GridPosition> GetValidActionGridPositionList();
-    public static void ResetEnemyActionFlag() //called from EnemyAI
-    {
-        EnemyActionTaken = false;
-    }
-
-    #endregion
-
-
-
-    //==================================================================================================================================== 
-    #region ENEMY AI
+    #region ENEMY ACTIONS
 
     public virtual EnemyAIAction GetBestEnemyAIAction(GridPosition gridPosition) { return null; }
     public EnemyAIAction GetBestEnemyAIAction()
     {
-        if (EnemyActionTaken && GetType() != typeof(MoveAction))
+        if (enemyActionTaken && GetType() != typeof(MoveAction))
         {
             return null; // One action per turn for enemies, except moving
         }
@@ -142,6 +137,10 @@ public abstract class BaseAction : MonoBehaviour //No instance ever, so abstract
 
         enemyAIActionList.Sort((EnemyAIAction a, EnemyAIAction b) => b.actionValue - a.actionValue);
         return enemyAIActionList[0];
+    }
+    public static void ResetEnemyActionFlag() //called from EnemyAI
+    {
+        enemyActionTaken = false;
     }
 
     #endregion

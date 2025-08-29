@@ -7,6 +7,7 @@ public class MoveAction : BaseAction
     Vector3 targetPosition;
     int currentPositionIndex;
     int enemyMovesLeft = 1;
+    int playerMovesLeft = 1;
 
     [SerializeField] float moveSpeed = 4f;
     [SerializeField] float stoppingDistance = .1f;
@@ -100,6 +101,10 @@ public class MoveAction : BaseAction
         {
             enemyMovesLeft--;
         }
+        else
+        {
+            playerMovesLeft--;
+        }
 
         List<GridPosition> pathGridPositionList =
             Pathfinding.Instance.FindPath(pCMech.GetGridPosition(), gridPosition, out int pathLength); //where pathfinding happens
@@ -123,6 +128,9 @@ public class MoveAction : BaseAction
     public override List<GridPosition> GetValidActionGridPositionList()
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
+
+        if (!pCMech.GetIsEnemy() && playerMovesLeft <= 0) return validGridPositionList;
+
         GridPosition pcMechGridPosition = pCMech.GetGridPosition();
 
         for (int x = -maxMoveDistance; x <= maxMoveDistance; x++)
@@ -148,6 +156,17 @@ public class MoveAction : BaseAction
 
         return validGridPositionList;
     }
+    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
+    {
+        if (pCMech != null && pCMech.GetIsEnemy())
+        {
+            enemyMovesLeft = 1;
+        }
+        else
+        {
+            playerMovesLeft = 1;
+        }
+    }
 
     #endregion
 
@@ -156,13 +175,6 @@ public class MoveAction : BaseAction
     //==================================================================================================================================== 
     #region ENEMY MOVE
 
-    private void TurnSystemScript_OnTurnEnd(object sender, EventArgs e)
-    {
-        if (pCMech != null && pCMech.GetIsEnemy())
-        {
-            enemyMovesLeft = 1;
-        }
-    }
     public override EnemyAIAction GetBestEnemyAIAction(GridPosition simulatedMovePosition)
     {
         if (pCMech.GetIsEnemy() && enemyMovesLeft <= 0)

@@ -86,7 +86,7 @@ public class EnemyAI : MonoBehaviour
         foreach (BaseAction enemyAction in enemyUnit.GetBaseActionArray())
         {
             if (!enemyAction.GetIsEnemyAction()) continue; // not an enemy action
-            if (!enemyUnit.CanSpendCorePowerForAction(enemyAction)) continue; // can't afford action
+            // if (!enemyUnit.CanSpendCorePowerForAction(enemyAction)) continue; // can't afford action
 
             EnemyAIAction aiAction = enemyAction.GetBestEnemyAIAction();
             if (aiAction != null && aiAction.actionValue > 0)

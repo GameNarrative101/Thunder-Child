@@ -33,10 +33,12 @@ public class PCMech : MonoBehaviour
     {
         healthSystem = GetComponent<HealthSystem>();
         baseActionArray = GetComponents<BaseAction>();
+        BaseAction.ResetPlayerActionFlag();
     }
     private void Start()
     {
         SetGridPosition();
+        baseActionArray = GetComponents<BaseAction>();
 
         OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
 
@@ -160,7 +162,7 @@ public class PCMech : MonoBehaviour
         }
         return false;
     }
-    void SpendCorePower(int amount) // instead of making it impossible to go below 0, we make it impossible to spend power you don't have (on UnitActionSystem)
+    void SpendCorePower(int amount) // UnitActionSystem makes it impossible to spend power you don't have
     {
         corePower -= amount;
         OnCorePowerChange?.Invoke(this, EventArgs.Empty);
@@ -179,7 +181,10 @@ public class PCMech : MonoBehaviour
     {
         int overloadAmount = corePower - maxCorePower;
 
-        GainHeat(overloadAmount);
+        if (isEnemy == false) // NO ENEMY OVERLOAD
+        {
+            GainHeat(overloadAmount);
+        }
     }
     public int GetCorePower() => corePower;
     public float GetCorePowerNormalized() => corePower / (float)maxCorePower;
@@ -213,7 +218,10 @@ public class PCMech : MonoBehaviour
     {
         int overHeatAmount = heat - maxHeat;
 
-        TakeDamage(overHeatAmount);
+        if (isEnemy == false) //NO ENEMY OVERHEAT
+        {
+            TakeDamage(overHeatAmount);
+        } 
     }
     public int GetHeat() => heat;
     public float GetHeatNormalized() => heat / (float)maxHeat;
@@ -264,6 +272,8 @@ public class PCMech : MonoBehaviour
             TryReduceHeat(heatReductionPerTurn);
             OnHeatChange?.Invoke(this, EventArgs.Empty);
         }
+
+        BaseAction.ResetPlayerActionFlag(); // Reset the player action flag for the next turn
     }
     void HealthSystem_OnDead(object sender, EventArgs e)
     {

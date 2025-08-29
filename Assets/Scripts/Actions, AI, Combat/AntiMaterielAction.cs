@@ -17,6 +17,9 @@ public class AntiMaterielAction : BaseAction
     [SerializeField] float coolOffStateTime = 0.5f;
     [SerializeField] int maxShootDistance = 2;
     [SerializeField] LayerMask obstaclesLayerMask;
+    [SerializeField] int heatGenerated = 5;
+    [SerializeField] int corePowerCost = 5;
+    [SerializeField] Vector3Int damageByTier = new Vector3Int(5, 9, 18);
 
     public event EventHandler<OnShootEventArgs> OnShoot;
     public static event EventHandler<OnShootEventArgs> OnAnyShoot; //for scren shake
@@ -92,6 +95,15 @@ public class AntiMaterielAction : BaseAction
 
         canShootBullet = true;
 
+        if (pCMech.GetIsEnemy())
+        {
+            enemyActionTaken = true;
+        }
+        else
+        {
+            playerActionTaken = true;
+        }
+
         ActionStart(clearBusyOnActionComplete);
     }
     private bool HandleShooting()
@@ -157,9 +169,9 @@ public class AntiMaterielAction : BaseAction
     #region SETTIN' & GETTIN'
 
     public override string GetActionName() => "Anti-materiel Sniper";
-    protected override (int, int, int) GetDamageByTier() => (5, 9, 18);
-    public override int GetCorePowerCost() => 5;
-    public override int GetHeatGenerated() => 5;
+    protected override (int, int, int) GetDamageByTier() => (damageByTier.x, damageByTier.y, damageByTier.z);
+    public override int GetCorePowerCost() => corePowerCost;
+    public override int GetHeatGenerated() => heatGenerated;
     public int GetMaxShootDistance() => maxShootDistance;
     public PCMech GetTargetUnit() => targetUnit;
     public int GetTargetCountAtPosition(GridPosition gridPosition)

@@ -250,17 +250,19 @@ GameObject:
   - component: {fileID: 6812920997967081395}
   - component: {fileID: 3670705484915049570}
   - component: {fileID: 4507073548260348634}
+  - component: {fileID: 5060653246394423761}
   - component: {fileID: -6968653430954253021}
+  - component: {fileID: 3518970526770110091}
+  - component: {fileID: -2478586375845164213}
+  - component: {fileID: 1447994876850637674}
+  - component: {fileID: 6458105536477719132}
   - component: {fileID: 8149747404443248139}
   - component: {fileID: -6801997478047366072}
   - component: {fileID: 5984506201132333605}
   - component: {fileID: 8138175617954225887}
   - component: {fileID: 3821737785300979387}
   - component: {fileID: 6644253763209447500}
-  - component: {fileID: 3518970526770110091}
-  - component: {fileID: 6458105536477719132}
-  - component: {fileID: -2478586375845164213}
-  - component: {fileID: 5060653246394423761}
+  - component: {fileID: 3788392893323241013}
   m_Layer: 7
   m_Name: PC Mech
   m_TagString: Untagged
@@ -299,11 +301,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnemy: 0
-  corePower: 4
-  corePowerIncrease: 4
-  maxCorePower: 9
+  corePower: 3
+  corePowerPerTurn: 3
+  maxCorePower: 10
   heat: 0
-  maxHeat: 9
+  maxHeat: 12
+  heatReductionPerTurn: 3
 --- !u!114 &4507073548260348634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,8 +321,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 30
   stoppingDistance: 0.1
-  rotationSpeed: 30
+  rotationSpeed: 360
   maxMoveDistance: 5
+  heatGenerated: 0
+  corePowerCost: 0
+--- !u!114 &5060653246394423761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f7cefac6f1c4d419917c77a3f32c7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactPowerCost: 0
+  interactHeatGenerated: 0
 --- !u!114 &-6968653430954253021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,7 +351,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 926b682c8d6f04a409b747668e94157b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healAmount: 80
+  healAmount: 30
+  corePowerCost: 1
+  heatGenerated: 1
+--- !u!114 &3518970526770110091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1079ae39ca8c2c649a3f4876bf882b50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-2478586375845164213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e48ebc31ddbc63842b6c73b79e3a1fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxMeleeDistance: 1
+  heatGenerated: 1
+  corePowerCost: 1
+  enemyDamageByTier: {x: 3, y: 5, z: 8}
+  playerDamageByTier: {x: 5, y: 8, z: 10}
+--- !u!114 &1447994876850637674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68296de28c87ed9419a0c4f783a06894, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxShootDistance: 3
+  enemyDamageByTier: {x: 4, y: 5, z: 7}
+  playerDamageByTier: {x: 5, y: 7, z: 9}
+  heatGenerated: 1
+  corePowerCost: 1
+  aimingStateTime: 0.5
+  shootingStateTime: 0.1
+  coolOffStateTime: 0.5
+  obstaclesLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+--- !u!114 &6458105536477719132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3873984016508158188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4203eb947f92bb45aeacddf449ad3f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxGrenadeDistance: 5
+  knockbackByTier: {x: 2, y: 3, z: 4}
+  enemyDamageByTier: {x: 3, y: 5, z: 8}
+  playerDamageByTier: {x: 6, y: 10, z: 15}
+  heatGenerated: 3
+  corePowerCost: 3
+  damageRadius: 8
+  grenadeProjectilePrefab: {fileID: 370322483711697218, guid: 1415c37904146a8419d8c394566d0056, type: 3}
 --- !u!114 &8149747404443248139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,6 +445,9 @@ MonoBehaviour:
   obstaclesLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  heatGenerated: 5
+  corePowerCost: 5
+  damageByTier: {x: 3, y: 6, z: 12}
 --- !u!114 &-6801997478047366072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,8 +460,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03318d99666ce0a4c96dc326cf4dc802, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beamProjectilePrefab: {fileID: 0}
+  beamProjectilePrefab: {fileID: 1649882385111155728, guid: 532f9ed178345834493be680a76906e2, type: 3}
   beamLength: 7
+  heatGenerated: 7
+  corePowerCost: 7
+  damageByTier: {x: 9, y: 18, z: 30}
 --- !u!114 &5984506201132333605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -394,8 +493,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4090c8347426fb148add4a40346f2d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPCShield: 330
-  maxEnemyShield: 35
+  maxPCShield: 90
+  maxEnemyShield: 50
   ExpeditionFailed: {fileID: 0}
   pcMech: {fileID: 3670705484915049570}
 --- !u!114 &3821737785300979387
@@ -410,7 +509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3ea885eeb6a2cc42b7cb6b9a1e0019f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ragdollPrefab: {fileID: 6812920997967081395, guid: 07b788f11ee1fbb41b250afe41c8a02a, type: 3}
+  ragdollPrefab: {fileID: 6812920997967081395, guid: 18d39c7a6206a1a48aa7863335f0a610, type: 3}
   originalRootBone: {fileID: 3274264604376189535}
 --- !u!65 &6644253763209447500
 BoxCollider:
@@ -429,64 +528,32 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 2.6636348, y: 6.4170666, z: 1.4063649}
   m_Center: {x: 0.073521376, y: 2.7085338, z: -0.014191508}
---- !u!114 &3518970526770110091
-MonoBehaviour:
+--- !u!64 &3788392893323241013
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3873984016508158188}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1079ae39ca8c2c649a3f4876bf882b50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6458105536477719132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3873984016508158188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4203eb947f92bb45aeacddf449ad3f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grenadeProjectilePrefab: {fileID: 370322483711697218, guid: 1415c37904146a8419d8c394566d0056, type: 3}
-  damageRadius: 5
-  maxGrenadeDistance: 5
---- !u!114 &-2478586375845164213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3873984016508158188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e48ebc31ddbc63842b6c73b79e3a1fc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxMeleeDistance: 1
---- !u!114 &5060653246394423761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3873984016508158188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6f7cefac6f1c4d419917c77a3f32c7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactPowerCost: 0
-  interactHeatGenerated: 0
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &4225462496246562325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,6 +1107,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7397921610533035638}
     m_Modifications:
+    - target: {fileID: 676612266354843135, guid: 03bfe7ef3997a70479807513686ba573, type: 3}
+      propertyPath: m_Value
+      value: 0.742
+      objectReference: {fileID: 0}
     - target: {fileID: 1384280946776679044, guid: 03bfe7ef3997a70479807513686ba573, type: 3}
       propertyPath: m_Pivot.x
       value: 0

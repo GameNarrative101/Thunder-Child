@@ -18,7 +18,7 @@ public class FalconnetCannonAction : BaseAction
     protected override void Awake()
     {
         base.Awake();
-        // isEnemyAction = false; // Player only
+        isEnemyAction = false; // Player only
     }
 
 
@@ -71,8 +71,15 @@ public class FalconnetCannonAction : BaseAction
         GrenadeProjectile grenadeProjectile = grenadeProjectileTransform.GetComponent<GrenadeProjectile>();
         grenadeProjectile.Setup(targetGridPosition, OnGrenadeExploded);
 
-        if (pCMech.GetIsEnemy()) EnemyActionTaken = true;
-
+        if (pCMech.GetIsEnemy())
+        {
+            enemyActionTaken = true;
+        }
+        else
+        {
+            playerActionTaken = true;
+        }
+        
         ActionStart(clearBusyOnActionComplete);
     }
 

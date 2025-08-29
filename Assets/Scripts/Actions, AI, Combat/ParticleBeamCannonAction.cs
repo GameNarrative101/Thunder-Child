@@ -70,6 +70,15 @@ public class ParticleBeamCannonAction : BaseAction
         beam.SetShooter(pCMech);
         beam.TryShootBeam(LevelGrid.Instance.GetWorldPosition(damageLine[^1])); //endpoint of beam
 
+        if (pCMech.GetIsEnemy())
+        {
+            enemyActionTaken = true;
+        }
+        else
+        {
+            playerActionTaken = true;
+        }
+
         BeamDamage(damageLine);
     }
     private void BeamDamage(List<GridPosition> damageLine)
