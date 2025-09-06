@@ -39,7 +39,7 @@ public class Extraction : MonoBehaviour, IInteractable
 
         if (isGreen)
         {
-            SetColorRed();
+            return;
         }
         else
         {

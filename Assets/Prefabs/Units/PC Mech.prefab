@@ -351,9 +351,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 926b682c8d6f04a409b747668e94157b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healAmount: 30
-  corePowerCost: 1
-  heatGenerated: 1
+  healAmount: 10
+  corePowerCost: 3
+  heatGenerated: 0
 --- !u!114 &3518970526770110091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,7 +493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4090c8347426fb148add4a40346f2d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPCShield: 90
+  maxPCShield: 40
   maxEnemyShield: 50
   ExpeditionFailed: {fileID: 0}
   pcMech: {fileID: 3670705484915049570}

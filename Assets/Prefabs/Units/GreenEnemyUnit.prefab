@@ -505,7 +505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8138175617954225887, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
       propertyPath: maxEnemyShield
-      value: 40
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8149747404443248139, guid: 861d2cd308d875d45a51c88fe24b3d35, type: 3}
       propertyPath: maxShootDistance
