@@ -1,5 +1,5 @@
 # Thunder Child
-Thunder Child is an isometric, turn-based RPG mech fighter. The player manages 3 resources: shield (or health); power, which is generated every turn; and heat, which is generated when power is spent. Remember to use your *Heat Sink* or you'll overheat and die! Otherwise, use weapons like the *Laser Minigun* or *Falconnet Cannon* to fight while you find, secure, and extract the Prometheus Core.
+Thunder Child is an isometric, turn-based RPG mech fighter made in Unity. The player manages 3 resources: shield (or health); power, which is generated every turn; and heat, which is generated when power is spent. Remember to use your *Heat Sink* or you'll overheat and die! Otherwise, use weapons like the *Laser Minigun* or *Falconnet Cannon* to fight while you find, secure, and extract the Prometheus Core.
 
 https://github.com/user-attachments/assets/2e66aa6b-82da-4b08-81b5-43efca26f733
 
