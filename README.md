@@ -1,5 +1,5 @@
 # Thunder Child
-Thunder Child is an isometric, turn-based RPG mech fighter made in Unity. The player manages 3 resources: shield (or health); power, which is generated every turn; and heat, which is generated when power is spent. Remember to use your *Heat Sink* or you'll overheat and die! Otherwise, use weapons like the *Laser Minigun* or *Falconnet Cannon* to fight while you find, secure, and extract the Prometheus Core.
+Thunder Child is an isometric, turn-based RPG mech fighter made in Unity. The player manages 3 resources: shield (or health); power, which is generated every turn; and heat, which is generated when power is spent. Remember to use your *Heat Sink* or you'll overheat and die! Otherwise, use weapons like the *Laser Minigun* or *Falconnet Cannon* to fight while you find, secure, and extract the Prometheus Core. [Miro Board documenting ideation and design](https://miro.com/app/board/uXjVJLD1NOA=/?share_link_id=679916103747)
 
 https://github.com/user-attachments/assets/2e66aa6b-82da-4b08-81b5-43efca26f733
 
@@ -33,3 +33,5 @@ Missing feels bad! With the 3-tier roll, you can still have a bad turn (roll low
 <img width="1924" height="1088" alt="Melee" src="https://github.com/user-attachments/assets/23ef7742-1edf-491b-9b46-a690b6626a1b" />
 <img width="1923" height="1084" alt="Anti-Materiel Sniper Rifle" src="https://github.com/user-attachments/assets/fb165b95-13a8-47a9-b7fb-9a5aff74c9f4" />
 <img width="1920" height="1083" alt="Explosion" src="https://github.com/user-attachments/assets/18d866bd-d73b-40ad-8746-4c211e33a0e5" />
+
+## Miro Board for 
