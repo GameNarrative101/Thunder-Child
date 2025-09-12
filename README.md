@@ -33,5 +33,3 @@ Missing feels bad! With the 3-tier roll, you can still have a bad turn (roll low
 <img width="1924" height="1088" alt="Melee" src="https://github.com/user-attachments/assets/23ef7742-1edf-491b-9b46-a690b6626a1b" />
 <img width="1923" height="1084" alt="Anti-Materiel Sniper Rifle" src="https://github.com/user-attachments/assets/fb165b95-13a8-47a9-b7fb-9a5aff74c9f4" />
 <img width="1920" height="1083" alt="Explosion" src="https://github.com/user-attachments/assets/18d866bd-d73b-40ad-8746-4c211e33a0e5" />
-
-## Miro Board for 
